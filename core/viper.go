@@ -24,7 +24,7 @@ func Viper(path ...string) *viper.Viper {
 				fmt.Printf("您正在使用config的默认值,config的路径为%v\n", utils.ConfigFile)
 			} else {
 				config = configEnv
-				fmt.Printf("您正在使用GVA_CONFIG"+
+				fmt.Printf("您正在使用GSD_CONFIG"+
 					""+
 					"环境变量,config的路径为%v\n", config)
 			}

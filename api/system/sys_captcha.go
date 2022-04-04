@@ -17,13 +17,13 @@ var store = base64Captcha.DefaultMemStore
 type BaseApi struct {
 }
 
-// @Tags Base
-// @Summary 生成验证码
-// @Security ApiKeyAuth
-// @accept application/json
-// @Produce application/json
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"验证码获取成功"}"
-// @Router /base/captcha [post]
+// @Tags      Base
+// @Summary   生成验证码
+// @Security  ApiKeyAuth
+// @accept    application/json
+// @Produce   application/json
+// @Success   200  {string}  string  "{"success":true,"data":{},"msg":"验证码获取成功"}"
+// @Router    /base/captcha [post]
 func (b *BaseApi) Captcha(c *gin.Context) {
 	// 字符,公式,验证码配置
 	// 生成默认数字的driver
