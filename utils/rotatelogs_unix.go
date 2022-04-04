@@ -4,9 +4,9 @@
 package utils
 
 import (
-	"gin-vue-admin/global"
 	"os"
 	"path"
+	"project/global"
 	"time"
 
 	zaprotatelogs "github.com/lestrrat-go/file-rotatelogs"
@@ -20,12 +20,12 @@ import (
 
 func GetWriteSyncer() (zapcore.WriteSyncer, error) {
 	fileWriter, err := zaprotatelogs.New(
-		path.Join(global.GVA_CONFIG.Zap.Director, "%Y-%m-%d.log"),
-		zaprotatelogs.WithLinkName(global.GVA_CONFIG.Zap.LinkName),
+		path.Join(global.GSD_CONFIG.Zap.Director, "%Y-%m-%d.log"),
+		zaprotatelogs.WithLinkName(global.GSD_CONFIG.Zap.LinkName),
 		zaprotatelogs.WithMaxAge(7*24*time.Hour),
 		zaprotatelogs.WithRotationTime(24*time.Hour),
 	)
-	if global.GVA_CONFIG.Zap.LogInConsole {
+	if global.GSD_CONFIG.Zap.LogInConsole {
 		return zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(fileWriter)), err
 	}
 	return zapcore.AddSync(fileWriter), err

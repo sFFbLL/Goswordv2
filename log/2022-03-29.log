@@ -3,3 +3,8 @@
 [RZ-WORK-FLOW]2022/03/29 - 22:34:15.167	[34minfo[0m	G:/go_src/工作流v1/workflow_server/initialize/router.go:25	register swagger handler
 [RZ-WORK-FLOW]2022/03/29 - 22:34:15.168	[34minfo[0m	G:/go_src/工作流v1/workflow_server/initialize/router.go:54	router register success
 [RZ-WORK-FLOW]2022/03/29 - 22:34:15.168	[34minfo[0m	G:/go_src/工作流v1/workflow_server/core/server.go:29	server run success on 	{"address": ":8888"}
+[RZ-WORK-FLOW]2022/03/29 - 22:45:35.389	[34minfo[0m	G:/go_src/工作流v1/workflow_server/initialize/router.go:20	use middleware logger
+[RZ-WORK-FLOW]2022/03/29 - 22:45:35.390	[34minfo[0m	G:/go_src/工作流v1/workflow_server/initialize/router.go:23	use middleware cors
+[RZ-WORK-FLOW]2022/03/29 - 22:45:35.390	[34minfo[0m	G:/go_src/工作流v1/workflow_server/initialize/router.go:25	register swagger handler
+[RZ-WORK-FLOW]2022/03/29 - 22:45:35.391	[34minfo[0m	G:/go_src/工作流v1/workflow_server/initialize/router.go:54	router register success
+[RZ-WORK-FLOW]2022/03/29 - 22:45:35.396	[34minfo[0m	G:/go_src/工作流v1/workflow_server/core/server.go:29	server run success on 	{"address": ":8888"}
