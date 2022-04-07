@@ -14,6 +14,7 @@ type Server struct {
 	Mysql Mysql `mapstructure:"mysql" json:"mysql" yaml:"mysql"`
 	// oss
 	Local Local `mapstructure:"local" json:"local" yaml:"local"`
+	Qiniu Qiniu `mapstructure:"qiniu" json:"qiniu" yaml:"qiniu"`
 	Excel Excel `mapstructure:"excel" json:"excel" yaml:"excel"`
 	//Timer Timer `mapstructure:"timer" json:"timer" yaml:"timer"`
 }

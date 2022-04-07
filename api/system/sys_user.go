@@ -55,7 +55,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,                              // 签名生效时间
 			ExpiresAt: time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
-			Issuer:    "qmPlus",                                              // 签名的发行者
+			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
 	}
 	token, err := j.CreateToken(claims)

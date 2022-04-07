@@ -26,6 +26,8 @@ func NewOss() OSS {
 	switch global.GSD_CONFIG.System.OssType {
 	case "local":
 		return &Local{}
+	case "qiniu":
+		return &Local{}
 	default:
 		return &Local{}
 	}
