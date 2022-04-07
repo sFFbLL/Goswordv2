@@ -86,12 +86,12 @@ autocode:
 
 # qiniu configuration
 qiniu:
-  zone: ''
-  bucket: ''
-  img-path: ''
+  zone: 'ZoneHuanan'
+  bucket: 'ruanzhu-workflow'
+  img-path: 'r9qsta3s9.hn-bkt.clouddn.com'
   use-https: false
-  access-key: ''
-  secret-key: ''
+  access-key: 'kxtFkOLoWc7NOeUeH4U8vburLbrB_yZMkmVAnpAc'
+  secret-key: 'tUlVBk7EBHpHzWVKdp_3IAEh0c77yBzAYPD7xmq7'
   use-cdn-domains: false
 
 # excel configuration
