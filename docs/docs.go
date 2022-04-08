@@ -159,7 +159,7 @@ const docTemplate = `{
                 "authorityIds": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "headerImg": {
@@ -192,7 +192,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Swagger Example API",
+	Title:            "Work Flow API",
 	Description:      "This is a sample Server pets",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

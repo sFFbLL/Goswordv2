@@ -5,9 +5,8 @@ import (
 	"project/model/system"
 	systemReq "project/model/system/request"
 
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 // 从Gin的Context中获取从jwt解析出来的用户ID
@@ -35,21 +34,10 @@ func GetUserUuid(c *gin.Context) uuid.UUID {
 // 从Gin的Context中获取从jwt解析出来的用户角色id
 func GetUserAuthorityId(c *gin.Context) []system.SysAuthority {
 	if claims, exists := c.Get("claims"); !exists {
-		global.GSD_LOG.Error("从Gin的Context中获取从jwt解析出来的用户UUID失败, 请检查路由是否使用jwt中间件!")
+		global.GSD_LOG.Error("从Gin的Context中获取从jwt解析出来的用户角色失败, 请检查路由是否使用jwt中间件!")
 		return nil
 	} else {
 		waitUse := claims.(*systemReq.CustomClaims)
 		return waitUse.Authority
-	}
-}
-
-// 从Gin的Context中获取从jwt解析出来的用户角色id
-func GetUserInfo(c *gin.Context) *systemReq.CustomClaims {
-	if claims, exists := c.Get("claims"); !exists {
-		global.GSD_LOG.Error("从Gin的Context中获取从jwt解析出来的用户UUID失败, 请检查路由是否使用jwt中间件!")
-		return nil
-	} else {
-		waitUse := claims.(*systemReq.CustomClaims)
-		return waitUse
 	}
 }

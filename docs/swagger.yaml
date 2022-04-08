@@ -19,7 +19,7 @@ definitions:
     properties:
       authorityIds:
         items:
-          type: string
+          type: integer
         type: array
       headerImg:
         type: string
@@ -33,7 +33,7 @@ definitions:
 info:
   contact: {}
   description: This is a sample Server pets
-  title: Swagger Example API
+  title: Work Flow API
   version: 0.0.1
 paths:
   /base/captcha:

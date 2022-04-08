@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "This is a sample Server pets",
-        "title": "Swagger Example API",
+        "title": "Work Flow API",
         "contact": {},
         "version": "0.0.1"
     },
@@ -151,7 +151,7 @@
                 "authorityIds": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "headerImg": {

@@ -29,10 +29,13 @@ func (b *BaseApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	//id, err := utils.GetRequestId(c)
+	//global.GSD_LOG.Error("requestId获取失败", zap.Any("err", err), zap.Any("RequestId", id.RequestId))
 	if store.Verify(l.CaptchaId, l.Captcha, true) {
 		u := &system.SysUser{Username: l.Username, Password: l.Password}
 		if err, user := userService.Login(u); err != nil {
 			global.GSD_LOG.Error("登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
+
 			response.FailWithMessage("用户名不存在或者密码错误", c)
 		} else {
 			b.tokenNext(c, *user)
@@ -55,7 +58,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,                              // 签名生效时间
 			ExpiresAt: time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
-			Issuer:    "qmPlus",                                              // 签名的发行者
+			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
 	}
 	token, err := j.CreateToken(claims)
