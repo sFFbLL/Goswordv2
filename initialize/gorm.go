@@ -4,6 +4,7 @@ import (
 	"os"
 	"project/global"
 	"project/initialize/internal"
+	"project/model/system"
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -25,7 +26,16 @@ func Gorm() *gorm.DB {
 //@param: db *gorm.DB
 
 func MysqlTables(db *gorm.DB) {
-	err := db.AutoMigrate()
+	err := db.AutoMigrate(
+		system.SysUser{},
+		system.SysAuthority{},
+		system.SysApi{},
+		system.SysBaseMenu{},
+		system.SysBaseMenuParameter{},
+		system.JwtBlacklist{},
+		system.SysDept{},
+		system.SysOperationRecord{},
+	)
 	if err != nil {
 		global.GSD_LOG.Error("register table failed", zap.Any("err", err))
 		os.Exit(0)

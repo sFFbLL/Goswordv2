@@ -76,11 +76,6 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo) (err erro
 //@return: err error
 
 func (userService *UserService) SetUserAuthority(id uint, uuid uuid.UUID, authorityId string) (err error) {
-	assignErr := global.GSD_DB.Where("sys_user_id = ? AND sys_authority_authority_id = ?", id, authorityId).First(&system.SysUseAuthority{}).Error
-	if errors.Is(assignErr, gorm.ErrRecordNotFound) {
-		return errors.New("该用户无此角色")
-	}
-	err = global.GSD_DB.Where("uuid = ?", uuid).First(&system.SysUser{}).Update("authority_id", authorityId).Error
 	return err
 }
 
@@ -90,24 +85,7 @@ func (userService *UserService) SetUserAuthority(id uint, uuid uuid.UUID, author
 //@return: err error
 
 func (userService *UserService) SetUserAuthorities(id uint, authorityIds []string) (err error) {
-	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
-		TxErr := tx.Delete(&[]system.SysUseAuthority{}, "sys_user_id = ?", id).Error
-		if TxErr != nil {
-			return TxErr
-		}
-		useAuthority := []system.SysUseAuthority{}
-		for _, v := range authorityIds {
-			useAuthority = append(useAuthority, system.SysUseAuthority{
-				id, v,
-			})
-		}
-		TxErr = tx.Create(&useAuthority).Error
-		if TxErr != nil {
-			return TxErr
-		}
-		// 返回 nil 提交事务
-		return nil
-	})
+	return err
 }
 
 //@function: DeleteUser
@@ -116,9 +94,6 @@ func (userService *UserService) SetUserAuthorities(id uint, authorityIds []strin
 //@return: err error
 
 func (userService *UserService) DeleteUser(id float64) (err error) {
-	var user system.SysUser
-	err = global.GSD_DB.Where("id = ?", id).Delete(&user).Error
-	err = global.GSD_DB.Delete(&[]system.SysUseAuthority{}, "sys_user_id = ?", id).Error
 	return err
 }
 
