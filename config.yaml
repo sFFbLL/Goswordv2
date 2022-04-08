@@ -53,15 +53,15 @@ captcha:
 
 # mysql connect configuration
 mysql:
-  path: ''
-  config: ''
-  db-name: ''
-  username: ''
-  password: ''
+  path: 'cppwnn.top:3306'
+  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  db-name: 'work_flow'
+  username: 'root'
+  password: 'cpp@19990909'
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: false
-  log-zap: ""
+  log-zap: "true"
 
 # local configuration
 local:
