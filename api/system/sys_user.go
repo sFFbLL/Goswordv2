@@ -29,10 +29,13 @@ func (b *BaseApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	//id, err := utils.GetRequestId(c)
+	//global.GSD_LOG.Error("requestId获取失败", zap.Any("err", err), zap.Any("RequestId", id.RequestId))
 	if store.Verify(l.CaptchaId, l.Captcha, true) {
 		u := &system.SysUser{Username: l.Username, Password: l.Password}
 		if err, user := userService.Login(u); err != nil {
 			global.GSD_LOG.Error("登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
+
 			response.FailWithMessage("用户名不存在或者密码错误", c)
 		} else {
 			b.tokenNext(c, *user)

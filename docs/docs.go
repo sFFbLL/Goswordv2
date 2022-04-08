@@ -159,7 +159,7 @@ const docTemplate = `{
                 "authorityIds": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "integer"
                     }
                 },
                 "headerImg": {

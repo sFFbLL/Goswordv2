@@ -7,7 +7,6 @@
 .idea
 log
 resource/excel/*
-
 # Test binary, built with `go test -c`
 *.test
 
