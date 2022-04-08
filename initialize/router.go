@@ -16,7 +16,7 @@ import (
 
 func Routers() *gin.Engine {
 	var Router = gin.New()
-	Router.Use(middleware.GinLogger())
+	Router.Use(middleware.GinLogger(), middleware.GinRecovery(true))
 	Router.StaticFS(global.GSD_CONFIG.Local.Path, http.Dir(global.GSD_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
 	global.GSD_LOG.Info("use middleware logger")
