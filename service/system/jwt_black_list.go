@@ -36,7 +36,7 @@ func (jwtService *JwtService) IsBlacklist(jwt string) bool {
 	return !isNotFound
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetRedisJWT
 //@description: 从redis取jwt
 //@param: userName string
@@ -47,7 +47,7 @@ func (jwtService *JwtService) GetRedisJWT(userName string) (err error, redisJWT 
 	return err, redisJWT
 }
 
-//@author: [piexlmax](https://github.com/piexlmax)
+//@author: [chenguanglan](https://github.com/piexlmax)
 //@function: SetRedisJWT
 //@description: jwt存入redis并设置过期时间
 //@param: jwt string, userName string

@@ -8,20 +8,20 @@ jwt:
 
 # zap logger configuration
 zap:
-  level: 'info'
-  format: 'console'
+  level: 'error'
+  format: 'json'
   prefix: '[RZ-WORK-FLOW]'
   director: 'log'
   link-name: 'latest_log'
   show-line: true
-  encode-level: 'LowercaseColorLevelEncoder'
+  encode-level: 'LowercaseLevelEncoder'
   stacktrace-key: 'stacktrace'
-  log-in-console: true
+  log-in-console: false
 
 # redis configuration
 redis:
   db: 0
-  addr: '127.0.0.1:6379'
+  addr: ''
   password: ''
 
 # email configuration
@@ -53,11 +53,11 @@ captcha:
 
 # mysql connect configuration
 mysql:
-  path: 'cppwnn.top:3306'
-  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  path: ''
+  config: ''
   db-name: 'work_flow'
   username: 'root'
-  password: 'cpp@19990909'
+  password: ''
   max-idle-conns: 10
   max-open-conns: 100
   log-mode: false
@@ -86,12 +86,12 @@ autocode:
 
 # qiniu configuration
 qiniu:
-  zone: 'ZoneHuanan'
-  bucket: 'ruanzhu-workflow'
-  img-path: 'r9qsta3s9.hn-bkt.clouddn.com'
+  zone: ''
+  bucket: ''
+  img-path: ''
   use-https: false
-  access-key: 'kxtFkOLoWc7NOeUeH4U8vburLbrB_yZMkmVAnpAc'
-  secret-key: 'tUlVBk7EBHpHzWVKdp_3IAEh0c77yBzAYPD7xmq7'
+  access-key: ''
+  secret-key: ''
   use-cdn-domains: false
 
 # excel configuration
