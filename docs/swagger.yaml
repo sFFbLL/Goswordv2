@@ -30,6 +30,8 @@ definitions:
       userName:
         type: string
     type: object
+  request.Task:
+    type: object
 info:
   contact: {}
   description: This is a sample Server pets
@@ -87,6 +89,25 @@ paths:
       summary: jwt加入黑名单
       tags:
       - Jwt
+  /task/inspect:
+    post:
+      parameters:
+      - description: 通过||拒绝
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Task'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"已审核"}'
+          schema:
+            type: string
+      summary: 审批（通过||拒绝）
+      tags:
+      - Task
   /user/register:
     post:
       parameters:
