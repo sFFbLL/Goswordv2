@@ -20,7 +20,7 @@ func OperateLog(c *gin.Context) ([]byte, []byte) {
 		var mPost map[string]string
 		_ = json.Unmarshal(body, &mPost)
 		for k, _ := range mPost {
-			if k == "username" {
+			if k == "phone" {
 				delete(mPost, k)
 			}
 		}
