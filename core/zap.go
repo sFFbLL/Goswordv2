@@ -11,7 +11,7 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var Level zapcore.Level
+var level zapcore.Level
 
 func Zap() (logger *global.NewLogger) {
 	if ok, _ := utils.PathExists(global.GSD_CONFIG.Zap.Director); !ok { // 判断是否有Director文件夹
@@ -21,27 +21,27 @@ func Zap() (logger *global.NewLogger) {
 
 	switch global.GSD_CONFIG.Zap.Level { // 初始化配置文件的Level
 	case "debug":
-		Level = zap.DebugLevel
+		level = zap.DebugLevel
 	case "info":
-		Level = zap.InfoLevel
+		level = zap.InfoLevel
 	case "warn":
-		Level = zap.WarnLevel
+		level = zap.WarnLevel
 	case "error":
-		Level = zap.ErrorLevel
+		level = zap.ErrorLevel
 	case "dpanic":
-		Level = zap.DPanicLevel
+		level = zap.DPanicLevel
 	case "panic":
-		Level = zap.PanicLevel
+		level = zap.PanicLevel
 	case "fatal":
-		Level = zap.FatalLevel
+		level = zap.FatalLevel
 	default:
-		Level = zap.InfoLevel
+		level = zap.InfoLevel
 	}
 	logger = &global.NewLogger{
 		ZapLog: &zap.Logger{},
 	}
-	if Level == zap.DebugLevel || Level == zap.ErrorLevel {
-		logger.ZapLog = zap.New(getEncoderCore(), zap.AddStacktrace(Level))
+	if level == zap.DebugLevel || level == zap.ErrorLevel {
+		logger.ZapLog = zap.New(getEncoderCore(), zap.AddStacktrace(level))
 	} else {
 		logger.ZapLog = zap.New(getEncoderCore())
 	}
@@ -96,7 +96,7 @@ func getEncoderCore() (core zapcore.Core) {
 		fmt.Printf("Get Write Syncer Failed err:%v", err.Error())
 		return
 	}
-	return zapcore.NewCore(getEncoder(), writer, Level)
+	return zapcore.NewCore(getEncoder(), writer, level)
 }
 
 // 自定义日志输出时间格式
