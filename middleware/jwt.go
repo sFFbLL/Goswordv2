@@ -52,7 +52,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 		if claims.ExpiresAt-time.Now().Unix() < claims.BufferTime {
 			claims.ExpiresAt = time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime
-			newToken, _ := j.CreateTokenByOldToken(token, *claims)
+			newToken, _ := j.CreateTokenByOldToken(token)
 			newClaims, _ := j.ParseToken(newToken)
 			c.Header("new-token", newToken)
 			c.Header("new-expires-at", strconv.FormatInt(newClaims.ExpiresAt, 10))
@@ -90,22 +90,22 @@ func NewJWT() *JWT {
 }
 
 // 创建一个token
-func (j *JWT) CreateToken(claims request.CustomClaims) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+func (j *JWT) CreateToken() (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
 	return token.SignedString(j.SigningKey)
 }
 
 // CreateTokenByOldToken 旧token 换新token 使用归并回源避免并发问题
-func (j *JWT) CreateTokenByOldToken(oldToken string, claims request.CustomClaims) (string, error) {
+func (j *JWT) CreateTokenByOldToken(oldToken string) (string, error) {
 	v, err, _ := global.GSD_Concurrency_Control.Do("JWT:"+oldToken, func() (interface{}, error) {
-		return j.CreateToken(claims)
+		return j.CreateToken()
 	})
 	return v.(string), err
 }
 
 // 解析 token
 func (j *JWT) ParseToken(tokenString string) (*request.CustomClaims, error) {
-	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (i interface{}, e error) {
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (i interface{}, e error) {
 		return j.SigningKey, nil
 	})
 	if err != nil {
@@ -123,7 +123,7 @@ func (j *JWT) ParseToken(tokenString string) (*request.CustomClaims, error) {
 		}
 	}
 	if token != nil {
-		if claims, ok := token.Claims.(*request.CustomClaims); ok && token.Valid {
+		if err, claims := jwtService.GetRedisClaims(tokenString); token.Valid && err != nil {
 			return claims, nil
 		}
 		return nil, TokenInvalid

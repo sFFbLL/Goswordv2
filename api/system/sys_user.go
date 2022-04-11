@@ -29,22 +29,23 @@ func (b *BaseApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if store.Verify(l.CaptchaId, l.Captcha, true) {
-		u := &system.SysUser{Username: l.Username, Password: l.Password}
-		if err, user := userService.Login(u); err != nil {
-			global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
-			response.FailWithMessage("用户名不存在或者密码错误", c)
-		} else {
-			b.tokenNext(c, *user)
-		}
-	} else {
+	if !store.Verify(l.CaptchaId, l.Captcha, true) {
 		response.FailWithMessage("验证码错误", c)
+		return
+	}
+	u := &system.SysUser{Username: l.Username, Password: l.Password}
+	if err, user := userService.Login(u); err != nil {
+		global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
+		response.FailWithMessage("用户名不存在或者密码错误", c)
+	} else {
+		b.tokenNext(c, *user)
 	}
 }
 
 // 登录以后签发jwt
 func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	j := &middleware.JWT{SigningKey: []byte(global.GSD_CONFIG.JWT.SigningKey)} // 唯一签名
+	token, err := j.CreateToken()
 	claims := systemReq.CustomClaims{
 		UUID:       user.UUID,
 		ID:         user.ID,
@@ -58,7 +59,6 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
 	}
-	token, err := j.CreateToken(claims)
 	if err != nil {
 		global.GSD_LOG.Error(c, "获取token失败!", zap.Any("err", err))
 		response.FailWithMessage("获取token失败", c)
@@ -72,10 +72,16 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 		}, "登录成功", c)
 		return
 	}
-	if err, jwtStr := jwtService.GetRedisJWT(user.Username); err == redis.Nil {
+	err, jwtStr := jwtService.GetRedisJWT(user.Username)
+	if err == redis.Nil {
 		if err := jwtService.SetRedisJWT(token, user.Username); err != nil {
 			global.GSD_LOG.Error(c, "设置登录状态失败!", zap.Any("err", err))
 			response.FailWithMessage("设置登录状态失败", c)
+			return
+		}
+		if err := jwtService.SetRedisClaims(claims, token); err != nil {
+			global.GSD_LOG.Error(c, "设置载荷失败!", zap.Any("err", err))
+			response.FailWithMessage("设置载荷失败", c)
 			return
 		}
 		response.OkWithDetailed(systemRes.LoginResponse{
@@ -93,8 +99,14 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			response.FailWithMessage("jwt作废失败", c)
 			return
 		}
+		//刷新token
 		if err := jwtService.SetRedisJWT(token, user.Username); err != nil {
 			response.FailWithMessage("设置登录状态失败", c)
+			return
+		}
+		if err := jwtService.SetRedisClaims(claims, token); err != nil {
+			global.GSD_LOG.Error(c, "设置载荷失败!", zap.Any("err", err))
+			response.FailWithMessage("设置载荷失败", c)
 			return
 		}
 		response.OkWithDetailed(systemRes.LoginResponse{
