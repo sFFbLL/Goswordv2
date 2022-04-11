@@ -8,7 +8,7 @@ jwt:
 
 # zap logger configuration
 zap:
-  level: 'debug'
+  level: 'info'
   format: 'console'
   prefix: '[RZ-WORK-FLOW]'
   director: 'log'
