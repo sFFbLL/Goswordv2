@@ -29,13 +29,10 @@ func (b *BaseApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	//id, err := utils.GetRequestId(c)
-	//global.GSD_LOG.Error("requestId获取失败", zap.Any("err", err), zap.Any("RequestId", id.RequestId))
 	if store.Verify(l.CaptchaId, l.Captcha, true) {
 		u := &system.SysUser{Username: l.Username, Password: l.Password}
 		if err, user := userService.Login(u); err != nil {
-			global.GSD_LOG.Error("登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
-
+			global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
 			response.FailWithMessage("用户名不存在或者密码错误", c)
 		} else {
 			b.tokenNext(c, *user)
@@ -63,7 +60,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	}
 	token, err := j.CreateToken(claims)
 	if err != nil {
-		global.GSD_LOG.Error("获取token失败!", zap.Any("err", err))
+		global.GSD_LOG.Error(c, "获取token失败!", zap.Any("err", err))
 		response.FailWithMessage("获取token失败", c)
 		return
 	}
@@ -77,7 +74,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	}
 	if err, jwtStr := jwtService.GetRedisJWT(user.Username); err == redis.Nil {
 		if err := jwtService.SetRedisJWT(token, user.Username); err != nil {
-			global.GSD_LOG.Error("设置登录状态失败!", zap.Any("err", err))
+			global.GSD_LOG.Error(c, "设置登录状态失败!", zap.Any("err", err))
 			response.FailWithMessage("设置登录状态失败", c)
 			return
 		}
@@ -87,7 +84,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			ExpiresAt: claims.StandardClaims.ExpiresAt * 1000,
 		}, "登录成功", c)
 	} else if err != nil {
-		global.GSD_LOG.Error("设置登录状态失败!", zap.Any("err", err))
+		global.GSD_LOG.Error(c, "设置登录状态失败!", zap.Any("err", err))
 		response.FailWithMessage("设置登录状态失败", c)
 	} else {
 		var blackJWT system.JwtBlacklist
@@ -130,7 +127,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, HeaderImg: r.HeaderImg, Authorities: authorities}
 	err, userReturn := userService.Register(*user)
 	if err != nil {
-		global.GSD_LOG.Error("注册失败!", zap.Any("err", err))
+		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册成功", c)

@@ -3,12 +3,13 @@ package middleware
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
-	gonanoid "github.com/matoous/go-nanoid"
-	"go.uber.org/zap"
 	"project/global"
 	"project/utils"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	gonanoid "github.com/matoous/go-nanoid"
+	"go.uber.org/zap"
 )
 
 type bodyLogWriter struct {
@@ -38,7 +39,7 @@ func GinLogger() gin.HandlerFunc {
 		start := time.Now()
 		path := c.Request.URL.Path
 		requestId, _ := gonanoid.Nanoid()
-		c.Set("requestId", &utils.Request{
+		c.Set("requestId", &global.Request{
 			RequestId: requestId,
 		})
 		mBody, queryGet := utils.OperateLog(c)
@@ -49,13 +50,13 @@ func GinLogger() gin.HandlerFunc {
 		ip := c.ClientIP()
 		errString := c.Errors.ByType(gin.ErrorTypePrivate).String()
 		userAgent := c.Request.UserAgent()
-		global.GSD_LOG.Info(path,
+		global.GSD_LOG.Info(c, path,
 			zap.String("requestId", requestId),
 			zap.Int("status", status),
 			zap.String("method", method),
 			zap.String("path", path),
 			zap.String("query", string(queryGet)),
-			zap.String("body",string(mBody)),
+			zap.String("body", string(mBody)),
 			zap.String("ip", ip),
 			zap.String("user-agent", userAgent),
 			zap.String("errors", errString),
@@ -70,7 +71,7 @@ func GinLogger() gin.HandlerFunc {
 		var respStruct response
 		_ = json.Unmarshal([]byte(resp), &respStruct)
 		c.Next()
-		global.GSD_LOG.Info(path,
+		global.GSD_LOG.Info(c, path,
 			zap.String("requestId", requestId),
 			zap.Int("code", respStruct.Code),
 			zap.String("msg", respStruct.Msg),
@@ -78,4 +79,3 @@ func GinLogger() gin.HandlerFunc {
 		)
 	}
 }
-
