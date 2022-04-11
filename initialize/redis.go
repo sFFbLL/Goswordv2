@@ -17,9 +17,9 @@ func Redis() {
 	})
 	pong, err := client.Ping(context.Background()).Result()
 	if err != nil {
-		global.GSD_LOG.Error("redis connect ping failed, err:", zap.Any("err", err))
+		global.GSD_LOG.ZapLog.Error("redis connect ping failed, err:", zap.Any("err", err))
 	} else {
-		global.GSD_LOG.Info("redis connect ping response:", zap.String("pong", pong))
+		global.GSD_LOG.ZapLog.Info("redis connect ping response:", zap.String("pong", pong))
 		global.GSD_REDIS = client
 	}
 }

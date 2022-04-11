@@ -33,7 +33,7 @@ func (*Local) UploadFile(file *multipart.FileHeader) (string, string, error) {
 	// 尝试创建此路径
 	mkdirErr := os.MkdirAll(global.GSD_CONFIG.Local.Path, os.ModePerm)
 	if mkdirErr != nil {
-		global.GSD_LOG.Error("function os.MkdirAll() Filed", zap.Any("err", mkdirErr.Error()))
+		global.GSD_LOG.ZapLog.Error("function os.MkdirAll() Filed", zap.Any("err", mkdirErr.Error()))
 		return "", "", errors.New("function os.MkdirAll() Filed, err:" + mkdirErr.Error())
 	}
 	// 拼接路径和文件名
@@ -41,14 +41,14 @@ func (*Local) UploadFile(file *multipart.FileHeader) (string, string, error) {
 
 	f, openError := file.Open() // 读取文件
 	if openError != nil {
-		global.GSD_LOG.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
+		global.GSD_LOG.ZapLog.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
 		return "", "", errors.New("function file.Open() Filed, err:" + openError.Error())
 	}
 	defer f.Close() // 创建文件 defer 关闭
 
 	out, createErr := os.Create(p)
 	if createErr != nil {
-		global.GSD_LOG.Error("function os.Create() Filed", zap.Any("err", createErr.Error()))
+		global.GSD_LOG.ZapLog.Error("function os.Create() Filed", zap.Any("err", createErr.Error()))
 
 		return "", "", errors.New("function os.Create() Filed, err:" + createErr.Error())
 	}
@@ -56,7 +56,7 @@ func (*Local) UploadFile(file *multipart.FileHeader) (string, string, error) {
 
 	_, copyErr := io.Copy(out, f) // 传输（拷贝）文件
 	if copyErr != nil {
-		global.GSD_LOG.Error("function io.Copy() Filed", zap.Any("err", copyErr.Error()))
+		global.GSD_LOG.ZapLog.Error("function io.Copy() Filed", zap.Any("err", copyErr.Error()))
 		return "", "", errors.New("function io.Copy() Filed, err:" + copyErr.Error())
 	}
 	return p, filename, nil
