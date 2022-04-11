@@ -5,6 +5,7 @@ import (
 	"project/global"
 	"project/initialize/internal"
 	"project/model/system"
+	"project/model/work_flow"
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
@@ -35,6 +36,13 @@ func MysqlTables(db *gorm.DB) {
 		system.JwtBlacklist{},
 		system.SysDept{},
 		system.SysOperationRecord{},
+		work_flow.GzlApp{},
+		work_flow.GzlAppAuthority{},
+		work_flow.GzlAppDept{},
+		work_flow.GzlAppUser{},
+		work_flow.GzlFormItem{},
+		work_flow.GzlRecord{},
+		work_flow.GzlTask{},
 	)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("register table failed", zap.Any("err", err))
