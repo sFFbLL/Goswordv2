@@ -31,7 +31,7 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
 				if brokenPipe {
-					global.GSD_LOG.Error(c.Request.URL.Path,
+					global.GSD_LOG.Error(c, c.Request.URL.Path,
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)
@@ -42,13 +42,13 @@ func GinRecovery(stack bool) gin.HandlerFunc {
 				}
 
 				if stack {
-					global.GSD_LOG.Error("[Recovery from panic]",
+					global.GSD_LOG.Error(c, "[Recovery from panic]",
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 						zap.String("stack", string(debug.Stack())),
 					)
 				} else {
-					global.GSD_LOG.Error("[Recovery from panic]",
+					global.GSD_LOG.Error(c, "[Recovery from panic]",
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)
