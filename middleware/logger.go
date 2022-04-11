@@ -42,7 +42,6 @@ func GinLogger() gin.HandlerFunc {
 			RequestId: requestId,
 		})
 		mBody, queryGet := utils.OperateLog(c)
-
 		cost := time.Since(start)
 		status := c.Writer.Status()
 		method := c.Request.Method
