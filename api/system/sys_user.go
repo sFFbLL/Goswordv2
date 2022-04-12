@@ -31,16 +31,16 @@ func (b *BaseApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if store.Verify(l.CaptchaId, l.Captcha, true) {
-		u := &system.SysUser{Username: l.Username, Password: l.Password}
-		if err, user := userService.Login(u); err != nil {
-			global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
-			response.FailWithMessage("用户名不存在或者密码错误", c)
-		} else {
-			b.tokenNext(c, *user)
-		}
-	} else {
+	if !store.Verify(l.CaptchaId, l.Captcha, true) {
 		response.FailWithMessage("验证码错误", c)
+		return
+	}
+	u := &system.SysUser{Username: l.Username, Password: l.Password}
+	if err, user := userService.Login(u); err != nil {
+		global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
+		response.FailWithMessage("用户名不存在或者密码错误", c)
+	} else {
+		b.tokenNext(c, *user)
 	}
 }
 
@@ -52,7 +52,6 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 		ID:         user.ID,
 		NickName:   user.NickName,
 		Username:   user.Username,
-		Authority:  user.Authorities,
 		BufferTime: global.GSD_CONFIG.JWT.BufferTime, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,                              // 签名生效时间
@@ -91,7 +90,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	} else {
 		var blackJWT system.JwtBlacklist
 		blackJWT.Jwt = jwtStr
-		if err := jwtService.JsonInBlacklist(blackJWT); err != nil {
+		if err := jwtService.JoinInBlacklist(blackJWT); err != nil {
 			response.FailWithMessage("jwt作废失败", c)
 			return
 		}

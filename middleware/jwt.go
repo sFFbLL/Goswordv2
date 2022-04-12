@@ -45,23 +45,26 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		//校验uuid是否有效
 		if err, _ = userService.FindUserByUuid(claims.UUID.String()); err != nil {
-			_ = jwtService.JsonInBlacklist(system.JwtBlacklist{Jwt: token})
+			_ = jwtService.JoinInBlacklist(system.JwtBlacklist{Jwt: token})
 			response.FailWithDetailed(gin.H{"reload": true}, err.Error(), c)
 			c.Abort()
 		}
+		//token续期
 		if claims.ExpiresAt-time.Now().Unix() < claims.BufferTime {
 			claims.ExpiresAt = time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime
 			newToken, _ := j.CreateTokenByOldToken(token, *claims)
 			newClaims, _ := j.ParseToken(newToken)
 			c.Header("new-token", newToken)
 			c.Header("new-expires-at", strconv.FormatInt(newClaims.ExpiresAt, 10))
+			//多点登录拦截
 			if global.GSD_CONFIG.System.UseMultipoint {
 				err, RedisJwtToken := jwtService.GetRedisJWT(newClaims.Username)
 				if err != nil {
 					global.GSD_LOG.Error(c, "get redis jwt failed", zap.Any("err", err))
 				} else { // 当之前的取成功时才进行拉黑操作
-					_ = jwtService.JsonInBlacklist(system.JwtBlacklist{Jwt: RedisJwtToken})
+					_ = jwtService.JoinInBlacklist(system.JwtBlacklist{Jwt: RedisJwtToken})
 				}
 				// 无论如何都要记录当前的活跃状态
 				_ = jwtService.SetRedisJWT(newToken, newClaims.Username)
@@ -134,22 +137,3 @@ func (j *JWT) ParseToken(tokenString string) (*request.CustomClaims, error) {
 	}
 
 }
-
-// 更新token
-//func (j *JWT) RefreshToken(tokenString string) (string, error) {
-//	jwt.TimeFunc = func() time.Time {
-//		return time.Unix(0, 0)
-//	}
-//	token, err := jwt.ParseWithClaims(tokenString, &request.CustomClaims{}, func(token *jwt.Token) (interface{}, error) {
-//		return j.SigningKey, nil
-//	})
-//	if err != nil {
-//		return "", err
-//	}
-//	if claims, ok := token.Claims.(*request.CustomClaims); ok && token.Valid {
-//		jwt.TimeFunc = time.Now
-//		claims.StandardClaims.ExpiresAt = time.Now().Unix() + 60*60*24*7
-//		return j.CreateToken(*claims)
-//	}
-//	return "", TokenInvalid
-//}

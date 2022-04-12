@@ -14,12 +14,12 @@ type JwtService struct {
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)
-//@function: JsonInBlacklist
+//@function: JoinInBlacklist
 //@description: 拉黑jwt
 //@param: jwtList model.JwtBlacklist
 //@return: err error
 
-func (jwtService *JwtService) JsonInBlacklist(jwtList system.JwtBlacklist) (err error) {
+func (jwtService *JwtService) JoinInBlacklist(jwtList system.JwtBlacklist) (err error) {
 	err = global.GSD_DB.Create(&jwtList).Error
 	return
 }
@@ -47,7 +47,7 @@ func (jwtService *JwtService) GetRedisJWT(userName string) (err error, redisJWT 
 	return err, redisJWT
 }
 
-//@author: [chenguanglan](https://github.com/piexlmax)
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetRedisJWT
 //@description: jwt存入redis并设置过期时间
 //@param: jwt string, userName string
