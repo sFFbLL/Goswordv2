@@ -31,6 +31,9 @@ definitions:
         type: string
     type: object
   request.Task:
+    properties:
+      state:
+        type: integer
     type: object
 info:
   contact: {}

@@ -207,7 +207,12 @@ const docTemplate = `{
             }
         },
         "request.Task": {
-            "type": "object"
+            "type": "object",
+            "properties": {
+                "state": {
+                    "type": "integer"
+                }
+            }
         }
     },
     "securityDefinitions": {
