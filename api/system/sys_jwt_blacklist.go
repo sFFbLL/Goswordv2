@@ -22,7 +22,7 @@ type JwtApi struct {
 func (j *JwtApi) JsonInBlacklist(c *gin.Context) {
 	token := c.Request.Header.Get("x-token")
 	jwt := system.JwtBlacklist{Jwt: token}
-	if err := jwtService.JsonInBlacklist(jwt); err != nil {
+	if err := jwtService.JoinInBlacklist(jwt); err != nil {
 		global.GSD_LOG.Error(c, "jwt作废失败!", zap.Any("err", err))
 		response.FailWithMessage("jwt作废失败", c)
 	} else {

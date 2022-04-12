@@ -47,13 +47,11 @@ func (b *BaseApi) Login(c *gin.Context) {
 // 登录以后签发jwt
 func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	j := &middleware.JWT{SigningKey: []byte(global.GSD_CONFIG.JWT.SigningKey)} // 唯一签名
-	token, err := j.CreateToken()
 	claims := systemReq.CustomClaims{
 		UUID:       user.UUID,
 		ID:         user.ID,
 		NickName:   user.NickName,
 		Username:   user.Username,
-		Authority:  user.Authorities,
 		BufferTime: global.GSD_CONFIG.JWT.BufferTime, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,                              // 签名生效时间
@@ -61,6 +59,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
 	}
+	token, err := j.CreateToken(claims)
 	if err != nil {
 		global.GSD_LOG.Error(c, "获取token失败!", zap.Any("err", err))
 		response.FailWithMessage("获取token失败", c)
@@ -74,16 +73,10 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 		}, "登录成功", c)
 		return
 	}
-	err, jwtStr := jwtService.GetRedisJWT(user.Username)
-	if err == redis.Nil {
+	if err, jwtStr := jwtService.GetRedisJWT(user.Username); err == redis.Nil {
 		if err := jwtService.SetRedisJWT(token, user.Username); err != nil {
 			global.GSD_LOG.Error(c, "设置登录状态失败!", zap.Any("err", err))
 			response.FailWithMessage("设置登录状态失败", c)
-			return
-		}
-		if err := jwtService.SetRedisClaims(claims, token); err != nil {
-			global.GSD_LOG.Error(c, "设置载荷失败!", zap.Any("err", err))
-			response.FailWithMessage("设置载荷失败", c)
 			return
 		}
 		response.OkWithDetailed(systemRes.LoginResponse{
@@ -97,18 +90,12 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	} else {
 		var blackJWT system.JwtBlacklist
 		blackJWT.Jwt = jwtStr
-		if err := jwtService.JsonInBlacklist(blackJWT); err != nil {
+		if err := jwtService.JoinInBlacklist(blackJWT); err != nil {
 			response.FailWithMessage("jwt作废失败", c)
 			return
 		}
-		//刷新token
 		if err := jwtService.SetRedisJWT(token, user.Username); err != nil {
 			response.FailWithMessage("设置登录状态失败", c)
-			return
-		}
-		if err := jwtService.SetRedisClaims(claims, token); err != nil {
-			global.GSD_LOG.Error(c, "设置载荷失败!", zap.Any("err", err))
-			response.FailWithMessage("设置载荷失败", c)
 			return
 		}
 		response.OkWithDetailed(systemRes.LoginResponse{
