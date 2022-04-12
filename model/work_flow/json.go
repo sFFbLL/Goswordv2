@@ -1,47 +1,31 @@
 package work_flow
 
 import (
-	"bytes"
 	"database/sql/driver"
+	"encoding/json"
 	"errors"
+	"fmt"
 )
 
-type JSON []byte
+type JSON json.RawMessage
 
 func (j JSON) Value() (driver.Value, error) {
 	if j.IsNull() {
 		return nil, nil
 	}
-	return string(j), nil
+	return json.RawMessage(j).MarshalJSON()
 }
 func (j *JSON) Scan(value interface{}) error {
-	if value == nil {
-		*j = nil
-		return nil
-	}
-	s, ok := value.([]byte)
+	bytes, ok := value.([]byte)
 	if !ok {
-		errors.New("Invalid Scan Source")
+		return errors.New(fmt.Sprint("Failed to unmarshal JSONB value:", value))
 	}
-	*j = append((*j)[0:0], s...)
-	return nil
-}
-func (m JSON) MarshalJSON() ([]byte, error) {
-	if m == nil {
-		return []byte("null"), nil
-	}
-	return m, nil
-}
-func (m *JSON) UnmarshalJSON(data []byte) error {
-	if m == nil {
-		return errors.New("null point exception")
-	}
-	*m = append((*m)[0:0], data...)
-	return nil
+
+	result := json.RawMessage{}
+	err := json.Unmarshal(bytes, &result)
+	*j = JSON(result)
+	return err
 }
 func (j JSON) IsNull() bool {
 	return len(j) == 0 || string(j) == "null"
-}
-func (j JSON) Equals(j1 JSON) bool {
-	return bytes.Equal([]byte(j), []byte(j1))
 }
