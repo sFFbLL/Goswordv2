@@ -66,7 +66,7 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo) (err erro
 	db := global.GSD_DB.Model(&system.SysUser{})
 	var userList []system.SysUser
 	err = db.Count(&total).Error
-	err = db.Limit(limit).Offset(offset).Preload("Authorities").Preload("Authority").Find(&userList).Error
+	err = db.Limit(limit).Offset(offset).Preload("Authority").Find(&userList).Error
 	return err, userList, total
 }
 

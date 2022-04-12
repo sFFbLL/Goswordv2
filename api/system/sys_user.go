@@ -3,6 +3,7 @@ package system
 import (
 	"project/global"
 	"project/middleware"
+	"project/model/common/request"
 	"project/model/common/response"
 	"project/model/system"
 	systemReq "project/model/system/request"
@@ -22,6 +23,7 @@ import (
 // @Param data body systemReq.Login true "用户名, 密码, 验证码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
 // @Router /base/login [post]
+
 func (b *BaseApi) Login(c *gin.Context) {
 	var l systemReq.Login
 	_ = c.ShouldBindJSON(&l)
@@ -111,6 +113,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 // @Param data body systemReq.Register true "用户名, 昵称, 密码, 角色ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
 // @Router /user/register [post]
+
 func (b *BaseApi) Register(c *gin.Context) {
 	var r systemReq.Register
 	_ = c.ShouldBindJSON(&r)
@@ -131,5 +134,32 @@ func (b *BaseApi) Register(c *gin.Context) {
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 用户分页列表
+// @Produce  application/json
+// @Param data body request.PageInfo true "页码, 每页大小"
+// @Success 200 {object} response.Response{data=response.PageResult,msg=string} "分页获取用户列表,返回包括列表,总数,页码,每页数量"
+// @Router /user/lists [post]
+
+func (b *BaseApi) GetUserList(c *gin.Context) {
+	var pageInfo request.PageInfo
+	_ = c.ShouldBindJSON(&pageInfo)
+	if err := utils.Verify(pageInfo, utils.PageInfoVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err, list, total := userService.GetUserInfoList(pageInfo); err != nil {
+		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
 	}
 }
