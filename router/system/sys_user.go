@@ -14,6 +14,6 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 	var baseApi = v1.ApiGroupApp.SystemApiGroup.BaseApi
 	{
 		userRouter.POST("register", baseApi.Register) // 用户注册账号
-		//userRouter.POST("lists", baseApi.GetUserList) //用户分页列表
+		userRouter.POST("lists", baseApi.GetUserList) //用户分页列表
 	}
 }
