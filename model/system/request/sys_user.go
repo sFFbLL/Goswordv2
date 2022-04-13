@@ -2,10 +2,12 @@ package request
 
 // User register structure
 type Register struct {
-	Username     string `json:"userName"`
-	Password     string `json:"passWord"`
-	NickName     string `json:"nickName" gorm:"default:'QMPlusUser'"`
-	HeaderImg    string `json:"headerImg" gorm:"default:'http://www.henrongyi.top/avatar/lufu.jpg'"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
+	NickName     string `json:"nickName" gorm:"default:'GSDUser'"`
+	Phone        string `json:"phone"`
+	Email        string `json:"email"`
+	DeptId       uint   `json:"deptId"`
 	AuthorityIds []uint `json:"authorityIds"`
 }
 

@@ -39,7 +39,7 @@ func (userService *UserService) Register(u system.SysUser) (err error, userInter
 func (userService *UserService) Login(u *system.SysUser) (err error, userInter *system.SysUser) {
 	var user system.SysUser
 	u.Password = utils.MD5V([]byte(u.Password))
-	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Authorities").Preload("Authority").First(&user).Error
+	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Dept").Preload("Authorities").First(&user).Error
 	return err, &user
 }
 
@@ -66,8 +66,20 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo) (err erro
 	db := global.GSD_DB.Model(&system.SysUser{})
 	var userList []system.SysUser
 	err = db.Count(&total).Error
-	err = db.Limit(limit).Offset(offset).Preload("Authority").Find(&userList).Error
+	err = db.Limit(limit).Offset(offset).Preload("Authorities").Find(&userList).Error
 	return err, userList, total
+}
+
+//@function: UpdatePassword
+//@description: 用户修改密码
+//@param: user *system.SysUser, newPassword string
+//@return: err error, sysUser *system.SysUser
+
+func (userService *UserService) UpdatePassword(u *system.SysUser, newPassword string) (err error, sysUser *system.SysUser) {
+	var user *system.SysUser
+	u.Password = utils.MD5V([]byte(u.Password))
+	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Username).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
+	return err, u
 }
 
 //@function: SetUserAuthority
@@ -98,7 +110,7 @@ func (userService *UserService) DeleteUser(id float64) (err error) {
 }
 
 //@function: SetUserInfo
-//@description: 设置用户信息
+//@description: 修改用户信息
 //@param: reqUser model.SysUser
 //@return: err error, user model.SysUser
 
@@ -114,7 +126,7 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 
 func (userService *UserService) GetUserInfo(uuid uuid.UUID) (err error, user system.SysUser) {
 	var reqUser system.SysUser
-	err = global.GSD_DB.Preload("Authorities").Preload("Authority").First(&reqUser, "uuid = ?", uuid).Error
+	err = global.GSD_DB.Preload("Authorities").First(&reqUser, "uuid = ?", uuid).Error
 	return err, reqUser
 }
 
