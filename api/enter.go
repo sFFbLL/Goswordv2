@@ -8,7 +8,8 @@ import (
 type ApiGroup struct {
 	SystemApiGroup system.ApiGroup
 	TaskApiGroup   work_flow.ApiGroup
-	FormApiGroup   work_flow.ApiGroup
+	RecordApiGroup work_flow.ApiGroup
+	AppApiGroup    work_flow.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)
