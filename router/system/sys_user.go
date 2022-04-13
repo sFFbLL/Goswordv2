@@ -18,5 +18,6 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouter.POST("password", baseApi.UpdatePassword) //用户修改密码
 		userRouter.GET("infos", baseApi.GetUserInfo)        //获取用户信息
 		userRouter.PUT("infos", baseApi.SetUserInfo)        //修改用户信息
+		
 	}
 }
