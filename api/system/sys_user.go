@@ -31,10 +31,10 @@ func (b *BaseApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if !store.Verify(l.CaptchaId, l.Captcha, true) {
-		response.FailWithMessage("验证码错误", c)
-		return
-	}
+	//if !store.Verify(l.CaptchaId, l.Captcha, true) {
+	//	response.FailWithMessage("验证码错误", c)
+	//	return
+	//}
 	u := &system.SysUser{Username: l.Username, Password: l.Password}
 	if err, user := userService.Login(u); err != nil {
 		global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
@@ -126,7 +126,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 			AuthorityId: v,
 		})
 	}
-	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, HeaderImg: r.HeaderImg, Authorities: authorities}
+	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, Authorities: authorities, DeptId: r.DeptId}
 	err, userReturn := userService.Register(*user)
 	if err != nil {
 		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))

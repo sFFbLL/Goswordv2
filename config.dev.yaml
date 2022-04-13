@@ -60,8 +60,8 @@ mysql:
   password: 'cpp@19990909'
   max-idle-conns: 10
   max-open-conns: 100
-  log-mode: false
-  log-zap: "true"
+  log-mode: 'info'
+  log-zap: false
 
 # local configuration
 local:
