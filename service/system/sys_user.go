@@ -39,7 +39,7 @@ func (userService *UserService) Register(u system.SysUser) (err error, userInter
 func (userService *UserService) Login(u *system.SysUser) (err error, userInter *system.SysUser) {
 	var user system.SysUser
 	u.Password = utils.MD5V([]byte(u.Password))
-	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Authorities").Preload("Authority").First(&user).Error
+	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Dept").Preload("Authorities").First(&user).Error
 	return err, &user
 }
 
