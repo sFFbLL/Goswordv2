@@ -162,3 +162,70 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 		}, "获取成功", c)
 	}
 }
+
+// @Tags SysUser
+// @Summary 用户修改密码
+// @Produce  application/json
+// @Param data body systemReq.ChangePasswordStruct true "用户名, 原密码, 新密码"
+// @Success 200 {object} response.Response{msg=string} "用户修改密码"
+// @Router /user/password [post]
+
+func (b *BaseApi) UpdatePassword(c *gin.Context) {
+	var user systemReq.ChangePasswordStruct
+	_ = c.ShouldBindJSON(&user)
+	if err := utils.Verify(user, utils.ChangePasswordVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	u := &system.SysUser{
+		Username: user.Username,
+		Password: user.Password,
+	}
+	if err, _ := userService.UpdatePassword(u, user.NewPassword); err != nil {
+		global.GSD_LOG.Error(c, "修改失败", zap.Error(err))
+		response.FailWithMessage("修改失败， 原密码与当前账户不符", c)
+	} else {
+		response.OkWithMessage("修改成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 用户个人信息
+// @Produce  application/json
+// @Success 200 {object} response.Response{data=map[string]interface{}, msg=string} "用户个人信息"
+// @Router /user/infos [get]
+
+func (b *BaseApi) GetUserInfo(c *gin.Context) {
+	uuid := utils.GetUserUuid(c)
+	if err, userInfo := userService.GetUserInfo(uuid); err != nil {
+		global.GSD_LOG.Error(c, "获取用户信息失败", zap.Error(err))
+		response.FailWithMessage("获取用户信息失败", c)
+		return
+	} else {
+		response.OkWithDetailed(gin.H{"userInfo": userInfo}, "获取用户信息成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 修改个人信息
+// @Produce  application/json
+// @Param data body system.SysUser true "ID, 用户名, 昵称, 头像链接"
+// @Success 200 {object} response.Response{data=map[string]interface{}, msg=string} "修改个人信息"
+// @Router /user/infos [put]
+
+func (b *BaseApi) SetUserInfo(c *gin.Context) {
+	var user system.SysUser
+	_ = c.ShouldBindJSON(&user)
+	user.Username = ""
+	user.Password = ""
+	if err := utils.Verify(user, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err, sysUser := userService.SetUserInfo(user); err != nil {
+		global.GSD_LOG.Error(c, "设置失败", zap.Error(err))
+		response.FailWithMessage("设置失败", c)
+	} else {
+		response.OkWithDetailed(gin.H{"userinfo": sysUser}, "设置成功", c)
+	}
+}
