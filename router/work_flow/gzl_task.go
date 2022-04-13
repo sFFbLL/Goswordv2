@@ -13,6 +13,7 @@ func (t *TaskRouter) InitTaskRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	var taskApi = v1.ApiGroupApp.TaskApiGroup.TaskApi
 	{
 		taskRouter.POST("inspect", taskApi.Inspect)
+		taskRouter.GET("dynamic", taskApi.Dynamic)
 	}
 	return taskRouter
 }

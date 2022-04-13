@@ -18,3 +18,14 @@ type TaskApi struct {
 func (t *TaskApi) Inspect(c *gin.Context) {
 	var _ WorkFlowReq.Task
 }
+
+// Dynamic
+// @Tags Task
+// @Summary 流程动态信息
+// @Produce  application/json
+// @Param data body int true "string"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
+// @Router /task/dynamic [get]
+func (t *TaskApi) Dynamic(c *gin.Context) {
+	var _ []WorkFlowReq.Task
+}
