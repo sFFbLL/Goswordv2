@@ -55,18 +55,6 @@ func (userService *UserService) Login(u *system.SysUser) (err error, userInter *
 	return err, &user
 }
 
-//@function: ChangePassword
-//@description: 修改用户密码
-//@param: u *model.SysUser, newPassword string
-//@return: err error, userInter *model.SysUser
-
-func (userService *UserService) ChangePassword(u *system.SysUser, newPassword string) (err error, userInter *system.SysUser) {
-	var user system.SysUser
-	u.Password = utils.MD5V([]byte(u.Password))
-	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
-	return err, u
-}
-
 //@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetUserInfoList
 //@description: 分页获取数据
@@ -83,7 +71,6 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo) (err erro
 	return err, userList, total
 }
 
-<<<<<<< Updated upstream
 //@function: UpdatePassword
 //@description: 用户修改密码
 //@param: user *system.SysUser, newPassword string
@@ -105,9 +92,7 @@ func (userService *UserService) SetUserAuthority(id uint, uuid uuid.UUID, author
 	return err
 }
 
-=======
 //@author: [chenguanglan](https://github.com/sFFbLL)
->>>>>>> Stashed changes
 //@function: SetUserAuthorities
 //@description: 设置一个用户的权限
 //@param: id uint, authorityIds []uint
