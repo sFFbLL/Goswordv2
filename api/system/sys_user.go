@@ -58,7 +58,8 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			ExpiresAt: time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
 			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
-		DeptId: user.DeptId,
+		Authority: user.Authorities,
+		DeptId:    user.DeptId,
 	}
 	token, err := j.CreateToken(claims)
 	if err != nil {
@@ -252,7 +253,9 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err, list, total := userService.GetUserInfoList(pageInfo); err != nil {
+	curUser := utils.GetUser(c)
+	deptId, isAll := dataScope.GetDataScope(curUser)
+	if err, list, total := userService.GetUserInfoList(pageInfo, deptId, isAll); err != nil {
 		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

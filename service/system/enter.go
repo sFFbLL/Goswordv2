@@ -6,4 +6,5 @@ type SysGroup struct {
 	OperationRecordService
 	CasbinService
 	AuthorityService
+	MenuService
 }

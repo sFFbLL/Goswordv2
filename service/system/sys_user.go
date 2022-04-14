@@ -55,22 +55,27 @@ func (userService *UserService) Login(u *system.SysUser) (err error, userInter *
 	return err, &user
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetUserInfoList
 //@description: 分页获取数据
 //@param: info request.PageInfo
 //@return: err error, list interface{}, total int64
 
-func (userService *UserService) GetUserInfoList(info request.PageInfo) (err error, list interface{}, total int64) {
+func (userService *UserService) GetUserInfoList(info request.PageInfo, deptId []uint, isAll bool) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GSD_DB.Model(&system.SysUser{})
 	var userList []system.SysUser
 	err = db.Count(&total).Error
-	err = db.Limit(limit).Offset(offset).Preload("Authorities").Find(&userList).Error
+	if isAll {
+		err = db.Limit(limit).Offset(offset).Preload("Authorities").Find(&userList).Error
+	} else {
+		err = db.Where("dept_id in (?)", deptId).Limit(limit).Offset(offset).Preload("Authorities").Find(&userList).Error
+	}
 	return err, userList, total
 }
 
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: UpdatePassword
 //@description: 用户修改密码
 //@param: user *system.SysUser, newPassword string
@@ -148,6 +153,7 @@ func (userService *UserService) DeleteUser(id uint) (err error) {
 	})
 }
 
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: SetUserInfo
 //@description: 修改用户信息
 //@param: reqUser model.SysUser
@@ -158,6 +164,7 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 	return err, reqUser
 }
 
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetUserInfo
 //@description: 获取用户信息
 //@param: uuid uuid.UUID
