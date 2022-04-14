@@ -5,4 +5,5 @@ type SysGroup struct {
 	JwtService
 	OperationRecordService
 	CasbinService
+	AuthorityService
 }

@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: Register
 //@description: 用户注册
 //@param: u model.SysUser
@@ -19,7 +20,7 @@ import (
 type UserService struct {
 }
 
-func (userService *UserService) Register(u system.SysUser) (err error, userInter system.SysUser) {
+func (userService *UserService) Register(u system.SysUser, roles []uint) (err error, userInter system.SysUser) {
 	var user system.SysUser
 	if !errors.Is(global.GSD_DB.Where("username = ?", u.Username).First(&user).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
 		return errors.New("用户名已注册"), userInter
@@ -27,10 +28,21 @@ func (userService *UserService) Register(u system.SysUser) (err error, userInter
 	// 否则 附加uuid 密码md5简单加密 注册
 	u.Password = utils.MD5V([]byte(u.Password))
 	u.UUID = uuid.NewV4()
-	err = global.GSD_DB.Create(&u).Error
+	err = global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		TxErr := tx.Create(&u).Error
+		if TxErr != nil {
+			return TxErr
+		}
+		TxErr = CasbinServiceApp.UpdateUserAuthority(u.ID, roles)
+		if TxErr != nil {
+			return TxErr
+		}
+		return nil
+	})
 	return err, u
 }
 
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: Login
 //@description: 用户登录
 //@param: u *model.SysUser
@@ -55,6 +67,7 @@ func (userService *UserService) ChangePassword(u *system.SysUser, newPassword st
 	return err, u
 }
 
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetUserInfoList
 //@description: 分页获取数据
 //@param: info request.PageInfo
@@ -70,6 +83,7 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo) (err erro
 	return err, userList, total
 }
 
+<<<<<<< Updated upstream
 //@function: UpdatePassword
 //@description: 用户修改密码
 //@param: user *system.SysUser, newPassword string
@@ -91,22 +105,62 @@ func (userService *UserService) SetUserAuthority(id uint, uuid uuid.UUID, author
 	return err
 }
 
+=======
+//@author: [chenguanglan](https://github.com/sFFbLL)
+>>>>>>> Stashed changes
 //@function: SetUserAuthorities
 //@description: 设置一个用户的权限
-//@param: id uint, authorityIds []string
+//@param: id uint, authorityIds []uint
 //@return: err error
 
-func (userService *UserService) SetUserAuthorities(id uint, authorityIds []string) (err error) {
-	return err
+func (userService *UserService) SetUserAuthorities(id uint, authorityIds []uint) (err error) {
+	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		TxErr := tx.Delete(&[]system.SysUseAuthority{}, "sys_user_id = ?", id).Error
+		if TxErr != nil {
+			return TxErr
+		}
+		var useAuthority []system.SysUseAuthority
+		for _, v := range authorityIds {
+			useAuthority = append(useAuthority, system.SysUseAuthority{
+				SysUserId:               id,
+				SysAuthorityAuthorityId: v,
+			})
+		}
+		TxErr = tx.Create(&useAuthority).Error
+		if TxErr != nil {
+			return TxErr
+		}
+		TxErr = CasbinServiceApp.UpdateUserAuthority(id, authorityIds)
+		if TxErr != nil {
+			return TxErr
+		}
+		return nil
+	})
 }
 
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: DeleteUser
 //@description: 删除用户
-//@param: id float64
+//@param: id uint
 //@return: err error
 
-func (userService *UserService) DeleteUser(id float64) (err error) {
-	return err
+func (userService *UserService) DeleteUser(id uint) (err error) {
+	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		var user system.SysUser
+		TxErr := global.GSD_DB.Delete(&user, id).Error
+		if TxErr != nil {
+			return TxErr
+		}
+		TxErr = global.GSD_DB.Delete(&system.SysUseAuthority{}, "sys_user_id = ?", id).Error
+		if TxErr != nil {
+			return TxErr
+		}
+		TxErr = CasbinServiceApp.DeleteUserAuthority(id)
+		if TxErr != nil {
+			return tx.Rollback().Error
+		}
+		return nil
+	})
 }
 
 //@function: SetUserInfo

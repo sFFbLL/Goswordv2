@@ -22,9 +22,8 @@ func CasbinHandler() gin.HandlerFunc {
 		act := c.Request.Method
 		// 获取用户的角色
 		sub := waitUse.ID
-		e := casbinService.Casbin()
 		// 判断策略中是否存在
-		success := e.Enforce(sub, obj, act)
+		success, _ := global.GSD_Casbin.Enforce(sub, obj, act)
 		if global.GSD_CONFIG.System.Env == "develop" || success {
 			c.Next()
 		} else {

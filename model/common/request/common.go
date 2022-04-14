@@ -8,16 +8,16 @@ type PageInfo struct {
 
 // Find by id structure
 type GetById struct {
-	ID float64 `json:"id" form:"id"` // 主键ID
+	ID uint `json:"id" form:"id"` // 主键ID
 }
 
 type IdsReq struct {
-	Ids []int `json:"ids" form:"ids"`
+	Ids []uint `json:"ids" form:"ids"`
 }
 
 // Get role by id structure
 type GetAuthorityId struct {
-	AuthorityId string // 角色ID
+	AuthorityId uint // 角色ID
 }
 
 type Empty struct{}
