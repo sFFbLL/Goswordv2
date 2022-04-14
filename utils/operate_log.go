@@ -10,7 +10,13 @@ import (
 	"strings"
 )
 
-func OperateLog(c *gin.Context) ([]byte, []byte) {
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: OperateRequestLog
+//@description: 处理请求数据
+//@param: c *gin.Context
+//@return: mBody []byte post方法参数, queryGet []byte get方法参数
+
+func OperateRequestLog(c *gin.Context) ([]byte, []byte) {
 	var mBody []byte
 	var query string
 	var queryGet []byte
