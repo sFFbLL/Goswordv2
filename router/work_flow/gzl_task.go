@@ -14,6 +14,9 @@ func (t *TaskRouter) InitTaskRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	{
 		taskRouter.POST("inspect", taskApi.Inspect)
 		taskRouter.GET("dynamic", taskApi.Dynamic)
+		taskRouter.GET("schedule", taskApi.Schedule)
+		taskRouter.GET("handle", taskApi.Handle)
+		taskRouter.GET("receive", taskApi.Receive)
 	}
 	return taskRouter
 }

@@ -1,5 +1,21 @@
 basePath: /
 definitions:
+  request.GetById:
+    properties:
+      id:
+        description: 主键ID
+        type: integer
+    type: object
+  request.SetUserAuthorities:
+    properties:
+      authorityIds:
+        description: 角色ID
+        items:
+          type: integer
+        type: array
+      id:
+        type: integer
+    type: object
   request.Task:
     properties:
       state:
@@ -19,16 +35,18 @@ definitions:
       createdAt:
         description: 创建时间
         type: string
+      dataScope:
+        type: string
       depts:
-        $ref: '#/definitions/system.SysDept'
+        items:
+          $ref: '#/definitions/system.SysDept'
+        type: array
       level:
         type: integer
       menus:
         items:
           $ref: '#/definitions/system.SysBaseMenu'
         type: array
-      not null;dataScope:
-        type: string
       updateBy:
         description: 更新人
         type: integer
@@ -138,6 +156,8 @@ definitions:
         type: string
       deptName:
         type: string
+      deptSort:
+        type: integer
       id:
         description: 主键ID
         type: integer
@@ -176,6 +196,8 @@ definitions:
         type: integer
       nickName:
         description: 用户昵称
+        type: string
+      phone:
         type: string
       updateBy:
         description: 更新人
@@ -241,63 +263,6 @@ definitions:
           $ref: '#/definitions/system.SysUser'
         type: array
     type: object
-  work_flow.GzlAppUser:
-    properties:
-      appId:
-        type: integer
-      userId:
-        type: integer
-    type: object
-  work_flow.GzlFormItem:
-    properties:
-      componentType:
-        description: 组件类型
-        type: string
-      content:
-        description: 内容
-        type: string
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      dept:
-        $ref: '#/definitions/system.SysDept'
-        description: 部门
-      deptId:
-        description: 部门id
-        type: integer
-      form:
-        description: 表单
-        items:
-          type: integer
-        type: array
-      id:
-        description: 主键ID
-        type: integer
-      isRequired:
-        description: 是否必填(必填1默认、不必填2)
-        type: integer
-      name:
-        description: 名称
-        type: string
-      record:
-        $ref: '#/definitions/work_flow.GzlRecord'
-        description: 记录
-      recordId:
-        description: 记录id
-        type: integer
-      type:
-        description: 数据类型
-        type: string
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-    type: object
   work_flow.GzlRecord:
     properties:
       app:
@@ -345,6 +310,44 @@ info:
   title: Work Flow API
   version: 0.0.1
 paths:
+  /app/create:
+    post:
+      parameters:
+      - description: 创建人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 创建表单
+      tags:
+      - App
+  /app/empty:
+    get:
+      parameters:
+      - description: string
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"null"}'
+          schema:
+            type: string
+      summary: 返回空表单
+      tags:
+      - App
   /base/captcha:
     post:
       consumes:
@@ -361,65 +364,6 @@ paths:
       summary: 生成验证码
       tags:
       - Base
-  /form/formdata:
-    get:
-      parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/work_flow.GzlAppUser'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"null"}'
-          schema:
-            type: string
-      summary: 返回之前填写过的表单数据
-      tags:
-      - form
-  /form/formempty:
-    get:
-      parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"null"}'
-          schema:
-            type: string
-      summary: 需要用户填写的空表单
-      tags:
-      - form
-  /form/formsave:
-    post:
-      parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/work_flow.GzlFormItem'
-          type: array
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"null"}'
-          schema:
-            type: string
-      summary: 保存用户填写的表单
-      tags:
-      - form
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -436,6 +380,63 @@ paths:
       summary: jwt加入黑名单
       tags:
       - Jwt
+  /record/data:
+    get:
+      parameters:
+      - description: string
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"null"}'
+          schema:
+            type: string
+      summary: 返回之前填写过的表单数据
+      tags:
+      - record
+  /record/schedule:
+    get:
+      parameters:
+      - description: 创建人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询我发起的任务成功"}'
+          schema:
+            type: string
+      summary: 我发起的
+      tags:
+      - record
+  /record/submit:
+    post:
+      parameters:
+      - description: string
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/work_flow.GzlRecord'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"null"}'
+          schema:
+            type: string
+      summary: 提交表单
+      tags:
+      - record
   /task/dynamic:
     get:
       parameters:
@@ -453,6 +454,25 @@ paths:
           schema:
             type: string
       summary: 流程动态信息
+      tags:
+      - Task
+  /task/handle:
+    get:
+      parameters:
+      - description: 审批状态, 审批人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
+          schema:
+            type: json
+      summary: 我处理的
       tags:
       - Task
   /task/inspect:
@@ -474,6 +494,90 @@ paths:
       summary: 审批（通过||拒绝）
       tags:
       - Task
+  /task/receive:
+    get:
+      parameters:
+      - description: 节点类型
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询我收到的任务成功"}'
+          schema:
+            type: json
+      summary: 我收到的
+      tags:
+      - Task
+  /task/schedule:
+    get:
+      parameters:
+      - description: 审批状态, 审批人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询待办任务成功"}'
+          schema:
+            type: json
+      summary: 我的待办
+      tags:
+      - Task
+  /user/deleteUser:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - SysUser
+  /user/setUserAuthorities:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 用户UUID, 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SetUserAuthorities'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"修改成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设置用户角色
+      tags:
+      - SysUser
 securityDefinitions:
   ApiKeyAuth:
     in: header

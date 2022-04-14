@@ -13,6 +13,7 @@ func (t *AppRouter) InitAppRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 	var appApi = v1.ApiGroupApp.AppApiGroup.AppApi
 	{
 		appRouter.GET("/empty", appApi.Empty)
+		appRouter.POST("/create", appApi.Create)
 	}
 	return appRouter
 }
