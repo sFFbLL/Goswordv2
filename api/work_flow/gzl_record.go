@@ -15,7 +15,7 @@ type RecordApi struct {
 // @Param data body WorkFlowReq.GzlRecord true "string"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/submit [post]
-func (f *RecordApi) Submit(c *gin.Context) {
+func (r *RecordApi) Submit(c *gin.Context) {
 	var _ WorkFlowReq.GzlRecord
 }
 
@@ -26,6 +26,18 @@ func (f *RecordApi) Submit(c *gin.Context) {
 // @Param data body int true "string"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/data [get]
-func (f *RecordApi) Data(c *gin.Context) {
+func (r *RecordApi) Data(c *gin.Context) {
 	var _ WorkFlowReq.GzlAppUser
+}
+
+
+// Launch
+// @Tags record
+// @Summary 我发起的
+// @Produce  application/json
+// @Param data body uint true "创建人"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我发起的任务成功"}"
+// @Router /record/schedule [get]
+func (r *RecordApi) Launch(c *gin.Context) {
+	var _ WorkFlowReq.GzlRecord
 }
