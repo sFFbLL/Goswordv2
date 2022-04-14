@@ -1,6 +1,7 @@
 package global
 
 import (
+	"github.com/casbin/casbin/v2"
 	"github.com/go-redis/redis/v8"
 	"golang.org/x/sync/singleflight"
 
@@ -16,5 +17,6 @@ var (
 	GSD_CONFIG              config.Server
 	GSD_VP                  *viper.Viper
 	GSD_LOG                 *NewLogger
+	GSD_Casbin              *casbin.SyncedEnforcer
 	GSD_Concurrency_Control = &singleflight.Group{}
 )

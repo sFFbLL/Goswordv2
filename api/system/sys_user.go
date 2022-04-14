@@ -58,6 +58,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			ExpiresAt: time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
 			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
+		DeptId: user.DeptId,
 	}
 	token, err := j.CreateToken(claims)
 	if err != nil {
@@ -126,13 +127,114 @@ func (b *BaseApi) Register(c *gin.Context) {
 			AuthorityId: v,
 		})
 	}
-	user := &system.SysUser{Username: r.Username, NickName: r.NickName, Password: r.Password, Authorities: authorities, DeptId: r.DeptId}
-	err, userReturn := userService.Register(*user)
+	curUser := utils.GetUser(c)
+	user := &system.SysUser{GSD_MODEL: global.GSD_MODEL{CreateBy: curUser.ID, UpdateBy: curUser.ID}, Username: r.Username, NickName: r.NickName, Password: r.Password, Authorities: authorities, DeptId: r.DeptId}
+	//数据权限校验
+	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{user})
+	if !canDo {
+		global.GSD_LOG.Error(c, "注册失败, 无权注册该用户!")
+		response.FailWithMessage("注册失败, 无权注册该用户!", c)
+		return
+	}
+	err, userReturn := userService.Register(*user, r.AuthorityIds)
 	if err != nil {
 		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 删除用户
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GetById true "用户ID"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
+// @Router /user/deleteUser [delete]
+func (b *BaseApi) DeleteUser(c *gin.Context) {
+	var reqId request.GetById
+	_ = c.ShouldBindJSON(&reqId)
+	if err := utils.Verify(reqId, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	jwtId := utils.GetUserID(c)
+	if jwtId == reqId.ID {
+		response.FailWithMessage("拒绝自杀", c)
+		return
+	}
+	//获取需要删除用户的信息
+	curUser := utils.GetUser(c)
+	err, deleteUser := userService.FindUserById(reqId.ID)
+	if err != nil {
+		global.GSD_LOG.Error(c, "删除失败, 该用户不存在!")
+		response.FailWithMessage("删除失败, 该用户不存在!", c)
+		return
+	}
+	//数据权限校验
+	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{deleteUser})
+	if !canDo {
+		global.GSD_LOG.Error(c, "删除失败, 无权删除该用户!")
+		response.FailWithMessage("删除失败, 无权删除该用户!", c)
+		return
+	}
+	//删除用户
+	if err := userService.DeleteUser(reqId.ID); err != nil {
+		global.GSD_LOG.Error(c, "删除失败!", zap.Any("err", err))
+		response.FailWithMessage("删除失败", c)
+	} else {
+		response.OkWithMessage("删除成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 设置用户角色
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body systemReq.SetUserAuthorities true "用户UUID, 角色ID"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
+// @Router /user/setUserAuthorities [post]
+func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
+	var sua systemReq.SetUserAuthorities
+	_ = c.ShouldBindJSON(&sua)
+	curUser := utils.GetUser(c)
+	err, updateUser := userService.FindUserById(sua.ID)
+	if err != nil {
+		global.GSD_LOG.Error(c, "修改失败!", zap.Any("err", err))
+		response.FailWithMessage("操作用户不存在", c)
+		return
+	}
+	//校验数据权限
+	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{updateUser})
+	if !canDo {
+		global.GSD_LOG.Error(c, "修改失败, 无权修改该用户!")
+		response.FailWithMessage("操作失败, 无权操作该用户!", c)
+		return
+	}
+	var updateAuthoritys []system.SysAuthority
+	for _, authorityId := range sua.AuthorityIds {
+		if err, authority := authorityService.GetAuthorityInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
+			global.GSD_LOG.Error(c, "设置角色不存在!")
+			response.FailWithMessage("设置角色不存在!", c)
+			return
+		} else {
+			updateAuthoritys = append(updateAuthoritys, authority)
+		}
+	}
+	//校验目标level是否垂直越权
+	if dataScope.GetMaxLevel(updateAuthoritys) < dataScope.GetMaxLevel(curUser.Authority) {
+		global.GSD_LOG.Error(c, "设置角色级别高于当前用户级别!")
+		response.FailWithMessage("设置角色级别高于当前用户级别!", c)
+		return
+	}
+	if err := userService.SetUserAuthorities(sua.ID, sua.AuthorityIds); err != nil {
+		global.GSD_LOG.Error(c, "修改失败!", zap.Any("err", err))
+		response.FailWithMessage("修改失败", c)
+	} else {
+		response.OkWithMessage("修改成功", c)
 	}
 }
 

@@ -11,6 +11,7 @@ import (
 type CustomClaims struct {
 	UUID       uuid.UUID
 	ID         uint
+	DeptId     uint
 	Username   string
 	NickName   string
 	Authority  []system.SysAuthority
