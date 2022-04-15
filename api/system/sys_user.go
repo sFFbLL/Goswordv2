@@ -124,9 +124,14 @@ func (b *BaseApi) Register(c *gin.Context) {
 	}
 	var authorities []system.SysAuthority
 	for _, v := range r.AuthorityIds {
-		authorities = append(authorities, system.SysAuthority{
+		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{
 			AuthorityId: v,
-		})
+		}); err != nil {
+			global.GSD_LOG.Error(c, "注册失败, 角色不存在!")
+			response.FailWithMessage("注册失败, 角色不存在!", c)
+		} else {
+			authorities = append(authorities, authority)
+		}
 	}
 	curUser := utils.GetUser(c)
 	user := &system.SysUser{GSD_MODEL: global.GSD_MODEL{CreateBy: curUser.ID, UpdateBy: curUser.ID}, Username: r.Username, NickName: r.NickName, Password: r.Password, Authorities: authorities, DeptId: r.DeptId}
@@ -146,7 +151,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 	}
 }
 
-// @Tags SysUser
+// DeleteUser @Tags SysUser
 // @Summary 删除用户
 // @Security ApiKeyAuth
 // @accept application/json
@@ -190,7 +195,7 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 	}
 }
 
-// @Tags SysUser
+// SetUserAuthorities @Tags SysUser
 // @Summary 设置用户角色
 // @Security ApiKeyAuth
 // @accept application/json
@@ -217,7 +222,7 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 	}
 	var updateAuthoritys []system.SysAuthority
 	for _, authorityId := range sua.AuthorityIds {
-		if err, authority := authorityService.GetAuthorityInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
+		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
 			global.GSD_LOG.Error(c, "设置角色不存在!")
 			response.FailWithMessage("设置角色不存在!", c)
 			return

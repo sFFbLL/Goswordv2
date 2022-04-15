@@ -5,4 +5,5 @@ type RouterGroup struct {
 	JwtRouter
 	UserRouter
 	MenuRouter
+	AuthorityRouter
 }
