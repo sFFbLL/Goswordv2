@@ -128,18 +128,14 @@
                     "application/json"
                 ],
                 "tags": [
-                    "record"
+                    "Record"
                 ],
                 "summary": "返回之前填写过的表单数据",
                 "parameters": [
                     {
-                        "description": "string",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "type": "integer",
+                        "name": "recordId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -188,7 +184,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "record"
+                    "Record"
                 ],
                 "summary": "提交表单",
                 "parameters": [
@@ -206,7 +202,7 @@
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"null\"}",
                         "schema": {
-                            "type": "string"
+                            "type": ""
                         }
                     }
                 }
@@ -266,7 +262,7 @@
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
                         "schema": {
-                            "type": "json"
+                            "type": "string"
                         }
                     }
                 }
@@ -326,7 +322,7 @@
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我收到的任务成功\"}",
                         "schema": {
-                            "type": "json"
+                            "type": "string"
                         }
                     }
                 }
@@ -356,7 +352,7 @@
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询待办任务成功\"}",
                         "schema": {
-                            "type": "json"
+                            "type": "string"
                         }
                     }
                 }

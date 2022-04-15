@@ -383,12 +383,9 @@ paths:
   /record/data:
     get:
       parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
+      - in: query
+        name: recordId
+        type: integer
       produces:
       - application/json
       responses:
@@ -398,7 +395,7 @@ paths:
             type: string
       summary: 返回之前填写过的表单数据
       tags:
-      - record
+      - Record
   /record/schedule:
     get:
       parameters:
@@ -433,10 +430,10 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"null"}'
           schema:
-            type: string
+            type: ""
       summary: 提交表单
       tags:
-      - record
+      - Record
   /task/dynamic:
     get:
       parameters:
@@ -471,7 +468,7 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
           schema:
-            type: json
+            type: string
       summary: 我处理的
       tags:
       - Task
@@ -509,7 +506,7 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"查询我收到的任务成功"}'
           schema:
-            type: json
+            type: string
       summary: 我收到的
       tags:
       - Task
@@ -528,7 +525,7 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"查询待办任务成功"}'
           schema:
-            type: json
+            type: string
       summary: 我的待办
       tags:
       - Task

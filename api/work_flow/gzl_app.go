@@ -2,7 +2,10 @@ package work_flow
 
 import (
 	"github.com/gin-gonic/gin"
-	WorkFlowReq "project/model/work_flow"
+	"go.uber.org/zap"
+	"project/global"
+	"project/model/common/response"
+	WorkFlowReq "project/model/work_flow/request"
 )
 
 type AppApi struct {
@@ -12,11 +15,20 @@ type AppApi struct {
 // @Tags App
 // @Summary 返回空表单
 // @Produce  application/json
-// @Param data body int true "string"
+// @Param data query WorkFlowReq.App true "string"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /app/empty [get]
 func (f *AppApi) Empty(c *gin.Context) {
-	var _ WorkFlowReq.GzlApp
+	var app WorkFlowReq.App
+	_ = c.ShouldBindJSON(&app)
+	data, err := appService.GetAppEmpty(app)
+	if err != nil {
+		global.GSD_LOG.ZapLog.Error("获取空应用表单失败", zap.Any("err", err))
+		response.FailWithMessage("该应用不存在", c)
+	} else {
+		global.GSD_LOG.ZapLog.Info("获取空应用表单成功", zap.Any("GetAppEmpty Success", string(data)))
+		response.OkWithData(data, c)
+	}
 }
 
 // Create
@@ -29,5 +41,3 @@ func (f *AppApi) Empty(c *gin.Context) {
 func (f *AppApi) Create(c *gin.Context) {
 
 }
-
-

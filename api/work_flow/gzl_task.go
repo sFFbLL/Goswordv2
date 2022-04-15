@@ -1,8 +1,13 @@
 package work_flow
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+	"project/global"
+	"project/model/common/response"
 	WorkFlowReq "project/model/work_flow/request"
+	"strconv"
 
 	WorkFlow "project/model/work_flow"
 )
@@ -25,11 +30,20 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
-// @Param data body int true "string"
+// @Param data body int true "RecordId"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	var _ []WorkFlowReq.Task
+	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	fmt.Println(userId)
+	tasks, err := taskService.GetDynamic(1, 1)
+	if err != nil {
+		global.GSD_LOG.ZapLog.Error("获取流程动态错误", zap.Any("err", err))
+		response.FailWithMessage("数据不存在", c)
+	} else {
+		global.GSD_LOG.ZapLog.Info("流程动态信息成功返回", zap.Any("success", tasks))
+		response.OkWithData(tasks, c)
+	}
 }
 
 // Schedule
