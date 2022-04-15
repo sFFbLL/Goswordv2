@@ -274,7 +274,7 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 }
 
 // @Tags SysUser
-// @Summary 用户修改密码
+// @Summary 用户本人修改密码
 // @Produce  application/json
 // @Param data body systemReq.ChangePasswordStruct true "用户名, 原密码, 新密码"
 // @Success 200 {object} response.Response{msg=string} "用户修改密码"

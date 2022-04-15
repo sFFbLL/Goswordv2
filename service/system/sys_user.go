@@ -77,7 +77,7 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo, deptId []
 
 //@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: UpdatePassword
-//@description: 用户修改密码
+//@description: 用户本人修改密码
 //@param: user *system.SysUser, newPassword string
 //@return: err error, sysUser *system.SysUser
 
