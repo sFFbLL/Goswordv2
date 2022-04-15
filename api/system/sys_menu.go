@@ -6,6 +6,7 @@ import (
 	"project/global"
 	"project/model/common/request"
 	"project/model/common/response"
+	"project/model/system"
 	"project/utils"
 )
 
@@ -36,6 +37,81 @@ func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
 			Page:     pageInfo.Page,
 			PageSize: pageInfo.PageSize,
 		}, "获取成功", c)
+	}
+}
+
+// @Tags Menu
+// @Summary 菜单管理-新增菜单
+// @Produce application/json
+// @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
+// @Success 200 {object} response.Response{msg=string} "新增菜单"
+// @Router /menu/addition [post]
+
+func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
+	var menu system.SysBaseMenu
+	_ = c.ShouldBindJSON(&menu)
+	if err := utils.Verify(menu, utils.MenuVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(menu.Meta, utils.MenuMetaVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := menuService.AddMenu(menu); err != nil {
+		global.GSD_LOG.Error(c, "添加菜单失败", zap.Error(err))
+		response.FailWithMessage("添加菜单失败", c)
+	} else {
+		response.OkWithMessage("添加菜单成功", c)
+	}
+}
+
+// @Tags Menu
+// @Summary 菜单管理-删除菜单
+// @Produce application/json
+// @Param data body request.GetById true "菜单id"
+// @Success 200 {object} response.Response{msg=string} "删除菜单"
+// @Router /menu/deleteMenu [post]
+
+func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
+	var menu request.GetById
+	_ = c.ShouldBindJSON(&menu)
+	if err := utils.Verify(menu, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := menuService.DeleteMenu(menu.ID); err != nil {
+		global.GSD_LOG.Error(c, "删除菜单失败", zap.Error(err))
+		response.FailWithMessage("菜单删除失败", c)
+		return
+	} else {
+		response.OkWithMessage("删除菜单成功", c)
+	}
+}
+
+// @Tags Menu
+// @Summary 菜单管理-更新菜单
+// @Produce application/json
+// @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
+// @Success 200 {object} response.Response{msg=string} "更新菜单"
+// @Router /menu/updateMenu [post]
+
+func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
+	var menu system.SysBaseMenu
+	_ = c.ShouldBindJSON(&menu)
+	if err := utils.Verify(menu, utils.MenuVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := utils.Verify(menu.Meta, utils.MenuMetaVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := menuService.UpdateMenu(menu); err != nil {
+		global.GSD_LOG.Error(c, "更新菜单失败", zap.Error(err))
+		response.FailWithMessage("菜单更新失败", c)
+	} else {
+		response.OkWithMessage("菜单更新成功", c)
 	}
 
 }

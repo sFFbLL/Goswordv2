@@ -6,6 +6,7 @@ import (
 	"project/global"
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
 )
 
 type RecordService struct {
@@ -17,8 +18,8 @@ type RecordService struct {
 // @description: 从mysql中获取record数据
 // @param: WorkFlowReq.Record
 // @return: err error, data JSON
-func (r RecordService) GetData(record WorkFlowReq.Record) (data modelWF.JSON, err error) {
-	var datas = make([]modelWF.JSON, 1)
+func (r RecordService) GetData(record WorkFlowReq.Record) (data utils.JSON, err error) {
+	var datas = make([]utils.JSON, 1)
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
 		Where("id = ?", record.RecordId)

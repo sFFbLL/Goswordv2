@@ -1,15 +1,18 @@
 package utils
 
 import (
+	"fmt"
 	"math"
 	"project/model/system"
 	"project/model/system/request"
+
+	"golang.org/x/tools/container/intsets"
 )
 
 type DataScope struct {
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// GetDataScope @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetDataScope
 //@description: 获取数据权限
 //@param: user request.CustomClaims
@@ -25,7 +28,7 @@ func (DataScope) GetDataScope(user *request.CustomClaims) (dataScope []uint, isA
 	return dataScope, false
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// CanDoToTargetUser @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: CanDoToTargetUser
 //@description: 是否有权操作该数据
 //@param: users []system.SysUser 操作用户对象
@@ -35,6 +38,7 @@ func (d DataScope) CanDoToTargetUser(user *request.CustomClaims, users []*system
 	maxLevel := d.GetMaxLevel(user.Authority)
 	for _, user := range users {
 		if d.GetMaxLevel(user.Authorities) < maxLevel {
+			fmt.Println(d.GetMaxLevel(user.Authorities), maxLevel)
 			return false
 		}
 	}
@@ -50,14 +54,15 @@ func (d DataScope) CanDoToTargetUser(user *request.CustomClaims, users []*system
 	return true
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// GetMaxLevel @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetMaxLevel
 //@description: 获取最角色最大等级(实际为最小值)
 //@param: roles []system.SysAuthority 角色列表
 //@return: int 所有角色中的最高等级
-func (DataScope) GetMaxLevel(roles []system.SysAuthority) (maxLevel int) {
+func (DataScope) GetMaxLevel(roles []system.SysAuthority) (maxLevel uint) {
+	maxLevel = uint(intsets.MaxInt)
 	for _, role := range roles {
-		maxLevel = int(math.Min(float64(role.Level), float64(maxLevel)))
+		maxLevel = uint(math.Min(float64(role.Level), float64(maxLevel)))
 	}
 	return maxLevel
 }

@@ -5,6 +5,10 @@ import "time"
 type Task struct {
 	State uint8
 }
+type Inspect struct {
+	TaskId uint  `json:"taskId"`
+	State  uint8 `json:"state"`
+}
 
 type Dynamic struct {
 	CreatedAt   time.Time `json:"createdAt"`   // 创建时间

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"project/global"
+	"project/model/work_flow"
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
 )
@@ -24,6 +25,8 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowReq.D
 			return nil, nil
 		}
 	}
-
 	return
+}
+func (taskService *TaskService) Inspect(task work_flow.GzlTask) (err error) {
+	return global.GSD_DB.Updates(&task).Error
 }

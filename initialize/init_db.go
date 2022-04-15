@@ -17,6 +17,7 @@ func InitDB() {
 		source.AuthoritiesMenus,
 		source.AuthorityMenu,
 		source.Dept,
+		source.UserAuthority,
 		//source.Api,
 		//source.Casbin,
 	)

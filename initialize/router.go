@@ -38,7 +38,6 @@ func Routers() *gin.Engine {
 		workflowRouter.InitTaskRouter(PublicGroup)
 		workflowRouter.InitAppRouter(PublicGroup)
 	}
-
 	PrivateGroup := Router.Group("")
 	PrivateGroup.Use(middleware.JWTAuth())
 	{
@@ -50,11 +49,16 @@ func Routers() *gin.Engine {
 		//systemRouter.InitSystemRouter(PrivateGroup)                 // system相关路由
 		//systemRouter.InitCasbinRouter(PrivateGroup)                 // 权限相关路由
 		//systemRouter.InitAutoCodeRouter(PrivateGroup)               // 创建自动化代码
-		//systemRouter.InitAuthorityRouter(PrivateGroup)              // 注册角色路由
+		systemRouter.InitAuthorityRouter(PrivateGroup) // 注册角色路由
 		//systemRouter.InitSysDictionaryRouter(PrivateGroup)          // 字典管理
 		//systemRouter.InitSysOperationRecordRouter(PrivateGroup)     // 操作记录
 		//systemRouter.InitSysDictionaryDetailRouter(PrivateGroup)    // 字典详情管理
+		//work_flow 路由
+		//workFlow.InitTaskRouter(PrivateGroup)   //任务路由
+		//workFlow.InitAppRouter(PrivateGroup)    //应用路由
+		//workFlow.InitRecordRouter(PrivateGroup) //记录路由
 	}
+
 	global.GSD_LOG.ZapLog.Info("router register success")
 	return Router
 }

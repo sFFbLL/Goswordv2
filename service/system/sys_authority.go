@@ -3,7 +3,9 @@ package system
 import (
 	"errors"
 	"project/global"
+	"project/model/common/request"
 	"project/model/system"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -20,10 +22,6 @@ type AuthorityService struct {
 var AuthorityServiceApp = new(AuthorityService)
 
 func (authorityService *AuthorityService) CreateAuthority(auth system.SysAuthority) (err error, authority system.SysAuthority) {
-	var authorityBox system.SysAuthority
-	if !errors.Is(global.GSD_DB.Where("authority_id = ?", auth.AuthorityId).First(&authorityBox).Error, gorm.ErrRecordNotFound) {
-		return errors.New("存在相同角色id"), auth
-	}
 	err = global.GSD_DB.Create(&auth).Error
 	return err, auth
 }
@@ -34,8 +32,20 @@ func (authorityService *AuthorityService) CreateAuthority(auth system.SysAuthori
 //@param: auth model.SysAuthority
 //@return: err error, authority model.SysAuthority
 
-func (authorityService *AuthorityService) UpdateAuthority(auth system.SysAuthority) (err error, authority system.SysAuthority) {
-	err = global.GSD_DB.Where("authority_id = ?", auth.AuthorityId).First(&system.SysAuthority{}).Updates(&auth).Error
+func (authorityService *AuthorityService) UpdateAuthority(auth system.SysAuthority, deptId []uint) (err error, authority system.SysAuthority) {
+	depts := make([]system.SysDept, 0)
+	if auth.DataScope == "自定义" {
+		for _, d := range deptId {
+			depts = append(depts, system.SysDept{GSD_MODEL: global.GSD_MODEL{ID: d}})
+		}
+	}
+	err = global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		err = tx.Model(&auth).Association("Depts").Replace(depts)
+		if err != nil {
+			return err
+		}
+		return tx.Where("authority_id = ?", auth.AuthorityId).Preload("Depts").First(&system.SysAuthority{}).Updates(&auth).Error
+	})
 	return err, auth
 }
 
@@ -45,45 +55,34 @@ func (authorityService *AuthorityService) UpdateAuthority(auth system.SysAuthori
 //@param: auth *model.SysAuthority
 //@return: err error
 
-//func (authorityService *AuthorityService) DeleteAuthority(auth *system.SysAuthority) (err error) {
-//	if !errors.Is(global.GSD_DB.Where("authority_id = ?", auth.AuthorityId).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
-//		return errors.New("此角色有用户正在使用禁止删除")
-//	}
-//	if !errors.Is(global.GSD_DB.Where("parent_id = ?", auth.AuthorityId).First(&system.SysAuthority{}).Error, gorm.ErrRecordNotFound) {
-//		return errors.New("此角色存在子角色不允许删除")
-//	}
-//	db := global.GSD_DB.Preload("SysBaseMenus").Where("authority_id = ?", auth.AuthorityId).First(auth)
-//	err = db.Unscoped().Delete(auth).Error
-//	if len(auth.SysBaseMenus) > 0 {
-//		err = global.GSD_DB.Model(auth).Association("SysBaseMenus").Delete(auth.SysBaseMenus)
-//		//err = db.Association("SysBaseMenus").Delete(&auth)
-//	} else {
-//		err = db.Error
-//	}
-//	err = global.GSD_DB.Delete(&[]system.SysUseAuthority{}, "sys_authority_authority_id = ?", auth.AuthorityId).Error
-//	CasbinServiceApp.ClearCasbin(0, auth.AuthorityId)
-//	return err
-//}
+func (authorityService *AuthorityService) DeleteAuthority(auth *system.SysAuthority) (err error) {
+	if !errors.Is(global.GSD_DB.Where("sys_authority_authority_id = ?", auth.AuthorityId).First(&system.SysUseAuthority{}).Error, gorm.ErrRecordNotFound) {
+		return errors.New("此角色有用户正在使用禁止删除")
+	}
+	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		db := global.GSD_DB.Preload("SysBaseMenus").Preload("Depts").Where("authority_id = ?", auth.AuthorityId).First(auth)
+		if err := db.Select("SysBaseMenus").Select("Depts").Delete(auth).Error; err != nil {
+			return err
+		}
+		if success := CasbinServiceApp.ClearCasbin(0, strconv.Itoa(int(auth.AuthorityId))); !success {
+			return nil
+		}
+		return nil
+	})
+}
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// GetAuthorityInfoList @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetAuthorityInfoList
 //@description: 分页获取数据
 //@param: info request.PageInfo
 //@return: err error, list interface{}, total int64
-
-//func (authorityService *AuthorityService) GetAuthorityInfoList(info request.PageInfo) (err error, list interface{}, total int64) {
-//	limit := info.PageSize
-//	offset := info.PageSize * (info.Page - 1)
-//	db := global.GSD_DB
-//	var authority []system.SysAuthority
-//	err = db.Limit(limit).Offset(offset).Preload("DataAuthorityId").Where("parent_id = 0").Find(&authority).Error
-//	if len(authority) > 0 {
-//		for k := range authority {
-//			err = authorityService.findChildrenAuthority(&authority[k])
-//		}
-//	}
-//	return err, authority, total
-//}
+func (authorityService *AuthorityService) GetAuthorityInfoList(info request.PageInfo) (err error, list interface{}, total int64) {
+	limit := info.PageSize
+	offset := info.PageSize * (info.Page - 1)
+	var authority []system.SysAuthority
+	err = global.GSD_DB.Limit(limit).Offset(offset).Preload("Depts").Find(&authority).Error
+	return err, authority, total
+}
 
 //@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetAuthorityInfo
@@ -92,7 +91,18 @@ func (authorityService *AuthorityService) UpdateAuthority(auth system.SysAuthori
 //@return: err error, sa model.SysAuthority
 
 func (authorityService *AuthorityService) GetAuthorityInfo(auth system.SysAuthority) (err error, sa system.SysAuthority) {
-	err = global.GSD_DB.Preload("DataAuthorityId").Where("authority_id = ?", auth.AuthorityId).First(&sa).Error
+	err = global.GSD_DB.Preload("SysBaseMenus").Preload("Depts").Where("authority_id = ?", auth.AuthorityId).First(&sa).Error
+	return err, sa
+}
+
+//@author: [chenguanglan](https://github.com/sFFbLL)
+//@function: GetAuthorityBasicInfo
+//@description: 获取基本角色信息
+//@param: auth model.SysAuthority
+//@return: err error, sa model.SysAuthority
+
+func (authorityService *AuthorityService) GetAuthorityBasicInfo(auth system.SysAuthority) (err error, sa system.SysAuthority) {
+	err = global.GSD_DB.Where("authority_id = ?", auth.AuthorityId).First(&sa).Error
 	return err, sa
 }
 
