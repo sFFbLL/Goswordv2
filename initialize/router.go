@@ -29,9 +29,13 @@ func Routers() *gin.Engine {
 
 	//获取路由组实例
 	systemRouter := router.RouterGroupApp.System
+	workFlow := router.RouterGroupApp.WorkFlow
 	PublicGroup := Router.Group("")
 	{
 		systemRouter.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
+		workFlow.InitTaskRouter(PublicGroup)     //任务路由
+		workFlow.InitAppRouter(PublicGroup)      //应用路由
+		workFlow.InitRecordRouter(PublicGroup)   //记录路由
 	}
 	PrivateGroup := Router.Group("")
 	PrivateGroup.Use(middleware.JWTAuth())
@@ -48,7 +52,12 @@ func Routers() *gin.Engine {
 		//systemRouter.InitSysDictionaryRouter(PrivateGroup)          // 字典管理
 		//systemRouter.InitSysOperationRecordRouter(PrivateGroup)     // 操作记录
 		//systemRouter.InitSysDictionaryDetailRouter(PrivateGroup)    // 字典详情管理
+		//work_flow 路由
+		//workFlow.InitTaskRouter(PrivateGroup)   //任务路由
+		//workFlow.InitAppRouter(PrivateGroup)    //应用路由
+		//workFlow.InitRecordRouter(PrivateGroup) //记录路由
 	}
+
 	global.GSD_LOG.ZapLog.Info("router register success")
 	return Router
 }

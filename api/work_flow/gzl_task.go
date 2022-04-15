@@ -2,9 +2,12 @@ package work_flow
 
 import (
 	"github.com/gin-gonic/gin"
-	WorkFlowReq "project/model/work_flow/request"
-
+	"go.uber.org/zap"
+	"project/global"
+	"project/model/common/response"
 	WorkFlow "project/model/work_flow"
+	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
 )
 
 type TaskApi struct {
@@ -14,11 +17,27 @@ type TaskApi struct {
 // @Tags Task
 // @Summary 审批（通过||拒绝）
 // @Produce  application/json
-// @Param data body WorkFlowReq.Task true "通过||拒绝"
+// @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"已审核"}"
-// @Router /task/inspect [post]
+// @Router /task/inspect [put]
 func (t *TaskApi) Inspect(c *gin.Context) {
-	var _ WorkFlowReq.Task
+	var inspect WorkFlowReq.Inspect
+	_ = c.ShouldBindJSON(&inspect)
+	if err := utils.Verify(inspect, utils.InspectVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	gzlTask := &WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}
+	if err := taskService.Inspect(*gzlTask); err != nil {
+		global.GSD_LOG.Error(c, "审批错误", zap.Any("err", err))
+		response.FailWithMessage("审批错误", c)
+	} else {
+		response.OkWithMessage("审批成功", c)
+	}
+	//流程流转
+	//go func() {
+	//	work_flow.ProcessFlow(1)
+	//}()
 }
 
 // Dynamic
@@ -29,7 +48,7 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	var _ []WorkFlowReq.Task
+
 }
 
 // Schedule
