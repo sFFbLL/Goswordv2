@@ -9,6 +9,7 @@ type ApiGroup struct {
 	BaseApi
 	JwtApi
 	AuthorityMenuApi
+	AuthorityApi
 }
 
 var dataScope = utils.DataScope{}

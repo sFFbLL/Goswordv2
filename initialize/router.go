@@ -48,7 +48,7 @@ func Routers() *gin.Engine {
 		//systemRouter.InitSystemRouter(PrivateGroup)                 // system相关路由
 		//systemRouter.InitCasbinRouter(PrivateGroup)                 // 权限相关路由
 		//systemRouter.InitAutoCodeRouter(PrivateGroup)               // 创建自动化代码
-		//systemRouter.InitAuthorityRouter(PrivateGroup)              // 注册角色路由
+		systemRouter.InitAuthorityRouter(PrivateGroup) // 注册角色路由
 		//systemRouter.InitSysDictionaryRouter(PrivateGroup)          // 字典管理
 		//systemRouter.InitSysOperationRecordRouter(PrivateGroup)     // 操作记录
 		//systemRouter.InitSysDictionaryDetailRouter(PrivateGroup)    // 字典详情管理
