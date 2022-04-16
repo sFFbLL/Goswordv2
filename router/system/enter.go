@@ -6,4 +6,6 @@ type RouterGroup struct {
 	UserRouter
 	MenuRouter
 	AuthorityRouter
+	ApiRouter
+	OperationRecordRouter
 }
