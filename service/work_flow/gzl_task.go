@@ -46,8 +46,18 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowReq.D
 	return
 }
 
-func (t *TaskService) GetScheduleList(InspectorId int) (err error, tasks []work_flow.GzlTask) {
-	db := global.GSD_DB.Model(&work_flow.GzlTask{}) //查表GzlTask
+// GetScheduleList
+// @author: [zhaozijie](https://github.com/worryfreet)
+// @function: GetScheduleList
+// @description: 从mysql中获取待办数据
+// @param: WorkFlowReq.Task
+// @return: data []WorkFlowReq.Schedule, err error
+func (t *TaskService) GetScheduleList(InspectorId int) (err error, tasks []WorkFlowReq.Schedule) {
+	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
+		Joins("JOIN sys_users ON sys_users.id = ?", InspectorId). //连表查询
+		Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
+			"gzl_records.app as AppName ", "check_state as CheckState").
+		Where("InspectorId=Inspector")
 	if err = db.Find(&tasks, "inspector = ?", InspectorId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
 			return nil, nil
@@ -58,17 +68,17 @@ func (t *TaskService) GetScheduleList(InspectorId int) (err error, tasks []work_
 	return
 }
 
-//func (taskService *TaskService) GetHandleList(InspectorId int) (err error, tasks []work_flow.GzlTask) {
-//	db := global.GSD_DB.Model(&work_flow.GzlTask{}) //查表GzlTask
-//	if err = db.Find(&tasks, "inspector = ?", InspectorId).Error; err != nil {
-//		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
-//			return nil, nil
-//		} else {
-//			return
-//		}
-//	}
-//	return
-//}
+func (t *TaskService) GetHandleList(InspectorId int) (err error, tasks []work_flow.GzlTask) {
+	db := global.GSD_DB.Model(&work_flow.GzlTask{}) //查表GzlTask
+	if err = db.Find(&tasks, "inspector = ?", InspectorId).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
+			return nil, nil
+		} else {
+			return
+		}
+	}
+	return
+}
 
 func (t *TaskService) Inspect(task work_flow.GzlTask) (err error) {
 	return global.GSD_DB.Updates(&task).Error

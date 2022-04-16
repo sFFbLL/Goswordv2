@@ -414,6 +414,25 @@ paths:
       summary: 流程动态信息
       tags:
       - Task
+  /task/handle:
+    get:
+      parameters:
+      - description: 审批人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
+          schema:
+            type: string
+      summary: 我处理的
+      tags:
+      - Task
   /task/inspect:
     put:
       parameters:
@@ -453,13 +472,6 @@ paths:
       - Task
   /task/schedule:
     get:
-      parameters:
-      - description: 审批状态, 审批人
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
       produces:
       - application/json
       responses:
