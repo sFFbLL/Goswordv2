@@ -11,6 +11,7 @@ type ApiGroup struct {
 	AuthorityMenuApi
 	AuthorityApi
 	SystemApiApi
+	OperationRecordApi
 }
 
 var dataScope = utils.DataScope{}

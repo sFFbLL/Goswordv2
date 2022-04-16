@@ -50,7 +50,7 @@ func Routers() *gin.Engine {
 		//systemRouter.InitAutoCodeRouter(PrivateGroup)               // 创建自动化代码
 		systemRouter.InitAuthorityRouter(PrivateGroup) // 注册角色路由
 		//systemRouter.InitSysDictionaryRouter(PrivateGroup)          // 字典管理
-		//systemRouter.InitSysOperationRecordRouter(PrivateGroup)     // 操作记录
+		systemRouter.InitSysOperationRecordRouter(PrivateGroup) // 操作记录
 		//systemRouter.InitSysDictionaryDetailRouter(PrivateGroup)    // 字典详情管理
 		//work_flow 路由
 		//workFlow.InitTaskRouter(PrivateGroup)   //任务路由

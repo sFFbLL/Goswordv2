@@ -7,4 +7,5 @@ type RouterGroup struct {
 	MenuRouter
 	AuthorityRouter
 	ApiRouter
+	OperationRecordRouter
 }
