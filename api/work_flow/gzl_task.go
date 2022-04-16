@@ -12,6 +12,7 @@ import (
 )
 
 type TaskApi struct {
+
 }
 
 // Inspect
@@ -75,20 +76,20 @@ func (t *TaskApi) Schedule(c *gin.Context){
 // @Tags Task
 // @Summary 我处理的
 // @Produce  application/json
-// @Param data body int  true "审批状态, 审批人"
+// @Param data body int true "审批状态, 审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
-//func (t *TaskApi) Handle(c *gin.Context) {
-//	InspectorId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
-//	if err, handle := taskService.GetHandleList(InspectorId); err != nil {
-//		global.GSD_LOG.ZapLog.Error( "获取我处理的信息失败", zap.Error(err))
-//		response.FailWithMessage("获取我处理的信息失败", c)
-//		return
-//	} else {
-//		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))//打印日志
-//		response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c)//给前端返回信息
-//	}
-//}
+func (t *TaskApi) Handle(c *gin.Context) {
+	InspectorId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	if err, handle := taskService.GetHandleList(InspectorId); err != nil {
+		global.GSD_LOG.ZapLog.Error( "获取我处理的信息失败", zap.Error(err))
+		response.FailWithMessage("获取我处理的信息失败", c)
+		return
+	} else {
+		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))//打印日志
+		response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c)//给前端返回信息
+	}
+}
 
 // Receive
 // @Tags Task
