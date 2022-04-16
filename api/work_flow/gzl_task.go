@@ -46,7 +46,7 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
-// @Param data query WorkFlowReq.Record true "记录id"
+// @Param data body WorkFlowReq.Record true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
@@ -71,7 +71,15 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
-	var _ WorkFlow.GzlTask
+	InspectorId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	if err, schedule := taskService.GetScheduleList(InspectorId); err != nil {
+		global.GSD_LOG.ZapLog.Error("获取我的待办信息失败", zap.Error(err))
+		response.FailWithMessage("获取我的待办信息失败", c)
+		return
+	} else {
+		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", schedule))      //打印日志
+		response.OkWithDetailed(gin.H{"schedule": schedule}, "获取我的待办信息成功", c) //给前端返回信息
+	}
 }
 
 // Handle
@@ -82,7 +90,15 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
-
+	//InspectorId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	//if err, handle := taskService.GetHandleList(InspectorId); err != nil {
+	//	global.GSD_LOG.ZapLog.Error( "获取我处理的信息失败", zap.Error(err))
+	//	response.FailWithMessage("获取我处理的信息失败", c)
+	//	return
+	//} else {
+	//	global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))//打印日志
+	//	response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c)//给前端返回信息
+	//}
 }
 
 // Receive

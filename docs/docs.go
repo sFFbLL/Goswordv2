@@ -57,18 +57,154 @@ const docTemplate = `{
                 "summary": "返回空表单",
                 "parameters": [
                     {
-                        "description": "string",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "type": "integer",
+                        "name": "appId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"null\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/createAuthority": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "创建角色",
+                "parameters": [
+                    {
+                        "description": "权限id, 权限名, 父角色id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysAuthority"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/deleteAuthority": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "description": "删除角色",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysAuthority"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/getAuthorityList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "分页获取角色列表",
+                "parameters": [
+                    {
+                        "description": "页码, 每页大小",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PageInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/updateAuthority": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新角色信息",
+                "parameters": [
+                    {
+                        "description": "权限id, 权限名, 父角色id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysAuthority"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -88,9 +224,6 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
-                ],
-                "tags": [
-                    "Base"
                 ],
                 "summary": "生成验证码",
                 "responses": {
@@ -202,7 +335,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/work_flow.GzlRecord"
+                            "type": "integer"
                         }
                     }
                 ],
@@ -227,12 +360,12 @@ const docTemplate = `{
                 "summary": "流程动态信息",
                 "parameters": [
                     {
-                        "description": "string",
+                        "description": "记录id",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/request.Record"
                         }
                     }
                 ],
@@ -246,38 +379,8 @@ const docTemplate = `{
                 }
             }
         },
-        "/task/handle": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Task"
-                ],
-                "summary": "我处理的",
-                "parameters": [
-                    {
-                        "description": "审批状态, 审批人",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/task/inspect": {
-            "post": {
+            "put": {
                 "produces": [
                     "application/json"
                 ],
@@ -287,12 +390,12 @@ const docTemplate = `{
                 "summary": "审批（通过||拒绝）",
                 "parameters": [
                     {
-                        "description": "通过||拒绝",
+                        "description": "任务id，状态",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.Task"
+                            "$ref": "#/definitions/request.Inspect"
                         }
                     }
                 ],
@@ -317,13 +420,11 @@ const docTemplate = `{
                 "summary": "我收到的",
                 "parameters": [
                     {
+                        "type": "integer",
                         "description": "节点类型",
                         "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -379,9 +480,6 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "SysUser"
-                ],
                 "summary": "删除用户",
                 "parameters": [
                     {
@@ -417,9 +515,6 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "SysUser"
-                ],
                 "summary": "设置用户角色",
                 "parameters": [
                     {
@@ -453,6 +548,38 @@ const docTemplate = `{
                 }
             }
         },
+        "request.Inspect": {
+            "type": "object",
+            "properties": {
+                "state": {
+                    "type": "integer"
+                },
+                "taskId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.PageInfo": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "description": "页码",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "每页大小",
+                    "type": "integer"
+                }
+            }
+        },
+        "request.Record": {
+            "type": "object",
+            "properties": {
+                "recordId": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.SetUserAuthorities": {
             "type": "object",
             "properties": {
@@ -464,14 +591,6 @@ const docTemplate = `{
                     }
                 },
                 "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "request.Task": {
-            "type": "object",
-            "properties": {
-                "state": {
                     "type": "integer"
                 }
             }
@@ -672,192 +791,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "partenID": {
-                    "type": "integer"
-                },
-                "updateBy": {
-                    "description": "更新人",
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "description": "更新时间",
-                    "type": "string"
-                }
-            }
-        },
-        "system.SysUser": {
-            "type": "object",
-            "properties": {
-                "authorities": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/system.SysAuthority"
-                    }
-                },
-                "createBy": {
-                    "description": "创建人",
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "description": "创建时间",
-                    "type": "string"
-                },
-                "dept": {
-                    "$ref": "#/definitions/system.SysDept"
-                },
-                "deptId": {
-                    "type": "integer"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "headerImg": {
-                    "description": "用户头像",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "主键ID",
-                    "type": "integer"
-                },
-                "nickName": {
-                    "description": "用户昵称",
-                    "type": "string"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "updateBy": {
-                    "description": "更新人",
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "description": "更新时间",
-                    "type": "string"
-                },
-                "userName": {
-                    "description": "用户登录名",
-                    "type": "string"
-                },
-                "uuid": {
-                    "type": "string"
-                }
-            }
-        },
-        "work_flow.GzlApp": {
-            "type": "object",
-            "properties": {
-                "authoritys": {
-                    "description": "角色",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/system.SysAuthority"
-                    }
-                },
-                "createBy": {
-                    "description": "创建人",
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "description": "创建时间",
-                    "type": "string"
-                },
-                "depts": {
-                    "description": "部门",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/system.SysDept"
-                    }
-                },
-                "flow": {
-                    "description": "流程",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "form": {
-                    "description": "表单",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "icon": {
-                    "description": "图标",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "主键ID",
-                    "type": "integer"
-                },
-                "isEveryone": {
-                    "description": "是否所有人(所有人1默认，否2)",
-                    "type": "integer"
-                },
-                "name": {
-                    "description": "名称",
-                    "type": "string"
-                },
-                "updateBy": {
-                    "description": "更新人",
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "description": "更新时间",
-                    "type": "string"
-                },
-                "users": {
-                    "description": "用户",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/system.SysUser"
-                    }
-                }
-            }
-        },
-        "work_flow.GzlRecord": {
-            "type": "object",
-            "properties": {
-                "app": {
-                    "description": "应用",
-                    "$ref": "#/definitions/work_flow.GzlApp"
-                },
-                "appId": {
-                    "description": "应用id",
-                    "type": "integer"
-                },
-                "createBy": {
-                    "description": "创建人",
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "description": "创建时间",
-                    "type": "string"
-                },
-                "currentNode": {
-                    "description": "当前节点",
-                    "type": "string"
-                },
-                "currentState": {
-                    "description": "当前状态",
-                    "type": "integer"
-                },
-                "depId": {
-                    "description": "部门id",
-                    "type": "integer"
-                },
-                "dept": {
-                    "description": "部门",
-                    "$ref": "#/definitions/system.SysDept"
-                },
-                "form": {
-                    "description": "表单JSON",
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                },
-                "id": {
-                    "description": "主键ID",
                     "type": "integer"
                 },
                 "updateBy": {

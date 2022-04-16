@@ -6,7 +6,6 @@ import (
 
 	"project/global"
 	"project/model/common/response"
-	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
 )
 
@@ -18,12 +17,12 @@ type RecordApi struct {
 // @Tags Record
 // @Summary 提交表单
 // @Produce  application/json
-// @Param data body modelWF.GzlRecord true "string"
+// @Param data body uint true "string"  //TODO 修改入参结构体
 // @Success 200 {} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
-	var gzlRecord modelWF.GzlRecord
-	_ = c.ShouldBindJSON(&gzlRecord)
+	//var gzlRecord modelWF.GzlRecord
+	//_ = c.ShouldBindJSON(&gzlRecord)
 
 }
 
@@ -56,5 +55,5 @@ func (r *RecordApi) Data(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我发起的任务成功"}"
 // @Router /record/schedule [get]
 func (r *RecordApi) Launch(c *gin.Context) {
-	var _ modelWF.GzlRecord
+
 }

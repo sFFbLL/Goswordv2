@@ -6,6 +6,27 @@ definitions:
         description: 主键ID
         type: integer
     type: object
+  request.Inspect:
+    properties:
+      state:
+        type: integer
+      taskId:
+        type: integer
+    type: object
+  request.PageInfo:
+    properties:
+      page:
+        description: 页码
+        type: integer
+      pageSize:
+        description: 每页大小
+        type: integer
+    type: object
+  request.Record:
+    properties:
+      recordId:
+        type: integer
+    type: object
   request.SetUserAuthorities:
     properties:
       authorityIds:
@@ -14,11 +35,6 @@ definitions:
           type: integer
         type: array
       id:
-        type: integer
-    type: object
-  request.Task:
-    properties:
-      state:
         type: integer
     type: object
   system.SysAuthority:
@@ -170,140 +186,6 @@ definitions:
         description: 更新时间
         type: string
     type: object
-  system.SysUser:
-    properties:
-      authorities:
-        items:
-          $ref: '#/definitions/system.SysAuthority'
-        type: array
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      dept:
-        $ref: '#/definitions/system.SysDept'
-      deptId:
-        type: integer
-      email:
-        type: string
-      headerImg:
-        description: 用户头像
-        type: string
-      id:
-        description: 主键ID
-        type: integer
-      nickName:
-        description: 用户昵称
-        type: string
-      phone:
-        type: string
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-      userName:
-        description: 用户登录名
-        type: string
-      uuid:
-        type: string
-    type: object
-  work_flow.GzlApp:
-    properties:
-      authoritys:
-        description: 角色
-        items:
-          $ref: '#/definitions/system.SysAuthority'
-        type: array
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      depts:
-        description: 部门
-        items:
-          $ref: '#/definitions/system.SysDept'
-        type: array
-      flow:
-        description: 流程
-        items:
-          type: integer
-        type: array
-      form:
-        description: 表单
-        items:
-          type: integer
-        type: array
-      icon:
-        description: 图标
-        type: string
-      id:
-        description: 主键ID
-        type: integer
-      isEveryone:
-        description: 是否所有人(所有人1默认，否2)
-        type: integer
-      name:
-        description: 名称
-        type: string
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-      users:
-        description: 用户
-        items:
-          $ref: '#/definitions/system.SysUser'
-        type: array
-    type: object
-  work_flow.GzlRecord:
-    properties:
-      app:
-        $ref: '#/definitions/work_flow.GzlApp'
-        description: 应用
-      appId:
-        description: 应用id
-        type: integer
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      currentNode:
-        description: 当前节点
-        type: string
-      currentState:
-        description: 当前状态
-        type: integer
-      depId:
-        description: 部门id
-        type: integer
-      dept:
-        $ref: '#/definitions/system.SysDept'
-        description: 部门
-      form:
-        description: 表单JSON
-        items:
-          type: integer
-        type: array
-      id:
-        description: 主键ID
-        type: integer
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-    type: object
 info:
   contact: {}
   description: This is a sample Server pets
@@ -332,12 +214,9 @@ paths:
   /app/empty:
     get:
       parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
+      - in: query
+        name: appId
+        type: integer
       produces:
       - application/json
       responses:
@@ -348,6 +227,90 @@ paths:
       summary: 返回空表单
       tags:
       - App
+  /authority/createAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限名, 父角色id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysAuthority'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建角色
+  /authority/deleteAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除角色
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysAuthority'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除角色
+  /authority/getAuthorityList:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码, 每页大小
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取角色列表
+  /authority/updateAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限名, 父角色id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysAuthority'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新角色信息
   /base/captcha:
     post:
       consumes:
@@ -362,8 +325,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 生成验证码
-      tags:
-      - Base
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -423,7 +384,7 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/work_flow.GzlRecord'
+          type: integer
       produces:
       - application/json
       responses:
@@ -437,12 +398,12 @@ paths:
   /task/dynamic:
     get:
       parameters:
-      - description: string
+      - description: 记录id
         in: body
         name: data
         required: true
         schema:
-          type: integer
+          $ref: '#/definitions/request.Record'
       produces:
       - application/json
       responses:
@@ -453,34 +414,15 @@ paths:
       summary: 流程动态信息
       tags:
       - Task
-  /task/handle:
-    get:
-      parameters:
-      - description: 审批状态, 审批人
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
-          schema:
-            type: string
-      summary: 我处理的
-      tags:
-      - Task
   /task/inspect:
-    post:
+    put:
       parameters:
-      - description: 通过||拒绝
+      - description: 任务id，状态
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.Task'
+          $ref: '#/definitions/request.Inspect'
       produces:
       - application/json
       responses:
@@ -495,11 +437,10 @@ paths:
     get:
       parameters:
       - description: 节点类型
-        in: body
+        in: query
         name: data
         required: true
-        schema:
-          type: integer
+        type: integer
       produces:
       - application/json
       responses:
@@ -550,8 +491,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除用户
-      tags:
-      - SysUser
   /user/setUserAuthorities:
     post:
       consumes:
@@ -573,8 +512,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 设置用户角色
-      tags:
-      - SysUser
 securityDefinitions:
   ApiKeyAuth:
     in: header
