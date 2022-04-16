@@ -6,6 +6,7 @@ import (
 	"project/model/common/request"
 	"project/model/system"
 	"project/utils"
+	"strconv"
 
 	uuid "github.com/satori/go.uuid"
 	"gorm.io/gorm"
@@ -178,15 +179,39 @@ func (userService *UserService) FindUserById(id uint) (err error, user *system.S
 	return err, &u
 }
 
-//@function: FindUserByUuid
+// FindUserByUuid @function: FindUserByUuid
 //@description: 通过uuid获取用户信息
 //@param: uuid string
 //@return: err error, user *model.SysUser
-
 func (userService *UserService) FindUserByUuid(uuid string) (err error, user *system.SysUser) {
 	var u system.SysUser
 	if err = global.GSD_DB.Preload("Authorities").Preload("Dept").Where("`uuid` = ?", uuid).First(&u).Error; err != nil {
 		return errors.New("用户不存在"), &u
 	}
 	return nil, &u
+}
+
+// FindUserByDept @function: FindUserByDept
+//@description: 通过dept获取用户信息
+//@param: deptId uint
+//@return: err error, userId []uint
+func (userService *UserService) FindUserByDept(deptId uint) (err error, userId []uint) {
+	err = global.GSD_DB.Select("id").Where("`deptId` = ?", deptId).Find(&userId).Error
+	return
+}
+
+// FindUserByAuthority @function: FindUserByAuthority
+//@description: 通过uuid获取用户信息
+//@param: uuid string
+//@return: err error, user []uint
+func (userService *UserService) FindUserByAuthority(authorityId uint) (err error, userId []uint) {
+	userString, err := global.GSD_Casbin.GetUsersForRole(strconv.Itoa(int(authorityId)))
+	if err != nil {
+		return errors.New("获取角色下的用户失败"), nil
+	}
+	for _, v := range userString {
+		userIdInt, _ := strconv.ParseUint(v, 10, 0)
+		userId = append(userId, uint(userIdInt))
+	}
+	return
 }
