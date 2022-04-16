@@ -10,6 +10,8 @@ type ApiGroup struct {
 	JwtApi
 	AuthorityMenuApi
 	AuthorityApi
+	SystemApiApi
+	OperationRecordApi
 }
 
 var dataScope = utils.DataScope{}
@@ -18,3 +20,5 @@ var jwtService = service.ServiceGroupApp.SystemServiceGroup.JwtService
 var userService = service.ServiceGroupApp.SystemServiceGroup.UserService
 var authorityService = service.ServiceGroupApp.SystemServiceGroup.AuthorityService
 var menuService = service.ServiceGroupApp.SystemServiceGroup.MenuService
+var apiService = service.ServiceGroupApp.SystemServiceGroup.ApiService
+var operationRecordService = service.ServiceGroupApp.SystemServiceGroup.OperationRecordService

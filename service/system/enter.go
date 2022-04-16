@@ -7,4 +7,5 @@ type SysGroup struct {
 	CasbinService
 	AuthorityService
 	MenuService
+	ApiService
 }
