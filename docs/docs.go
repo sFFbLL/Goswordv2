@@ -76,7 +76,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/base/captcha": {
+        "/authority/createAuthority": {
             "post": {
                 "security": [
                     {
@@ -89,8 +89,145 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "Base"
+                "summary": "创建角色",
+                "parameters": [
+                    {
+                        "description": "权限id, 权限名, 父角色id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysAuthority"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/deleteAuthority": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "description": "删除角色",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysAuthority"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/getAuthorityList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "分页获取角色列表",
+                "parameters": [
+                    {
+                        "description": "页码, 每页大小",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PageInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/authority/updateAuthority": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "更新角色信息",
+                "parameters": [
+                    {
+                        "description": "权限id, 权限名, 父角色id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysAuthority"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/base/captcha": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
                 ],
                 "summary": "生成验证码",
                 "responses": {
@@ -281,7 +418,7 @@ const docTemplate = `{
             }
         },
         "/task/inspect": {
-            "post": {
+            "put": {
                 "produces": [
                     "application/json"
                 ],
@@ -291,12 +428,12 @@ const docTemplate = `{
                 "summary": "审批（通过||拒绝）",
                 "parameters": [
                     {
-                        "description": "通过||拒绝",
+                        "description": "任务id，状态",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.Task"
+                            "$ref": "#/definitions/request.Inspect"
                         }
                     }
                 ],
@@ -383,9 +520,6 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "SysUser"
-                ],
                 "summary": "删除用户",
                 "parameters": [
                     {
@@ -421,9 +555,6 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "tags": [
-                    "SysUser"
-                ],
                 "summary": "设置用户角色",
                 "parameters": [
                     {
@@ -457,6 +588,30 @@ const docTemplate = `{
                 }
             }
         },
+        "request.Inspect": {
+            "type": "object",
+            "properties": {
+                "state": {
+                    "type": "integer"
+                },
+                "taskId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "request.PageInfo": {
+            "type": "object",
+            "properties": {
+                "page": {
+                    "description": "页码",
+                    "type": "integer"
+                },
+                "pageSize": {
+                    "description": "每页大小",
+                    "type": "integer"
+                }
+            }
+        },
         "request.SetUserAuthorities": {
             "type": "object",
             "properties": {
@@ -468,14 +623,6 @@ const docTemplate = `{
                     }
                 },
                 "id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "request.Task": {
-            "type": "object",
-            "properties": {
-                "state": {
                     "type": "integer"
                 }
             }
@@ -842,7 +989,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "currentState": {
-                    "description": "当前状态",
+                    "description": "当前状态(进行中1默认、已完成2、已结束3)",
                     "type": "integer"
                 },
                 "depId": {

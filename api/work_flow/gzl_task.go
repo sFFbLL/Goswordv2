@@ -5,7 +5,9 @@ import (
 	"go.uber.org/zap"
 	"project/global"
 	"project/model/common/response"
+	WorkFlow "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
 	"strconv"
 )
 
@@ -16,11 +18,27 @@ type TaskApi struct {
 // @Tags Task
 // @Summary 审批（通过||拒绝）
 // @Produce  application/json
-// @Param data body WorkFlowReq.Task true "通过||拒绝"
+// @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"已审核"}"
-// @Router /task/inspect [post]
+// @Router /task/inspect [put]
 func (t *TaskApi) Inspect(c *gin.Context) {
-	var _ WorkFlowReq.Task
+	var inspect WorkFlowReq.Inspect
+	_ = c.ShouldBindJSON(&inspect)
+	if err := utils.Verify(inspect, utils.InspectVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	gzlTask := &WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}
+	if err := taskService.Inspect(*gzlTask); err != nil {
+		global.GSD_LOG.Error(c, "审批错误", zap.Any("err", err))
+		response.FailWithMessage("审批错误", c)
+	} else {
+		response.OkWithMessage("审批成功", c)
+	}
+	//流程流转
+	//go func() {
+	//	work_flow.ProcessFlow(1)
+	//}()
 }
 
 // Dynamic
@@ -31,7 +49,7 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	var _ []WorkFlowReq.Task
+
 }
 
 // Schedule
@@ -60,9 +78,17 @@ func (t *TaskApi) Schedule(c *gin.Context){
 // @Param data body int  true "审批状态, 审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
-func (t *TaskApi) Handle(c *gin.Context) {
-
-}
+//func (t *TaskApi) Handle(c *gin.Context) {
+//	InspectorId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+//	if err, handle := taskService.GetHandleList(InspectorId); err != nil {
+//		global.GSD_LOG.ZapLog.Error( "获取我处理的信息失败", zap.Error(err))
+//		response.FailWithMessage("获取我处理的信息失败", c)
+//		return
+//	} else {
+//		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))//打印日志
+//		response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c)//给前端返回信息
+//	}
+//}
 
 // Receive
 // @Tags Task

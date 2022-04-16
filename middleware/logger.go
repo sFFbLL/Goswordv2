@@ -42,7 +42,7 @@ func GinLogger() gin.HandlerFunc {
 		c.Set("requestId", &global.Request{
 			RequestId: requestId,
 		})
-		mBody, queryGet := utils.OperateLog(c)
+		mBody, queryGet := utils.OperateRequestLog(c)
 		cost := time.Since(start)
 		status := c.Writer.Status()
 		method := c.Request.Method

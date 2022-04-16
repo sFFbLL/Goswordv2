@@ -1,5 +1,6 @@
 package request
 
-type Task struct {
-	State uint8
+type Inspect struct {
+	TaskId uint  `json:"taskId"`
+	State  uint8 `json:"state"`
 }

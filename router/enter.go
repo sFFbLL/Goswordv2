@@ -6,6 +6,7 @@ import (
 )
 
 type RouterGroup struct {
+
 	System system.RouterGroup
 	WorkFlow work_flow.RouterGroup
 }

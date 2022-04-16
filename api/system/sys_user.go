@@ -58,7 +58,8 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			ExpiresAt: time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
 			Issuer:    "gsdPlus",                                             // 签名的发行者
 		},
-		DeptId: user.DeptId,
+		Authority: user.Authorities,
+		DeptId:    user.DeptId,
 	}
 	token, err := j.CreateToken(claims)
 	if err != nil {
@@ -123,9 +124,14 @@ func (b *BaseApi) Register(c *gin.Context) {
 	}
 	var authorities []system.SysAuthority
 	for _, v := range r.AuthorityIds {
-		authorities = append(authorities, system.SysAuthority{
+		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{
 			AuthorityId: v,
-		})
+		}); err != nil {
+			global.GSD_LOG.Error(c, "注册失败, 角色不存在!")
+			response.FailWithMessage("注册失败, 角色不存在!", c)
+		} else {
+			authorities = append(authorities, authority)
+		}
 	}
 	curUser := utils.GetUser(c)
 	user := &system.SysUser{GSD_MODEL: global.GSD_MODEL{CreateBy: curUser.ID, UpdateBy: curUser.ID}, Username: r.Username, NickName: r.NickName, Password: r.Password, Authorities: authorities, DeptId: r.DeptId}
@@ -145,7 +151,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 	}
 }
 
-// @Tags SysUser
+// DeleteUser @Tags SysUser
 // @Summary 删除用户
 // @Security ApiKeyAuth
 // @accept application/json
@@ -189,7 +195,7 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 	}
 }
 
-// @Tags SysUser
+// SetUserAuthorities @Tags SysUser
 // @Summary 设置用户角色
 // @Security ApiKeyAuth
 // @accept application/json
@@ -216,7 +222,7 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 	}
 	var updateAuthoritys []system.SysAuthority
 	for _, authorityId := range sua.AuthorityIds {
-		if err, authority := authorityService.GetAuthorityInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
+		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
 			global.GSD_LOG.Error(c, "设置角色不存在!")
 			response.FailWithMessage("设置角色不存在!", c)
 			return
@@ -252,7 +258,9 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err, list, total := userService.GetUserInfoList(pageInfo); err != nil {
+	curUser := utils.GetUser(c)
+	deptId, isAll := dataScope.GetDataScope(curUser)
+	if err, list, total := userService.GetUserInfoList(pageInfo, deptId, isAll); err != nil {
 		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -266,7 +274,7 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 }
 
 // @Tags SysUser
-// @Summary 用户修改密码
+// @Summary 用户本人修改密码
 // @Produce  application/json
 // @Param data body systemReq.ChangePasswordStruct true "用户名, 原密码, 新密码"
 // @Success 200 {object} response.Response{msg=string} "用户修改密码"

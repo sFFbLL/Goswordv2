@@ -12,6 +12,7 @@ import (
 )
 
 //@function: Casbin
+
 //@description: 持久化到数据库  引入自定义规则
 //@return: *casbin.Enforcer
 
