@@ -22,6 +22,11 @@ definitions:
         description: 每页大小
         type: integer
     type: object
+  request.Record:
+    properties:
+      recordId:
+        type: integer
+    type: object
   request.SetUserAuthorities:
     properties:
       authorityIds:
@@ -181,140 +186,6 @@ definitions:
         description: 更新时间
         type: string
     type: object
-  system.SysUser:
-    properties:
-      authorities:
-        items:
-          $ref: '#/definitions/system.SysAuthority'
-        type: array
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      dept:
-        $ref: '#/definitions/system.SysDept'
-      deptId:
-        type: integer
-      email:
-        type: string
-      headerImg:
-        description: 用户头像
-        type: string
-      id:
-        description: 主键ID
-        type: integer
-      nickName:
-        description: 用户昵称
-        type: string
-      phone:
-        type: string
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-      userName:
-        description: 用户登录名
-        type: string
-      uuid:
-        type: string
-    type: object
-  work_flow.GzlApp:
-    properties:
-      authoritys:
-        description: 角色
-        items:
-          $ref: '#/definitions/system.SysAuthority'
-        type: array
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      depts:
-        description: 部门
-        items:
-          $ref: '#/definitions/system.SysDept'
-        type: array
-      flow:
-        description: 流程
-        items:
-          type: integer
-        type: array
-      form:
-        description: 表单
-        items:
-          type: integer
-        type: array
-      icon:
-        description: 图标
-        type: string
-      id:
-        description: 主键ID
-        type: integer
-      isEveryone:
-        description: 是否所有人(所有人1默认，否2)
-        type: integer
-      name:
-        description: 名称
-        type: string
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-      users:
-        description: 用户
-        items:
-          $ref: '#/definitions/system.SysUser'
-        type: array
-    type: object
-  work_flow.GzlRecord:
-    properties:
-      app:
-        $ref: '#/definitions/work_flow.GzlApp'
-        description: 应用
-      appId:
-        description: 应用id
-        type: integer
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      currentNode:
-        description: 当前节点
-        type: string
-      currentState:
-        description: 当前状态(进行中1默认、已完成2、已结束3)
-        type: integer
-      depId:
-        description: 部门id
-        type: integer
-      dept:
-        $ref: '#/definitions/system.SysDept'
-        description: 部门
-      form:
-        description: 表单JSON
-        items:
-          type: integer
-        type: array
-      id:
-        description: 主键ID
-        type: integer
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
-    type: object
 info:
   contact: {}
   description: This is a sample Server pets
@@ -343,12 +214,9 @@ paths:
   /app/empty:
     get:
       parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
+      - in: query
+        name: appId
+        type: integer
       produces:
       - application/json
       responses:
@@ -476,12 +344,9 @@ paths:
   /record/data:
     get:
       parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
+      - in: query
+        name: recordId
+        type: integer
       produces:
       - application/json
       responses:
@@ -491,7 +356,7 @@ paths:
             type: string
       summary: 返回之前填写过的表单数据
       tags:
-      - record
+      - Record
   /record/schedule:
     get:
       parameters:
@@ -519,26 +384,26 @@ paths:
         name: data
         required: true
         schema:
-          $ref: '#/definitions/work_flow.GzlRecord'
+          type: integer
       produces:
       - application/json
       responses:
         "200":
           description: '{"success":true,"data":{},"msg":"null"}'
           schema:
-            type: string
+            type: ""
       summary: 提交表单
       tags:
-      - record
+      - Record
   /task/dynamic:
     get:
       parameters:
-      - description: string
+      - description: 记录id
         in: body
         name: data
         required: true
         schema:
-          type: integer
+          $ref: '#/definitions/request.Record'
       produces:
       - application/json
       responses:
@@ -547,25 +412,6 @@ paths:
           schema:
             type: string
       summary: 流程动态信息
-      tags:
-      - Task
-  /task/handle:
-    get:
-      parameters:
-      - description: 审批状态, 审批人
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
-          schema:
-            type: string
-      summary: 我处理的
       tags:
       - Task
   /task/inspect:
@@ -591,11 +437,10 @@ paths:
     get:
       parameters:
       - description: 节点类型
-        in: body
+        in: query
         name: data
         required: true
-        schema:
-          type: integer
+        type: integer
       produces:
       - application/json
       responses:
