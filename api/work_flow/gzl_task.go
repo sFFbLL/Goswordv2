@@ -1,7 +1,6 @@
 package work_flow
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"project/global"
@@ -54,8 +53,7 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	var record WorkFlowReq.Record
 	_ = c.ShouldBindJSON(&record)
-	fmt.Println(userId)
-	tasks, err := taskService.GetDynamic(1, record.RecordId)
+	tasks, err := taskService.GetDynamic(userId, record.RecordId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取流程动态错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)
@@ -92,9 +90,18 @@ func (t *TaskApi) Handle(c *gin.Context) {
 // @Tags Task
 // @Summary 我收到的
 // @Produce  application/json
-// @Param data body  uint8  true "节点类型"
+// @Param data query uint8  true "节点类型"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]
 func (t *TaskApi) Receive(c *gin.Context) {
+	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	tasks, err := taskService.GetReceive(userId)
+	if err != nil {
+		global.GSD_LOG.ZapLog.Error("获取我收到的信息列表错误", zap.Any("err", err))
+		response.FailWithMessage("数据不存在", c)
+	} else {
+		global.GSD_LOG.ZapLog.Info("我收到的信息成功返回", zap.Any("success", tasks))
+		response.OkWithData(tasks, c)
+	}
 
 }

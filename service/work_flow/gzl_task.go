@@ -49,3 +49,18 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowReq.D
 func (t *TaskService) Inspect(task work_flow.GzlTask) (err error) {
 	return global.GSD_DB.Updates(&task).Error
 }
+
+// GetReceive
+// @author: [tanshaokang](https://github.com/worryfreet)
+// @function: GetReceive
+// @description: 从mysql中获取我收到的信息列表
+// @param: WorkFlowReq.Record
+// @return: data []WorkFlowReq.Dynamic, err error
+func (t TaskService) GetReceive(userId int) (err error, tasks []modelWF.GzlTask) {
+	// 1. 申请人姓名
+	// 2. 审批人姓名
+	// 3. 审批状态
+	// 4. 应用名称
+	// 5. 当前节点
+	return
+}
