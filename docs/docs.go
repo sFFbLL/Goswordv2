@@ -274,7 +274,7 @@ const docTemplate = `{
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
                         "schema": {
-                            "type": "json"
+                            "type": "string"
                         }
                     }
                 }
@@ -334,7 +334,7 @@ const docTemplate = `{
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我收到的任务成功\"}",
                         "schema": {
-                            "type": "json"
+                            "type": "string"
                         }
                     }
                 }
@@ -364,7 +364,7 @@ const docTemplate = `{
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询待办任务成功\"}",
                         "schema": {
-                            "type": "json"
+                            "type": "string"
                         }
                     }
                 }
