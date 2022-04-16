@@ -11,15 +11,14 @@ import (
 	"gorm.io/gorm"
 )
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+type UserService struct {
+}
+
+// Register @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: Register
 //@description: 用户注册
 //@param: u model.SysUser
 //@return: err error, userInter model.SysUser
-
-type UserService struct {
-}
-
 func (userService *UserService) Register(u system.SysUser, roles []uint) (err error, userInter system.SysUser) {
 	var user system.SysUser
 	if !errors.Is(global.GSD_DB.Where("username = ?", u.Username).First(&user).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
@@ -42,12 +41,11 @@ func (userService *UserService) Register(u system.SysUser, roles []uint) (err er
 	return err, u
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// Login @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: Login
 //@description: 用户登录
 //@param: u *model.SysUser
 //@return: err error, userInter *model.SysUser
-
 func (userService *UserService) Login(u *system.SysUser) (err error, userInter *system.SysUser) {
 	var user system.SysUser
 	u.Password = utils.MD5V([]byte(u.Password))
@@ -88,21 +86,20 @@ func (userService *UserService) UpdatePassword(u *system.SysUser, newPassword st
 	return err, u
 }
 
+// SetUserAuthority @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetUserAuthority
 //@description: 设置一个用户的权限
 //@param: uuid uuid.UUID, authorityId string
 //@return: err error
-
 func (userService *UserService) SetUserAuthority(id uint, uuid uuid.UUID, authorityId string) (err error) {
 	return err
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// SetUserAuthorities @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetUserAuthorities
 //@description: 设置一个用户的权限
 //@param: id uint, authorityIds []uint
 //@return: err error
-
 func (userService *UserService) SetUserAuthorities(id uint, authorityIds []uint) (err error) {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
 		useAuthority := make([]system.SysAuthority, 0)
@@ -123,12 +120,11 @@ func (userService *UserService) SetUserAuthorities(id uint, authorityIds []uint)
 	})
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// DeleteUser @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: DeleteUser
 //@description: 删除用户
 //@param: id uint
 //@return: err error
-
 func (userService *UserService) DeleteUser(id uint) (err error) {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
 		var user system.SysUser
