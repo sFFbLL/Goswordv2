@@ -43,7 +43,7 @@ func GetUserUuid(c *gin.Context) uuid.UUID {
 }
 
 // 从Gin的Context中获取从jwt解析出来的用户角色id
-func GetUserAuthorityId(c *gin.Context) []system.SysAuthority {
+func GetUserAuthority(c *gin.Context) []system.SysAuthority {
 	if claims, exists := c.Get("claims"); !exists {
 		global.GSD_LOG.Error(c, "从Gin的Context中获取从jwt解析出来的用户角色失败, 请检查路由是否使用jwt中间件!")
 		return nil
