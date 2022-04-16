@@ -20,3 +20,9 @@ type Dynamic struct {
 	CheckState         uint8     `json:"checkState"`         // 审批状态
 	Remarks            string    `json:"remarks"`            // 备注
 }
+type Schedule struct {
+	CreatedAt          time.Time  `json:"createdAt"`          // 创建时间
+	Applicant          string     `json:"applicant"`          // 申请人
+	AppName            string     `json:"appName"`           //应用名称
+	CheckState         uint8      `json:"checkState" gorm:"not null;comment:审批状态(待审批1默认、审批通过2、审批拒绝3、或签已审核4)"`               //审批状态(待审批1默认、审批通过2、审批拒绝3、或签已审核4)
+}

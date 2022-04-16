@@ -68,7 +68,6 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Tags Task
 // @Summary 我的待办
 // @Produce  application/json
-// @Param data body int true "审批状态, 审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
@@ -87,7 +86,7 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // @Tags Task
 // @Summary 我处理的
 // @Produce  application/json
-// @Param data body int true "审批状态, 审批人"
+// @Param data body int true "审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
