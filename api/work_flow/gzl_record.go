@@ -13,6 +13,7 @@ type RecordApi struct {
 }
 
 // Submit
+// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Record
 // @Summary 提交表单
 // @Produce  application/json
@@ -26,6 +27,7 @@ func (r *RecordApi) Submit(c *gin.Context) {
 }
 
 // Data
+// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Record
 // @Summary 返回之前填写过的表单数据
 // @Produce  application/json
@@ -38,7 +40,7 @@ func (r *RecordApi) Data(c *gin.Context) {
 	data, err := recordService.GetData(record)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("表单数据获取失败", zap.Any("err", err))
-		response.FailWithMessage("该记录不存在, recordId: ", c)
+		response.FailWithMessage("该记录不存在", c)
 	} else {
 		global.GSD_LOG.ZapLog.Info("表单数据获取成功", zap.Any("Record Form Data([]byte -> string)", string(data)))
 		response.OkWithData(data, c)

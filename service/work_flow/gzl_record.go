@@ -17,19 +17,19 @@ type RecordService struct {
 // @function: GetData
 // @description: 从mysql中获取record数据
 // @param: WorkFlowReq.Record
-// @return: err error, data JSON
+// @return: data utils.JSON, err error
 func (r RecordService) GetData(record WorkFlowReq.Record) (data utils.JSON, err error) {
-	var datas = make([]utils.JSON, 1)
+	var dataArr = make([]utils.JSON, 1)
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
 		Where("id = ?", record.RecordId)
-	if err = db.Take(&datas).Error; err != nil {
+	if err = db.Take(&dataArr).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("数据为空")
 		} else {
 			return
 		}
 	}
-	data = datas[0]
+	data = dataArr[0]
 	return
 }

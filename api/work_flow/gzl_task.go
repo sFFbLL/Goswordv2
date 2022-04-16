@@ -43,16 +43,19 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 }
 
 // Dynamic
+// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
-// @Param data body int true "RecordId"
+// @Param data query WorkFlowReq.Record true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	var record WorkFlowReq.Record
+	_ = c.ShouldBindJSON(&record)
 	fmt.Println(userId)
-	tasks, err := taskService.GetDynamic(1, 1)
+	tasks, err := taskService.GetDynamic(1, record.RecordId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取流程动态错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)
@@ -85,6 +88,7 @@ func (t *TaskApi) Handle(c *gin.Context) {
 }
 
 // Receive
+// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Task
 // @Summary 我收到的
 // @Produce  application/json

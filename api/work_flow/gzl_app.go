@@ -12,6 +12,7 @@ type AppApi struct {
 }
 
 // Empty
+// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags App
 // @Summary 返回空表单
 // @Produce  application/json

@@ -6,13 +6,20 @@ import (
 	"project/global"
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
 )
 
 type AppService struct {
 }
 
-func (a AppService) GetAppEmpty(app WorkFlowReq.App) (data modelWF.JSON, err error) {
-	var datas = make([]modelWF.JSON, 1)
+// GetAppEmpty
+// @author: [tanshaokang](https://github.com/worryfreet)
+// @function: GetAppEmpty
+// @description: 从mysql中获取空表单
+// @param: WorkFlowReq.App
+// @return: data utils.JSON, err error
+func (a AppService) GetAppEmpty(app WorkFlowReq.App) (data utils.JSON, err error) {
+	var datas = make([]utils.JSON, 1)
 	db := global.GSD_DB.Model(&modelWF.GzlApp{}).
 		Select("form").
 		Where("id = ?", app.AppId)
