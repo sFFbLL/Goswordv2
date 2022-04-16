@@ -6,6 +6,22 @@ definitions:
         description: 主键ID
         type: integer
     type: object
+  request.Inspect:
+    properties:
+      state:
+        type: integer
+      taskId:
+        type: integer
+    type: object
+  request.PageInfo:
+    properties:
+      page:
+        description: 页码
+        type: integer
+      pageSize:
+        description: 每页大小
+        type: integer
+    type: object
   request.SetUserAuthorities:
     properties:
       authorityIds:
@@ -14,11 +30,6 @@ definitions:
           type: integer
         type: array
       id:
-        type: integer
-    type: object
-  request.Task:
-    properties:
-      state:
         type: integer
     type: object
   system.SysAuthority:
@@ -281,7 +292,7 @@ definitions:
         description: 当前节点
         type: string
       currentState:
-        description: 当前状态
+        description: 当前状态(进行中1默认、已完成2、已结束3)
         type: integer
       depId:
         description: 部门id
@@ -348,6 +359,90 @@ paths:
       summary: 返回空表单
       tags:
       - App
+  /authority/createAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限名, 父角色id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysAuthority'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建角色
+  /authority/deleteAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除角色
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysAuthority'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除角色
+  /authority/getAuthorityList:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码, 每页大小
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取角色列表
+  /authority/updateAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限名, 父角色id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysAuthority'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新角色信息
   /base/captcha:
     post:
       consumes:
@@ -362,8 +457,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 生成验证码
-      tags:
-      - Base
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -471,19 +564,19 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
           schema:
-            type: json
+            type: string
       summary: 我处理的
       tags:
       - Task
   /task/inspect:
-    post:
+    put:
       parameters:
-      - description: 通过||拒绝
+      - description: 任务id，状态
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.Task'
+          $ref: '#/definitions/request.Inspect'
       produces:
       - application/json
       responses:
@@ -509,7 +602,7 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"查询我收到的任务成功"}'
           schema:
-            type: json
+            type: string
       summary: 我收到的
       tags:
       - Task
@@ -528,7 +621,7 @@ paths:
         "200":
           description: '{"success":true,"data":{},"msg":"查询待办任务成功"}'
           schema:
-            type: json
+            type: string
       summary: 我的待办
       tags:
       - Task
@@ -553,8 +646,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除用户
-      tags:
-      - SysUser
   /user/setUserAuthorities:
     post:
       consumes:
@@ -576,8 +667,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 设置用户角色
-      tags:
-      - SysUser
 securityDefinitions:
   ApiKeyAuth:
     in: header
