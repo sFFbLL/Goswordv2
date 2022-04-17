@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"project/core"
 	"project/global"
 	"project/initialize"
@@ -23,15 +24,15 @@ func main() {
 	global.GSD_LOG = core.Zap()             // 初始化zap日志库
 	global.GSD_DB = initialize.Gorm()       // gorm连接数据库
 	global.GSD_Casbin = initialize.Casbin() // casbin初始化
-	//if global.GSD_DB != nil {
-	//	//initialize.MysqlTables(global.GSD_DB) // 初始化表
-	//	//initialize.InitDB() // 初始化表数据
-	//	// 程序结束前关闭数据库链接
-	//	db, _ := global.GSD_DB.DB()
-	//	defer func(db *sql.DB) {
-	//		_ = db.Close()
-	//	}(db)
-	//
-	//}
-	//core.RunWindowsServer()
+	if global.GSD_DB != nil {
+		//initialize.MysqlTables(global.GSD_DB) // 初始化表
+		//initialize.InitDB() // 初始化表数据
+		// 程序结束前关闭数据库链接
+		db, _ := global.GSD_DB.DB()
+		defer func(db *sql.DB) {
+			_ = db.Close()
+		}(db)
+
+	}
+	core.RunWindowsServer()
 }
