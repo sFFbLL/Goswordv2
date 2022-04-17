@@ -187,7 +187,7 @@ func (userService *UserService) FindUserByUuid(uuid string) (err error, user *sy
 //@param: deptId uint
 //@return: err error, userId []uint
 func (userService *UserService) FindUserByDept(deptId uint) (err error, userId []uint) {
-	err = global.GSD_DB.Select("id").Where("`deptId` = ?", deptId).Find(&userId).Error
+	err = global.GSD_DB.Select("id").Where("`dept_id` = ?", deptId).Find(&userId).Error
 	return
 }
 
