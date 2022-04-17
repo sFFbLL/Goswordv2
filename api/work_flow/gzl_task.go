@@ -20,7 +20,7 @@ type TaskApi struct {
 // @Summary 审批（通过||拒绝）
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
-// @Success 200 {string} string "{"success":true,"data":{},"msg":"已审核"}"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
 // @Router /task/inspect [put]
 func (t *TaskApi) Inspect(c *gin.Context) {
 	var inspect WorkFlowReq.Inspect
@@ -33,13 +33,11 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 	if err := taskService.Inspect(*gzlTask); err != nil {
 		global.GSD_LOG.Error(c, "审批错误", zap.Any("err", err))
 		response.FailWithMessage("审批错误", c)
+		return
 	} else {
 		response.OkWithMessage("审批成功", c)
 	}
-	//流程流转
-	//go func() {
-	//	work_flow.ProcessFlow(1)
-	//}()
+
 }
 
 // Dynamic
