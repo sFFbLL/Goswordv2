@@ -4,14 +4,11 @@ import (
 	"project/global"
 	"project/model/common/response"
 	"project/model/system/request"
-	"project/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
-
-// 拦截器
+// CasbinHandler 拦截器
 func CasbinHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims, _ := c.Get("claims")

@@ -16,7 +16,7 @@ import (
 type AuthorityApi struct {
 }
 
-// CreateAuthority @Tags Authority
+// @Tags Authority
 // @Summary 创建角色
 // @Security ApiKeyAuth
 // @accept application/json
@@ -55,7 +55,7 @@ func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
 	}
 }
 
-// DeleteAuthority @Tags Authority
+// @Tags Authority
 // @Summary 删除角色
 // @Security ApiKeyAuth
 // @accept application/json
@@ -92,7 +92,7 @@ func (a *AuthorityApi) DeleteAuthority(c *gin.Context) {
 	}
 }
 
-// UpdateAuthority @Tags Authority
+// @Tags Authority
 // @Summary 更新角色信息
 // @Security ApiKeyAuth
 // @accept application/json
@@ -122,7 +122,7 @@ func (a *AuthorityApi) UpdateAuthority(c *gin.Context) {
 	}
 }
 
-// GetAuthorityList @Tags Authority
+// @Tags Authority
 // @Summary 分页获取角色列表
 // @Security ApiKeyAuth
 // @accept application/json

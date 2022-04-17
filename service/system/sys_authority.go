@@ -10,28 +10,26 @@ import (
 	"gorm.io/gorm"
 )
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
-//@function: CreateAuthority
-//@description: 创建一个角色
-//@param: auth model.SysAuthority
-//@return: err error, authority model.SysAuthority
-
 type AuthorityService struct {
 }
 
 var AuthorityServiceApp = new(AuthorityService)
 
+// CreateAuthority @author: [chenguanglan](https://github.com/sFFbLL)
+//@function: CreateAuthority
+//@description: 创建一个角色
+//@param: auth model.SysAuthority
+//@return: err error, authority model.SysAuthority
 func (authorityService *AuthorityService) CreateAuthority(auth system.SysAuthority) (err error, authority system.SysAuthority) {
 	err = global.GSD_DB.Create(&auth).Error
 	return err, auth
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// UpdateAuthority @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: UpdateAuthority
 //@description: 更改一个角色
 //@param: auth model.SysAuthority
 //@return: err error, authority model.SysAuthority
-
 func (authorityService *AuthorityService) UpdateAuthority(auth system.SysAuthority, deptId []uint) (err error, authority system.SysAuthority) {
 	depts := make([]system.SysDept, 0)
 	if auth.DataScope == "自定义" {
@@ -49,12 +47,11 @@ func (authorityService *AuthorityService) UpdateAuthority(auth system.SysAuthori
 	return err, auth
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// DeleteAuthority @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: DeleteAuthority
 //@description: 删除角色
 //@param: auth *model.SysAuthority
 //@return: err error
-
 func (authorityService *AuthorityService) DeleteAuthority(auth *system.SysAuthority) (err error) {
 	if !errors.Is(global.GSD_DB.Where("sys_authority_authority_id = ?", auth.AuthorityId).First(&system.SysUseAuthority{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("此角色有用户正在使用禁止删除")
@@ -84,34 +81,31 @@ func (authorityService *AuthorityService) GetAuthorityInfoList(info request.Page
 	return err, authority, total
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// GetAuthorityInfo @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetAuthorityInfo
 //@description: 获取所有角色信息
 //@param: auth model.SysAuthority
 //@return: err error, sa model.SysAuthority
-
 func (authorityService *AuthorityService) GetAuthorityInfo(auth system.SysAuthority) (err error, sa system.SysAuthority) {
 	err = global.GSD_DB.Preload("SysBaseMenus").Preload("Depts").Where("authority_id = ?", auth.AuthorityId).First(&sa).Error
 	return err, sa
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// GetAuthorityBasicInfo @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetAuthorityBasicInfo
 //@description: 获取基本角色信息
 //@param: auth model.SysAuthority
 //@return: err error, sa model.SysAuthority
-
 func (authorityService *AuthorityService) GetAuthorityBasicInfo(auth system.SysAuthority) (err error, sa system.SysAuthority) {
 	err = global.GSD_DB.Where("authority_id = ?", auth.AuthorityId).First(&sa).Error
 	return err, sa
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// SetMenuAuthority @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetMenuAuthority
 //@description: 菜单与角色绑定
 //@param: auth *model.SysAuthority
 //@return: error
-
 func (authorityService *AuthorityService) SetMenuAuthority(auth *system.SysAuthority) error {
 	var s system.SysAuthority
 	global.GSD_DB.Preload("SysBaseMenus").First(&s, "authority_id = ?", auth.AuthorityId)

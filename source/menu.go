@@ -42,7 +42,7 @@ var menus = []system.SysBaseMenu{
 	{GSD_MODEL: global.GSD_MODEL{ID: 25, CreatedAt: time.Now(), UpdatedAt: time.Now()}, MenuLevel: 0, ParentId: "14", Path: "autoCodeEdit/:id", Name: "autoCodeEdit", Hidden: true, Component: "view/systemTools/autoCode/index.vue", Sort: 0, Meta: system.Meta{Title: "自动化代码（复用）", Icon: "s-finance"}},
 }
 
-//@author: [SliverHorn](https://github.com/SliverHorn)
+// Init @author: [chenguanglan](https://github.com/chenguanglan)
 //@description: sys_base_menus 表数据初始化
 func (m *menu) Init() error {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {

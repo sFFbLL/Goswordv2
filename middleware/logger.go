@@ -29,7 +29,6 @@ func GinBodyLogMiddleware(c *gin.Context) string {
 	// 替换的目的是把 response 返回值缓存起来
 	w := &bodyLogWriter{body: &bytes.Buffer{}, ResponseWriter: c.Writer}
 	c.Writer = w
-	c.Next()
 	return w.body.String()
 }
 

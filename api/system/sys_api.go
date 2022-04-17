@@ -16,7 +16,7 @@ import (
 type SystemApiApi struct {
 }
 
-// CreateApi @Tags SysApi
+// @Tags SysApi
 // @Summary 创建基础api
 // @Security ApiKeyAuth
 // @accept application/json
@@ -24,6 +24,7 @@ type SystemApiApi struct {
 // @Param data body system.SysApi true "api路径, api中文描述, api组, 方法"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /api/createApi [post]
+
 func (s *SystemApiApi) CreateApi(c *gin.Context) {
 	var api system.SysApi
 	_ = c.ShouldBindJSON(&api)
@@ -39,7 +40,7 @@ func (s *SystemApiApi) CreateApi(c *gin.Context) {
 	}
 }
 
-// DeleteApi @Tags SysApi
+// @Tags SysApi
 // @Summary 删除api
 // @Security ApiKeyAuth
 // @accept application/json
@@ -47,6 +48,7 @@ func (s *SystemApiApi) CreateApi(c *gin.Context) {
 // @Param data body system.SysApi true "ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /api/deleteApi [post]
+
 func (s *SystemApiApi) DeleteApi(c *gin.Context) {
 	var api system.SysApi
 	_ = c.ShouldBindJSON(&api)
@@ -62,7 +64,7 @@ func (s *SystemApiApi) DeleteApi(c *gin.Context) {
 	}
 }
 
-// GetApiList @Tags SysApi
+// @Tags SysApi
 // @Summary 分页获取API列表
 // @Security ApiKeyAuth
 // @accept application/json
@@ -70,6 +72,7 @@ func (s *SystemApiApi) DeleteApi(c *gin.Context) {
 // @Param data body systemReq.SearchApiParams true "分页获取API列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiList [post]
+
 func (s *SystemApiApi) GetApiList(c *gin.Context) {
 	var pageInfo systemReq.SearchApiParams
 	_ = c.ShouldBindJSON(&pageInfo)
@@ -90,7 +93,7 @@ func (s *SystemApiApi) GetApiList(c *gin.Context) {
 	}
 }
 
-// GetApiById @Tags SysApi
+// @Tags SysApi
 // @Summary 根据id获取api
 // @Security ApiKeyAuth
 // @accept application/json
@@ -98,6 +101,7 @@ func (s *SystemApiApi) GetApiList(c *gin.Context) {
 // @Param data body request.GetById true "根据id获取api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /api/getApiById [post]
+
 func (s *SystemApiApi) GetApiById(c *gin.Context) {
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
@@ -114,7 +118,7 @@ func (s *SystemApiApi) GetApiById(c *gin.Context) {
 	}
 }
 
-// UpdateApi @Tags SysApi
+//  @Tags SysApi
 // @Summary 创建基础api
 // @Security ApiKeyAuth
 // @accept application/json
@@ -137,7 +141,7 @@ func (s *SystemApiApi) UpdateApi(c *gin.Context) {
 	}
 }
 
-// GetAllApis @Tags SysApi
+// @Tags SysApi
 // @Summary 获取所有的Api 不分页
 // @Security ApiKeyAuth
 // @accept application/json
@@ -153,7 +157,7 @@ func (s *SystemApiApi) GetAllApis(c *gin.Context) {
 	}
 }
 
-// DeleteApisByIds @Tags SysApi
+// @Tags SysApi
 // @Summary 删除选中Api
 // @Security ApiKeyAuth
 // @accept application/json
@@ -161,6 +165,7 @@ func (s *SystemApiApi) GetAllApis(c *gin.Context) {
 // @Param data body request.IdsReq true "ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
 // @Router /api/deleteApisByIds [delete]
+
 func (s *SystemApiApi) DeleteApisByIds(c *gin.Context) {
 	var ids request.IdsReq
 	_ = c.ShouldBindJSON(&ids)
