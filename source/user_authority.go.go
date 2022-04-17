@@ -17,10 +17,10 @@ var userAuthorityModel = []system.SysUseAuthority{
 	{1, 1},
 }
 
-//@description: user_authority 数据初始化
+// Init @description: user_authority 数据初始化
 func (a *userAuthority) Init() error {
 	return global.GSD_DB.Model(&system.SysUseAuthority{}).Transaction(func(tx *gorm.DB) error {
-		if tx.Where("sys_user_id IN (1)").Find(&[]system.SysUseAuthority{}).RowsAffected == 1 {
+		if tx.Where("sys_user_id IN (1)").Find(&[]system.SysUseAuthority{}).RowsAffected > 0 {
 			color.Danger.Println("\n[Mysql] --> sys_user_authority 表的初始数据已存在!")
 			return nil
 		}

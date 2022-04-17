@@ -1,20 +1,21 @@
 package system
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"project/global"
 	"project/model/common/request"
 	"project/model/common/response"
 	"project/model/system"
 	systemRes "project/model/system/response"
 	"project/utils"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type AuthorityMenuApi struct {
 }
 
-// GetMenuList @Tags Menu
+// @Tags Menu
 // @Summary 分页获取基础menu列表
 // @Produce application/json
 // @Param data body request.PageInfo true "页码, 每页大小"
@@ -40,7 +41,7 @@ func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
 	}
 }
 
-// AddMenu @Tags Menu
+// @Tags Menu
 // @Summary 菜单管理-新增菜单
 // @Produce application/json
 // @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
@@ -65,7 +66,7 @@ func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
 	}
 }
 
-// DeleteMenu @Tags Menu
+// @Tags Menu
 // @Summary 菜单管理-删除菜单
 // @Produce application/json
 // @Param data body request.GetById true "菜单id"
@@ -87,7 +88,7 @@ func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
 	}
 }
 
-// UpdateMenu @Tags Menu
+// @Tags Menu
 // @Summary 菜单管理-更新菜单
 // @Produce application/json
 // @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
@@ -112,7 +113,7 @@ func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 	}
 }
 
-// GetUserMenuTree @Tags Menu
+// @Tags Menu
 // @Summary 获取当前用户菜单
 // @Produce application/json
 // @Param data body request.Empty true "空"

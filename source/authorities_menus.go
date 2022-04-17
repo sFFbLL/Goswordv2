@@ -44,7 +44,7 @@ var authorityMenus = []AuthorityMenus{
 	{1, 25},
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: sys_authority_menus 表数据初始化
 func (a *authoritiesMenus) Init() error {
 	return global.GSD_DB.Table("sys_authority_menus").Transaction(func(tx *gorm.DB) error {

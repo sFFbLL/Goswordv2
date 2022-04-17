@@ -1,5 +1,24 @@
 basePath: /
 definitions:
+  request.CasbinInReceive:
+    properties:
+      authorityId:
+        description: 权限id
+        type: integer
+      casbinInfos:
+        items:
+          $ref: '#/definitions/request.CasbinInfo'
+        type: array
+    type: object
+  request.CasbinInfo:
+    properties:
+      method:
+        description: 方法
+        type: string
+      path:
+        description: 路径
+        type: string
+    type: object
   request.Empty:
     type: object
   request.GetById:
@@ -35,48 +54,6 @@ definitions:
     properties:
       recordId:
         type: integer
-    type: object
-  request.SearchApiParams:
-    properties:
-      apiGroup:
-        description: api组
-        type: string
-      createBy:
-        description: 创建人
-        type: integer
-      createdAt:
-        description: 创建时间
-        type: string
-      desc:
-        description: 排序方式:升序false(默认)|降序true
-        type: boolean
-      description:
-        description: api中文描述
-        type: string
-      id:
-        description: 主键ID
-        type: integer
-      method:
-        description: 方法:创建POST(默认)|查看GET|更新PUT|删除DELETE
-        type: string
-      orderKey:
-        description: 排序
-        type: string
-      page:
-        description: 页码
-        type: integer
-      pageSize:
-        description: 每页大小
-        type: integer
-      path:
-        description: api路径
-        type: string
-      updateBy:
-        description: 更新人
-        type: integer
-      updatedAt:
-        description: 更新时间
-        type: string
     type: object
   request.SetUserAuthorities:
     properties:
@@ -339,7 +316,7 @@ definitions:
       id:
         description: 主键ID
         type: integer
-      partenID:
+      parentID:
         type: integer
       updateBy:
         description: 更新人
@@ -445,69 +422,6 @@ info:
   title: Work Flow API
   version: 0.0.1
 paths:
-  /api/createApi:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: api路径, api中文描述, api组, 方法
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/system.SysApi'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"创建成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 创建基础api
-  /api/deleteApi:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: ID
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/system.SysApi'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"删除成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 删除api
-  /api/deleteApisByIds:
-    delete:
-      consumes:
-      - application/json
-      parameters:
-      - description: ID
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.IdsReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"删除成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 删除选中Api
   /api/getAllApis:
     post:
       consumes:
@@ -522,48 +436,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 获取所有的Api 不分页
-  /api/getApiById:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 根据id获取api
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.GetById'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"获取成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 根据id获取api
-  /api/getApiList:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 分页获取API列表
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.SearchApiParams'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"获取成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 分页获取API列表
+      tags:
+      - SysApi
   /api/updateApi:
     post:
       consumes:
@@ -585,6 +459,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 创建基础api
+      tags:
+      - SysApi
   /app/create:
     post:
       parameters:
@@ -641,6 +517,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 创建角色
+      tags:
+      - Authority
   /authority/deleteAuthority:
     post:
       consumes:
@@ -662,6 +540,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除角色
+      tags:
+      - Authority
   /authority/getAuthorityList:
     post:
       consumes:
@@ -683,6 +563,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 分页获取角色列表
+      tags:
+      - Authority
   /authority/updateAuthority:
     post:
       consumes:
@@ -704,6 +586,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 更新角色信息
+      tags:
+      - Authority
   /base/captcha:
     post:
       consumes:
@@ -718,6 +602,31 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 生成验证码
+      tags:
+      - Base
+  /casbin/UpdateCasbin:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 权限id, 权限模型列表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CasbinInReceive'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新角色api权限
+      tags:
+      - Casbin
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -756,6 +665,8 @@ paths:
                   type: string
               type: object
       summary: 菜单管理-新增菜单
+      tags:
+      - Menu
   /menu/deleteMenu:
     post:
       parameters:
@@ -778,6 +689,8 @@ paths:
                   type: string
               type: object
       summary: 菜单管理-删除菜单
+      tags:
+      - Menu
   /menu/getMenuList:
     post:
       parameters:
@@ -802,6 +715,8 @@ paths:
                   type: string
               type: object
       summary: 分页获取基础menu列表
+      tags:
+      - Menu
   /menu/getUserMenu:
     post:
       parameters:
@@ -826,6 +741,8 @@ paths:
                   type: string
               type: object
       summary: 获取当前用户菜单
+      tags:
+      - Menu
   /menu/updateMenu:
     post:
       parameters:
@@ -848,6 +765,8 @@ paths:
                   type: string
               type: object
       summary: 菜单管理-更新菜单
+      tags:
+      - Menu
   /record/data:
     get:
       parameters:
@@ -923,6 +842,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 创建SysOperationRecord
+      tags:
+      - SysOperationRecord
   /sysOperationRecord/deleteSysOperationRecord:
     delete:
       consumes:
@@ -944,6 +865,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除SysOperationRecord
+      tags:
+      - SysOperationRecord
   /sysOperationRecord/deleteSysOperationRecordByIds:
     delete:
       consumes:
@@ -965,6 +888,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 批量删除SysOperationRecord
+      tags:
+      - SysOperationRecord
   /sysOperationRecord/findSysOperationRecord:
     get:
       consumes:
@@ -986,6 +911,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 用id查询SysOperationRecord
+      tags:
+      - SysOperationRecord
   /sysOperationRecord/getSysOperationRecordList:
     get:
       consumes:
@@ -1007,6 +934,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 分页获取SysOperationRecord列表
+      tags:
+      - SysOperationRecord
   /task/dynamic:
     get:
       parameters:
@@ -1115,6 +1044,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 删除用户
+      tags:
+      - SysUser
   /user/setUserAuthorities:
     post:
       consumes:
@@ -1136,6 +1067,8 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 设置用户角色
+      tags:
+      - SysUser
 securityDefinitions:
   ApiKeyAuth:
     in: header

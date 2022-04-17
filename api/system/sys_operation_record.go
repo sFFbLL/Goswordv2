@@ -15,7 +15,7 @@ import (
 type OperationRecordApi struct {
 }
 
-// CreateSysOperationRecord @Tags SysOperationRecord
+// @Tags SysOperationRecord
 // @Summary 创建SysOperationRecord
 // @Security ApiKeyAuth
 // @accept application/json
@@ -34,7 +34,7 @@ func (s *OperationRecordApi) CreateSysOperationRecord(c *gin.Context) {
 	}
 }
 
-// DeleteSysOperationRecord @Tags SysOperationRecord
+// @Tags SysOperationRecord
 // @Summary 删除SysOperationRecord
 // @Security ApiKeyAuth
 // @accept application/json
@@ -53,7 +53,7 @@ func (s *OperationRecordApi) DeleteSysOperationRecord(c *gin.Context) {
 	}
 }
 
-// DeleteSysOperationRecordByIds @Tags SysOperationRecord
+// @Tags SysOperationRecord
 // @Summary 批量删除SysOperationRecord
 // @Security ApiKeyAuth
 // @accept application/json
@@ -72,7 +72,7 @@ func (s *OperationRecordApi) DeleteSysOperationRecordByIds(c *gin.Context) {
 	}
 }
 
-// FindSysOperationRecord @Tags SysOperationRecord
+// @Tags SysOperationRecord
 // @Summary 用id查询SysOperationRecord
 // @Security ApiKeyAuth
 // @accept application/json
@@ -95,7 +95,7 @@ func (s *OperationRecordApi) FindSysOperationRecord(c *gin.Context) {
 	}
 }
 
-// GetSysOperationRecordList @Tags SysOperationRecord
+// @Tags SysOperationRecord
 // @Summary 分页获取SysOperationRecord列表
 // @Security ApiKeyAuth
 // @accept application/json

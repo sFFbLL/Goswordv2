@@ -14,10 +14,10 @@ var Dept = new(dept)
 type dept struct{}
 
 var deptList = []system.SysDept{
-	{GSD_MODEL: global.GSD_MODEL{ID: 1, CreatedAt: time.Now(), UpdatedAt: time.Now()}, PartenID: 0, DeptName: "顶级部门"},
+	{GSD_MODEL: global.GSD_MODEL{ID: 1, CreatedAt: time.Now(), UpdatedAt: time.Now()}, ParentID: 0, DeptName: "顶级部门"},
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: sys_users 表数据初始化
 func (a *dept) Init() error {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {

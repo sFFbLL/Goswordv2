@@ -22,7 +22,7 @@ var CasbinServiceApp = new(CasbinService)
 
 func (casbinService *CasbinService) UpdateCasbin(authorityId string, casbinInfos []request.CasbinInfo) error {
 	casbinService.ClearCasbin(0, authorityId)
-	rules := [][]string{}
+	var rules [][]string
 	for _, v := range casbinInfos {
 		cm := system.CasbinModel{
 			Ptype:       "p",
@@ -33,7 +33,7 @@ func (casbinService *CasbinService) UpdateCasbin(authorityId string, casbinInfos
 		rules = append(rules, []string{cm.AuthorityId, cm.Path, cm.Method})
 	}
 	success, _ := global.GSD_Casbin.AddPolicies(rules)
-	if success == false {
+	if !success {
 		return errors.New("存在相同api,添加失败,请联系管理员")
 	}
 	return nil

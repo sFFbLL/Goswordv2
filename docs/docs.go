@@ -16,111 +16,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/createApi": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "创建基础api",
-                "parameters": [
-                    {
-                        "description": "api路径, api中文描述, api组, 方法",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/system.SysApi"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/deleteApi": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "删除api",
-                "parameters": [
-                    {
-                        "description": "ID",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/system.SysApi"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/deleteApisByIds": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "删除选中Api",
-                "parameters": [
-                    {
-                        "description": "ID",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.IdsReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/api/getAllApis": {
             "post": {
                 "security": [
@@ -134,77 +29,10 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "SysApi"
+                ],
                 "summary": "获取所有的Api 不分页",
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/getApiById": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "根据id获取api",
-                "parameters": [
-                    {
-                        "description": "根据id获取api",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.GetById"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/getApiList": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "分页获取API列表",
-                "parameters": [
-                    {
-                        "description": "分页获取API列表",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.SearchApiParams"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
@@ -227,6 +55,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "SysApi"
                 ],
                 "summary": "创建基础api",
                 "parameters": [
@@ -319,6 +150,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authority"
+                ],
                 "summary": "创建角色",
                 "parameters": [
                     {
@@ -353,6 +187,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Authority"
                 ],
                 "summary": "删除角色",
                 "parameters": [
@@ -389,6 +226,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Authority"
+                ],
                 "summary": "分页获取角色列表",
                 "parameters": [
                     {
@@ -423,6 +263,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Authority"
                 ],
                 "summary": "更新角色信息",
                 "parameters": [
@@ -459,10 +302,51 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Base"
+                ],
                 "summary": "生成验证码",
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"验证码获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/casbin/UpdateCasbin": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Casbin"
+                ],
+                "summary": "更新角色api权限",
+                "parameters": [
+                    {
+                        "description": "权限id, 权限模型列表",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CasbinInReceive"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -501,6 +385,9 @@ const docTemplate = `{
             "post": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Menu"
                 ],
                 "summary": "菜单管理-新增菜单",
                 "parameters": [
@@ -541,6 +428,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Menu"
+                ],
                 "summary": "菜单管理-删除菜单",
                 "parameters": [
                     {
@@ -579,6 +469,9 @@ const docTemplate = `{
             "post": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Menu"
                 ],
                 "summary": "分页获取基础menu列表",
                 "parameters": [
@@ -622,6 +515,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Menu"
+                ],
                 "summary": "获取当前用户菜单",
                 "parameters": [
                     {
@@ -663,6 +559,9 @@ const docTemplate = `{
             "post": {
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "Menu"
                 ],
                 "summary": "菜单管理-更新菜单",
                 "parameters": [
@@ -797,6 +696,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "SysOperationRecord"
+                ],
                 "summary": "创建SysOperationRecord",
                 "parameters": [
                     {
@@ -831,6 +733,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "SysOperationRecord"
                 ],
                 "summary": "删除SysOperationRecord",
                 "parameters": [
@@ -867,6 +772,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "SysOperationRecord"
+                ],
                 "summary": "批量删除SysOperationRecord",
                 "parameters": [
                     {
@@ -902,6 +810,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "SysOperationRecord"
+                ],
                 "summary": "用id查询SysOperationRecord",
                 "parameters": [
                     {
@@ -936,6 +847,9 @@ const docTemplate = `{
                 ],
                 "produces": [
                     "application/json"
+                ],
+                "tags": [
+                    "SysOperationRecord"
                 ],
                 "summary": "分页获取SysOperationRecord列表",
                 "parameters": [
@@ -1109,6 +1023,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "SysUser"
+                ],
                 "summary": "删除用户",
                 "parameters": [
                     {
@@ -1144,6 +1061,9 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "SysUser"
+                ],
                 "summary": "设置用户角色",
                 "parameters": [
                     {
@@ -1168,6 +1088,34 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "request.CasbinInReceive": {
+            "type": "object",
+            "properties": {
+                "authorityId": {
+                    "description": "权限id",
+                    "type": "integer"
+                },
+                "casbinInfos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/request.CasbinInfo"
+                    }
+                }
+            }
+        },
+        "request.CasbinInfo": {
+            "type": "object",
+            "properties": {
+                "method": {
+                    "description": "方法",
+                    "type": "string"
+                },
+                "path": {
+                    "description": "路径",
+                    "type": "string"
+                }
+            }
+        },
         "request.Empty": {
             "type": "object"
         },
@@ -1220,63 +1168,6 @@ const docTemplate = `{
             "properties": {
                 "recordId": {
                     "type": "integer"
-                }
-            }
-        },
-        "request.SearchApiParams": {
-            "type": "object",
-            "properties": {
-                "apiGroup": {
-                    "description": "api组",
-                    "type": "string"
-                },
-                "createBy": {
-                    "description": "创建人",
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "description": "创建时间",
-                    "type": "string"
-                },
-                "desc": {
-                    "description": "排序方式:升序false(默认)|降序true",
-                    "type": "boolean"
-                },
-                "description": {
-                    "description": "api中文描述",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "主键ID",
-                    "type": "integer"
-                },
-                "method": {
-                    "description": "方法:创建POST(默认)|查看GET|更新PUT|删除DELETE",
-                    "type": "string"
-                },
-                "orderKey": {
-                    "description": "排序",
-                    "type": "string"
-                },
-                "page": {
-                    "description": "页码",
-                    "type": "integer"
-                },
-                "pageSize": {
-                    "description": "每页大小",
-                    "type": "integer"
-                },
-                "path": {
-                    "description": "api路径",
-                    "type": "string"
-                },
-                "updateBy": {
-                    "description": "更新人",
-                    "type": "integer"
-                },
-                "updatedAt": {
-                    "description": "更新时间",
-                    "type": "string"
                 }
             }
         },
@@ -1645,7 +1536,7 @@ const docTemplate = `{
                     "description": "主键ID",
                     "type": "integer"
                 },
-                "partenID": {
+                "parentID": {
                     "type": "integer"
                 },
                 "updateBy": {

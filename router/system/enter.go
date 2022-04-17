@@ -8,4 +8,5 @@ type RouterGroup struct {
 	AuthorityRouter
 	ApiRouter
 	OperationRecordRouter
+	CasbinRouter
 }

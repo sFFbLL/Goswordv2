@@ -18,7 +18,7 @@ var authorities = []system.SysAuthority{
 	{CreatedAt: time.Now(), UpdatedAt: time.Now(), AuthorityId: 1, AuthorityName: "超级管理员", DataScope: "全部", Level: 1},
 }
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: sys_authorities 表数据初始化
 func (a *authority) Init() error {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {

@@ -87,15 +87,6 @@ func (userService *UserService) UpdatePassword(u *system.SysUser, newPassword st
 	return err, u
 }
 
-// SetUserAuthority @author: [chenguanglan](https://github.com/sFFbLL)
-//@function: SetUserAuthority
-//@description: 设置一个用户的权限
-//@param: uuid uuid.UUID, authorityId string
-//@return: err error
-func (userService *UserService) SetUserAuthority(id uint, uuid uuid.UUID, authorityId string) (err error) {
-	return err
-}
-
 // SetUserAuthorities @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetUserAuthorities
 //@description: 设置一个用户的权限
