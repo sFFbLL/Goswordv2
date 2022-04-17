@@ -8,4 +8,5 @@ type SysGroup struct {
 	AuthorityService
 	MenuService
 	ApiService
+	DeptService
 }
