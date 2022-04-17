@@ -72,7 +72,9 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
 	InspectorId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
-	if err, schedule := taskService.GetScheduleList(InspectorId); err != nil {
+	var app WorkFlowReq.App
+	_ = c.ShouldBindJSON(&app)
+	if err, schedule := taskService.GetScheduleList(InspectorId,app.AppId); err != nil {
 		global.GSD_LOG.ZapLog.Error("获取我的待办信息失败", zap.Error(err))
 		response.FailWithMessage("获取我的待办信息失败", c)
 		return

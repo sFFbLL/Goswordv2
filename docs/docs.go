@@ -914,36 +914,6 @@ const docTemplate = `{
                 "summary": "我处理的",
                 "parameters": [
                     {
-                        "description": "审批状态, 审批人",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/task/handle": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Task"
-                ],
-                "summary": "我处理的",
-                "parameters": [
-                    {
                         "description": "审批人",
                         "name": "data",
                         "in": "body",
@@ -1123,7 +1093,7 @@ const docTemplate = `{
             "properties": {
                 "authorityId": {
                     "description": "权限id",
-                    "type": "string"
+                    "type": "integer"
                 },
                 "casbinInfos": {
                     "type": "array",
@@ -1566,7 +1536,7 @@ const docTemplate = `{
                     "description": "主键ID",
                     "type": "integer"
                 },
-                "partenID": {
+                "parentID": {
                     "type": "integer"
                 },
                 "updateBy": {

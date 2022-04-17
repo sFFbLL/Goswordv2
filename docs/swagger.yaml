@@ -4,7 +4,7 @@ definitions:
     properties:
       authorityId:
         description: 权限id
-        type: string
+        type: integer
       casbinInfos:
         items:
           $ref: '#/definitions/request.CasbinInfo'
@@ -316,7 +316,7 @@ definitions:
       id:
         description: 主键ID
         type: integer
-      partenID:
+      parentID:
         type: integer
       updateBy:
         description: 更新人
@@ -958,7 +958,7 @@ paths:
   /task/handle:
     get:
       parameters:
-      - description: 审批状态, 审批人
+      - description: 审批人
         in: body
         name: data
         required: true
