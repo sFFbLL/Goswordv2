@@ -23,6 +23,7 @@ func main() {
 	global.GSD_VP = core.Viper()            // 初始化Viper
 	global.GSD_LOG = core.Zap()             // 初始化zap日志库
 	global.GSD_DB = initialize.Gorm()       // gorm连接数据库
+	global.GSD_REDIS = initialize.Redis()   // 初始化redis
 	global.GSD_Casbin = initialize.Casbin() // casbin初始化
 	if global.GSD_DB != nil {
 		//initialize.MysqlTables(global.GSD_DB) // 初始化表
