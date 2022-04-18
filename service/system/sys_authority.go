@@ -91,6 +91,16 @@ func (authorityService *AuthorityService) GetAuthorityInfo(auth system.SysAuthor
 	return err, sa
 }
 
+// GetAuthorityInfo @author: [chenguanglan](https://github.com/sFFbLL)
+//@function: GetAuthorityInfoByIDs
+//@description: 根据角色id切片获取所有角色信息
+//@param: authIds []uint
+//@return: err error, sa []model.SysAuthority
+func (authorityService *AuthorityService) GetAuthorityInfoByIDs(authIds []uint) (err error, sa []system.SysAuthority) {
+	err = global.GSD_DB.Preload("SysBaseMenus").Preload("Depts").Where("authority_id in (?)", authIds).Find(&sa).Error
+	return err, sa
+}
+
 // GetAuthorityBasicInfo @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetAuthorityBasicInfo
 //@description: 获取基本角色信息

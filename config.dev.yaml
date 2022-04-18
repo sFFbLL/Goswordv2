@@ -60,7 +60,7 @@ mysql:
   password: 'cpp@19990909'
   max-idle-conns: 10
   max-open-conns: 100
-  log-mode: 'info'
+  log-mode: 'debug'
   log-zap: false
 
 # local configuration

@@ -70,8 +70,14 @@ func JWTAuth() gin.HandlerFunc {
 				_ = jwtService.SetRedisJWT(newToken, newClaims.Username)
 			}
 		}
-		c.Set("claims", claims)
-		c.Next()
+		if userInfo, err := jwtService.GetRedisUserInfo(claims.UUID.String()); err != nil {
+			//载入上下文
+			response.FailWithDetailed(gin.H{"reload": true}, "授权已过期", c)
+			c.Abort()
+		} else {
+			c.Set("claims", &userInfo)
+			c.Next()
+		}
 	}
 }
 

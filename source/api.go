@@ -55,13 +55,18 @@ var apis = []system.SysApi{
 	{global.GSD_MODEL{ID: 38, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/api/deleteApisByIds", "批量删除api", "api", "DELETE"},
 	{global.GSD_MODEL{ID: 39, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/setUserAuthorities", "设置权限组", "user", "POST"},
 	{global.GSD_MODEL{ID: 40, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/getUserInfo", "获取自身信息（必选）", "user", "GET"},
+	{global.GSD_MODEL{ID: 41, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/addDept", "新增部门（必选）", "department", "POST"},
+	{global.GSD_MODEL{ID: 42, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/deleteDept", "删除部门（必选）", "department", "POST"},
+	{global.GSD_MODEL{ID: 43, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/updateDept", "更新部门（必选）", "department", "POST"},
+	{global.GSD_MODEL{ID: 44, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/lists", "查询部门列表（必选）", "department", "POST"},
+	{global.GSD_MODEL{ID: 45, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/id", "根据parentID查询部门（必选）", "department", "POST"},
 }
 
 // Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: sys_apis 表数据初始化
 func (a *api) Init() error {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
-		if tx.Where("id IN ?", []int{1, 40}).Find(&[]system.SysApi{}).RowsAffected == 2 {
+		if tx.Where("id IN ?", []int{1, 45}).Find(&[]system.SysApi{}).RowsAffected == 2 {
 			color.Danger.Println("\n[Mysql] --> sys_apis 表的初始数据已存在!")
 			return nil
 		}

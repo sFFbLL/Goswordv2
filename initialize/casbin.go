@@ -48,6 +48,5 @@ func paramsMatch(fullNameKey1 string, key2 string) bool {
 func paramsMatchFunc(args ...interface{}) (interface{}, error) {
 	name1 := args[0].(string)
 	name2 := args[1].(string)
-
 	return paramsMatch(name1, name2), nil
 }
