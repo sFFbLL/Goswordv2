@@ -4,6 +4,7 @@ import (
 	"project/global"
 	"project/model/common/response"
 	"project/model/system/request"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,15 +13,18 @@ import (
 func CasbinHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		claims, _ := c.Get("claims")
-		waitUse := claims.(*request.CustomClaims)
+		waitUse := claims.(*request.UserCache)
 		// 获取请求的URI
 		obj := c.Request.URL.RequestURI()
 		// 获取请求方法
 		act := c.Request.Method
-		// 获取用户的角色
-		sub := waitUse.ID
 		// 判断策略中是否存在
-		success, _ := global.GSD_Casbin.Enforce(sub, obj, act)
+		success := false
+		// 获取用户的角色
+		for _, v := range waitUse.Authority {
+			sub := strconv.Itoa(int(v.AuthorityId))
+			success, _ = global.GSD_Casbin.Enforce(sub, obj, act)
+		}
 		if global.GSD_CONFIG.System.Env == "develop" || success {
 			c.Next()
 		} else {

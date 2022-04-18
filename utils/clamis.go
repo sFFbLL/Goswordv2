@@ -10,12 +10,12 @@ import (
 )
 
 // 从Gin的Context中获取从jwt解析出来的用户信息
-func GetUser(c *gin.Context) *systemReq.CustomClaims {
+func GetUser(c *gin.Context) *systemReq.UserCache {
 	if claims, exists := c.Get("claims"); !exists {
 		global.GSD_LOG.Error(c, "从Gin的Context中获取从jwt解析出来的用户失败, 请检查路由是否使用jwt中间件!")
 		return nil
 	} else {
-		waitUse := claims.(*systemReq.CustomClaims)
+		waitUse := claims.(*systemReq.UserCache)
 		return waitUse
 	}
 }
@@ -26,18 +26,18 @@ func GetUserID(c *gin.Context) uint {
 		global.GSD_LOG.Error(c, "从Gin的Context中获取从jwt解析出来的用户ID失败, 请检查路由是否使用jwt中间件!")
 		return 0
 	} else {
-		waitUse := claims.(*systemReq.CustomClaims)
+		waitUse := claims.(*systemReq.UserCache)
 		return waitUse.ID
 	}
 }
 
 // 从Gin的Context中获取从jwt解析出来的用户UUID
-func GetUserUuid(c *gin.Context) uuid.UUID {
+func GetUserUuid(c *gin.Context) string {
 	if claims, exists := c.Get("claims"); !exists {
 		global.GSD_LOG.Error(c, "从Gin的Context中获取从jwt解析出来的用户UUID失败, 请检查路由是否使用jwt中间件!")
-		return uuid.UUID{}
+		return uuid.UUID{}.String()
 	} else {
-		waitUse := claims.(*systemReq.CustomClaims)
+		waitUse := claims.(*systemReq.UserCache)
 		return waitUse.UUID
 	}
 }
@@ -48,7 +48,7 @@ func GetUserAuthority(c *gin.Context) []system.SysAuthority {
 		global.GSD_LOG.Error(c, "从Gin的Context中获取从jwt解析出来的用户角色失败, 请检查路由是否使用jwt中间件!")
 		return nil
 	} else {
-		waitUse := claims.(*systemReq.CustomClaims)
+		waitUse := claims.(*systemReq.UserCache)
 		return waitUse.Authority
 	}
 }

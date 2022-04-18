@@ -2,10 +2,11 @@ package system
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"project/global"
 	"project/model/common/request"
 	"project/model/system"
+
+	"gorm.io/gorm"
 )
 
 type DeptService struct {
@@ -76,7 +77,7 @@ func (departService *DeptService) GetDeptList(info request.PageInfo, deptId []ui
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GSD_DB.Model(&system.SysDept{})
 	var dept []system.SysDept
-	err = db.Count(&total).Error
+	err = db.Count(&total).Where("parent_id = ?", 0).Error
 	if isAll {
 		err = db.Limit(limit).Offset(offset).Find(&dept).Order("dept_sort").Error
 	} else {

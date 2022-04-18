@@ -17,7 +17,7 @@ type DataScope struct {
 //@description: 获取数据权限
 //@param: user request.CustomClaims
 //@return: dataScope []uint 部门id, isAll bool 是否为全部
-func (DataScope) GetDataScope(user *request.CustomClaims) (dataScope []uint, isAll bool) {
+func (DataScope) GetDataScope(user *request.UserCache) (dataScope []uint, isAll bool) {
 	keyMap, all := getDataScopeMap(user)
 	if all {
 		return dataScope, true
@@ -33,7 +33,7 @@ func (DataScope) GetDataScope(user *request.CustomClaims) (dataScope []uint, isA
 //@description: 是否有权操作该数据
 //@param: users []system.SysUser 操作用户对象
 //@return: bool 是否有权操作对象
-func (d DataScope) CanDoToTargetUser(user *request.CustomClaims, users []*system.SysUser) bool {
+func (d DataScope) CanDoToTargetUser(user *request.UserCache, users []*system.SysUser) bool {
 	//校验等级
 	maxLevel := d.GetMaxLevel(user.Authority)
 	for _, user := range users {
@@ -72,7 +72,7 @@ func (DataScope) GetMaxLevel(roles []system.SysAuthority) (maxLevel uint) {
 //@description: 获取数据权限
 //@param: user request.CustomClaims
 //@return: dataScope []uint 部门id, isAll bool 是否为全部
-func getDataScopeMap(user *request.CustomClaims) (keyMap map[uint]uint, isAll bool) {
+func getDataScopeMap(user *request.UserCache) (keyMap map[uint]uint, isAll bool) {
 	keyMap = make(map[uint]uint, 0)
 	for _, authority := range user.Authority {
 		if authority.DataScope == "全部" {
