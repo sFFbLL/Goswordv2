@@ -813,43 +813,8 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< Updated upstream
         "/menu/updateMenu": {
             "post": {
-=======
-        "/task/handle": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Task"
-                ],
-                "summary": "我处理的",
-                "parameters": [
-                    {
-                        "description": "审批状态, 审批人",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/task/inspect": {
-            "put": {
->>>>>>> Stashed changes
                 "produces": [
                     "application/json"
                 ],
@@ -1248,7 +1213,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"已审核\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"审批成功\"}",
                         "schema": {
                             "type": "string"
                         }

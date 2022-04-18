@@ -1203,11 +1203,7 @@ paths:
   /task/handle:
     get:
       parameters:
-<<<<<<< Updated upstream
       - description: 审批人
-=======
-      - description: 审批状态, 审批人
->>>>>>> Stashed changes
         in: body
         name: data
         required: true
@@ -1236,7 +1232,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"已审核"}'
+          description: '{"success":true,"data":{},"msg":"审批成功"}'
           schema:
             type: string
       summary: 审批（通过||拒绝）
