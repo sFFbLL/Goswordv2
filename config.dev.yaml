@@ -8,7 +8,7 @@ jwt:
 
 # zap logger configuration
 zap:
-  level: 'debug'
+  level: 'info'
   format: 'console'
   prefix: '[RZ-WORK-FLOW]'
   director: 'log'
@@ -55,7 +55,7 @@ captcha:
 mysql:
   path: 'cppwnn.top:3306'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
-  db-name: 'test_work_flow'
+  db-name: 'work_flow'
   username: 'root'
   password: 'cpp@19990909'
   max-idle-conns: 10
