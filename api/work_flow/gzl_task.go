@@ -46,7 +46,7 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
-// @Param data body WorkFlowReq.Record true "记录id"
+// @Param data header WorkFlowReq.Record true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
@@ -106,7 +106,7 @@ func (t *TaskApi) Handle(c *gin.Context) {
 // @Tags Task
 // @Summary 我收到的
 // @Produce  application/json
-// @Param data query uint8  true "节点类型"
+// @Param data header uint8  true "节点类型"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]
 func (t *TaskApi) Receive(c *gin.Context) {
@@ -119,5 +119,4 @@ func (t *TaskApi) Receive(c *gin.Context) {
 		global.GSD_LOG.ZapLog.Info("我收到的信息成功返回", zap.Any("success", tasks))
 		response.OkWithData(tasks, c)
 	}
-
 }

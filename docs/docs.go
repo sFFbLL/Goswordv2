@@ -59,7 +59,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "name": "appId",
-                        "in": "query"
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -276,7 +276,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "name": "recordId",
-                        "in": "query"
+                        "in": "formData"
                     }
                 ],
                 "responses": {
@@ -330,13 +330,11 @@ const docTemplate = `{
                 "summary": "提交表单",
                 "parameters": [
                     {
+                        "type": "integer",
                         "description": "string",
                         "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "in": "formData",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -360,18 +358,44 @@ const docTemplate = `{
                 "summary": "流程动态信息",
                 "parameters": [
                     {
-                        "description": "记录id",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.Record"
-                        }
+                        "type": "integer",
+                        "name": "recordId",
+                        "in": "formData"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"ok\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/handle": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "我处理的",
+                "parameters": [
+                    {
+                        "description": "审批状态, 审批人",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -423,7 +447,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "节点类型",
                         "name": "data",
-                        "in": "query",
+                        "in": "formData",
                         "required": true
                     }
                 ],
@@ -568,14 +592,6 @@ const docTemplate = `{
                 },
                 "pageSize": {
                     "description": "每页大小",
-                    "type": "integer"
-                }
-            }
-        },
-        "request.Record": {
-            "type": "object",
-            "properties": {
-                "recordId": {
                     "type": "integer"
                 }
             }

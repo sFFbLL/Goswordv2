@@ -22,11 +22,6 @@ definitions:
         description: 每页大小
         type: integer
     type: object
-  request.Record:
-    properties:
-      recordId:
-        type: integer
-    type: object
   request.SetUserAuthorities:
     properties:
       authorityIds:
@@ -214,7 +209,7 @@ paths:
   /app/empty:
     get:
       parameters:
-      - in: query
+      - in: formData
         name: appId
         type: integer
       produces:
@@ -344,7 +339,7 @@ paths:
   /record/data:
     get:
       parameters:
-      - in: query
+      - in: formData
         name: recordId
         type: integer
       produces:
@@ -380,11 +375,10 @@ paths:
     post:
       parameters:
       - description: string
-        in: body
+        in: formData
         name: data
         required: true
-        schema:
-          type: integer
+        type: integer
       produces:
       - application/json
       responses:
@@ -398,12 +392,9 @@ paths:
   /task/dynamic:
     get:
       parameters:
-      - description: 记录id
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.Record'
+      - in: formData
+        name: recordId
+        type: integer
       produces:
       - application/json
       responses:
@@ -412,6 +403,25 @@ paths:
           schema:
             type: string
       summary: 流程动态信息
+      tags:
+      - Task
+  /task/handle:
+    get:
+      parameters:
+      - description: 审批状态, 审批人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
+          schema:
+            type: string
+      summary: 我处理的
       tags:
       - Task
   /task/inspect:
@@ -437,7 +447,7 @@ paths:
     get:
       parameters:
       - description: 节点类型
-        in: query
+        in: formData
         name: data
         required: true
         type: integer
