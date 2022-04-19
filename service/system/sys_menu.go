@@ -10,7 +10,7 @@ import (
 
 type MenuService struct{}
 
-// GetMenuList @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetInfoList
 //@description: 获取路由分页
 //@return: err error, list interface{}, total int64
@@ -24,7 +24,7 @@ func (menuService *MenuService) GetMenuList() (err error, list interface{}, tota
 	return err, menuList, total
 }
 
-//getBaseMenuTreeMap @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: getBaseMenuTreeMap
 //@description: 获取路由总树map
 //@return: err error, treeMap map[string][]model.SysBaseMenu
@@ -38,7 +38,7 @@ func (menuService *MenuService) getBaseMenuTreeMap() (err error, treeMap map[str
 	return err, treeMap
 }
 
-//getBaseChildrenList @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: getBaseMenuTreeMap
 //@description: 获取菜单子菜单
 //@param: menu *model.SysBaseMenu, treeMap map[string][]model.SysBaseMenu
@@ -51,11 +51,12 @@ func (menuService *MenuService) getBaseChildrenList(menu *system.SysBaseMenu, tr
 	return err
 }
 
-// AddMenu @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: AddMenu
 //@description: 菜单管理-新增菜单
 //@param: menu system.SysBaseMenu
 //@return: err error
+
 func (menuService *MenuService) AddMenu(menu system.SysBaseMenu) error {
 	if !errors.Is(global.GSD_DB.Where("name = ?", menu.Name).First(&system.SysBaseMenu{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("已存在name,请修改name")
@@ -63,11 +64,12 @@ func (menuService *MenuService) AddMenu(menu system.SysBaseMenu) error {
 	return global.GSD_DB.Create(&menu).Error
 }
 
-// DeleteMenu @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: DeleteMenu
 //@description: 菜单管理-删除菜单
 //@param: id uint
 //@return: err error
+
 func (menuService *MenuService) DeleteMenu(id uint) (err error) {
 	err = global.GSD_DB.Preload("Parameters").Where("parent_id = ?", id).First(&system.SysBaseMenu{}).Error
 	if err != nil {
@@ -91,7 +93,7 @@ func (menuService *MenuService) DeleteMenu(id uint) (err error) {
 	return err
 }
 
-// UpdateMenu @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: UpdateMenu
 //@description: 菜单管理-更新菜单
 //@param: menu system.SysBaseMenu
@@ -144,7 +146,7 @@ func (menuService *MenuService) UpdateMenu(menu system.SysBaseMenu) (err error) 
 	return err
 }
 
-// GetUserMenu @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetMenuTree
 //@description: 获取用户菜单
 //@param: ids []system.SysAuthority
@@ -158,7 +160,7 @@ func (menuService *MenuService) GetUserMenu(ids []system.SysAuthority) (err erro
 	return err, menus
 }
 
-// GetUserMenu @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetMenuTree
 //@description: 获取用户菜单
 //@param: ids []system.SysAuthority
@@ -184,7 +186,7 @@ func (menuService *MenuService) getMenuTree(authorities []system.SysAuthority) (
 	return err, treeMap
 }
 
-// getChildrenList @author: [houruotong](https://github.com/Monkey-Pear)
+//@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetMenuTree
 //@description: 获取用户菜单的子菜单
 //@param: menu *system.SysMenu, treeMap map[string][]system.SysMenu

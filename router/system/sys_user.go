@@ -21,5 +21,8 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouter.PUT("setUserInfo", baseApi.SetUserInfo)                //修改用户信息
 		userRouter.DELETE("deleteUser", baseApi.DeleteUser)               //用户删除
 		userRouter.POST("setUserAuthorities", baseApi.SetUserAuthorities) //设置用户角色
+		userRouter.POST("importExcel", baseApi.ImportExcel)               //导入用户信息
+		userRouter.GET("loadExcel", baseApi.LoadExcel)                    //加载excel数据
+		userRouter.POST("exportExcel", baseApi.ExportExcel)               //导出用户数据
 	}
 }
