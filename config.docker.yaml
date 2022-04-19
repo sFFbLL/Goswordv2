@@ -1,8 +1,8 @@
-# Gin-Vue-Admin Global Configuration
+# workflow Global Configuration
 
 # jwt configuration
 jwt:
-  signing-key: 'qmPlus'
+  signing-key: 'workflow'
   expires-time: 604800
   buffer-time: 86400
 
@@ -10,7 +10,7 @@ jwt:
 zap:
   level: 'info'
   format: 'console'
-  prefix: '[GIN-VUE-ADMIN]'
+  prefix: '[RZ-WORK-FLOW]'
   director: 'log'
   link-name: 'latest_log'
   show-line: true
@@ -21,8 +21,8 @@ zap:
 # redis configuration
 redis:
   db: 0
-  addr: '177.7.0.14:6379'
-  password: ''
+  addr: 'cppwnn.top:6379'
+  password: 'cpp@19990909'
 
 # email configuration
 email:
@@ -42,9 +42,8 @@ casbin:
 system:
   env: 'public'  # Change to "develop" to skip authentication for development mode
   addr: 8888
-  db-type: 'mysql'
-  oss-type: 'local'    # 控制oss选择走本期还是 七牛等其他仓 自行增加其他oss仓可以在 server/utils/upload/upload.go 中 NewOss函数配置
   use-multipoint: false
+  oss-type: 'local'    # 控制oss选择走本期还是 七牛等其他仓 自行增加其他oss仓可以在 server/utils/upload/upload.go 中 NewOss函数配置
 
 # captcha configuration
 captcha:
@@ -54,14 +53,14 @@ captcha:
 
 # mysql connect configuration
 mysql:
-  path: ''
-  config: ''
-  db-name: ''
-  username: ''
-  password: ''
+  path: 'cppwnn.top:3306'
+  config: 'charset=utf8mb4&parseTime=True&loc=Local'
+  db-name: 'work_flow'
+  username: 'root'
+  password: 'cpp@19990909'
   max-idle-conns: 10
   max-open-conns: 100
-  log-mode: ""
+  log-mode: 'debug'
   log-zap: false
 
 # local configuration
@@ -73,50 +72,31 @@ autocode:
   transfer-restart: true
   root: ""
   server: /server
-  server-api: /api/v1
+  server-api: /api/v1/autocode
   server-initialize: /initialize
-  server-model: /model
-  server-request: /model/request/
-  server-router: /router
-  server-service: /service
+  server-model: /model/autocode
+  server-request: /model/autocode/request/
+  server-router: /router/autocode
+  server-service: /service/autocode
   web: /web/src
   web-api: /api
   web-flow: /view
   web-form: /view
   web-table: /view
 
-# qiniu configuration (请自行七牛申请对应的 公钥 私钥 bucket 和 域名地址)
+# qiniu configuration
 qiniu:
-  zone: 'ZoneHuaDong'
-  bucket: ''
-  img-path: ''
+  zone: 'ZoneHuanan'
+  bucket: 'ruanzhu-workflow'
+  img-path: 'r9qsta3s9.hn-bkt.clouddn.com'
   use-https: false
-  access-key: ''
-  secret-key: ''
+  access-key: 'kxtFkOLoWc7NOeUeH4U8vburLbrB_yZMkmVAnpAc'
+  secret-key: 'tUlVBk7EBHpHzWVKdp_3IAEh0c77yBzAYPD7xmq7'
   use-cdn-domains: false
-
-
-# aliyun oss configuration
-aliyun-oss:
-  endpoint: 'yourEndpoint'
-  access-key-id: 'yourAccessKeyId'
-  access-key-secret: 'yourAccessKeySecret'
-  bucket-name: 'yourBucketName'
-  bucket-url: 'yourBucketUrl'
-
-# tencent cos configuration
-tencent-cos:
-  bucket: 'xxxxx-10005608'
-  region: 'ap-shanghai'
-  secret-id: 'xxxxxxxx'
-  secret-key: 'xxxxxxxx'
-  base-url: 'https://gin.vue.admin'
-  path-prefix: 'gin-vue-admin'
 
 # excel configuration
 excel:
   dir: './resource/excel/'
-
 
 # timer task db clear table
 Timer:
