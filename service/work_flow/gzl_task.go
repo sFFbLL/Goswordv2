@@ -46,7 +46,30 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowReq.D
 	return
 }
 
-func (t *TaskService) GetScheduleList(InspectorId int) (err error, tasks []work_flow.GzlTask) {
+// GetScheduleList
+// @author: [zhaozijie](https://github.com/worryfreet)
+// @function: GetScheduleList
+// @description: 从mysql中获取待办数据
+// @param: WorkFlowReq.Task
+// @return: data []WorkFlowReq.Schedule, err error
+func (t *TaskService) GetScheduleList(inspectorId, appid int) (err error, tasks []WorkFlowReq.Schedule) {
+	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
+		Joins("JOIN sys_users ON sys_users.id = ?", inspectorId).
+		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
+		Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
+			"gzl_apps.name as AppName", "check_state as CheckState").
+		Where("gzl_tasks.inspector=Inspector")
+	if err = db.Find(&tasks, "inspector = ?", inspectorId).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
+			return nil, nil
+		} else {
+			return
+		}
+	}
+	return
+}
+
+func (t *TaskService) GetHandleList(InspectorId int) (err error, tasks []work_flow.GzlTask) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}) //查表GzlTask
 	if err = db.Find(&tasks, "inspector = ?", InspectorId).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
@@ -70,8 +93,20 @@ func (t *TaskService) GetScheduleList(InspectorId int) (err error, tasks []work_
 //	return
 //}
 
-func (t *TaskService) Inspect(task work_flow.GzlTask) (err error) {
-	return global.GSD_DB.Updates(&task).Error
+func (t *TaskService) Inspect(task work_flow.GzlTask) error {
+	//获取任务详细信息
+	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		taskInfo, err := t.GetTaskInfo(task.ID)
+		if err != nil {
+			return err
+		}
+		//流程流转
+		err = ProcessFlow(taskInfo.Record)
+		if err != nil {
+			return err
+		}
+		return tx.Updates(&task).Error
+	})
 }
 
 // GetReceive
@@ -88,4 +123,10 @@ func (t TaskService) GetReceive(userId int) (err error, tasks []modelWF.GzlTask)
 	// 5. 当前节点
 
 	return
+}
+
+// GetTaskInfo 根据id获取信息
+func (t TaskService) GetTaskInfo(taskId uint) (task work_flow.GzlTask, err error) {
+	err = global.GSD_DB.Preload("Record.App").First(&task, taskId).Error
+	return task, err
 }

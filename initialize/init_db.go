@@ -9,6 +9,11 @@ import (
 	"go.uber.org/zap"
 )
 
+// InitDB InitDB
+//@author: [chenguanglan](https://github.com/sFFbLL)
+//@function: MysqlTables
+//@description: 初始化数据库表专用
+//@param: db *gorm.DB
 func InitDB() {
 	err := initDB(
 		source.Admin,
@@ -18,8 +23,8 @@ func InitDB() {
 		source.AuthorityMenu,
 		source.Dept,
 		source.UserAuthority,
-		//source.Api,
-		//source.Casbin,
+		source.Api,
+		source.Casbin,
 	)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("init table data failed", zap.Any("err", err))

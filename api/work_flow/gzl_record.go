@@ -17,7 +17,7 @@ type RecordApi struct {
 // @Tags Record
 // @Summary 提交表单
 // @Produce  application/json
-// @Param data header uint true "string"  // TODO 修改入参结构体
+// @Param data query uint true "string"  // TODO 修改入参结构体
 // @Success 200 {} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
@@ -28,7 +28,7 @@ func (r *RecordApi) Submit(c *gin.Context) {
 // @Tags Record
 // @Summary 返回之前填写过的表单数据
 // @Produce  application/json
-// @Param id header WorkFlowReq.Record true "记录id"
+// @Param id query WorkFlowReq.Record true "记录id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/data [get]
 func (r *RecordApi) Data(c *gin.Context) {

@@ -11,7 +11,7 @@ var AuthorityMenu = new(authorityMenu)
 
 type authorityMenu struct{}
 
-//@author: [chenguanglan](https://github.com/sFFbLL)
+// Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: authority_menu 视图数据初始化
 func (a *authorityMenu) Init() error {
 	if global.GSD_DB.Find(&[]system.SysMenu{}).RowsAffected > 0 {

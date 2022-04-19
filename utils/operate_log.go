@@ -3,11 +3,12 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 //@author: [houruotong](https://github.com/Monkey-Pear)
@@ -25,7 +26,7 @@ func OperateRequestLog(c *gin.Context) ([]byte, []byte) {
 		c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 		var mPost map[string]string
 		_ = json.Unmarshal(body, &mPost)
-		for k, _ := range mPost {
+		for k := range mPost {
 			if k == "phone" {
 				delete(mPost, k)
 			}

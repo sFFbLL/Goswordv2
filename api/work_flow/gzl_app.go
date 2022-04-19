@@ -16,7 +16,7 @@ type AppApi struct {
 // @Tags App
 // @Summary 返回空表单
 // @Produce  application/json
-// @Param data header WorkFlowReq.App true "string"
+// @Param data query WorkFlowReq.App true "string"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /app/empty [get]
 func (f *AppApi) Empty(c *gin.Context) {

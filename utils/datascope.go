@@ -22,7 +22,7 @@ func (DataScope) GetDataScope(user *request.CustomClaims) (dataScope []uint, isA
 	if all {
 		return dataScope, true
 	}
-	for deptId, _ := range keyMap {
+	for deptId := range keyMap {
 		dataScope = append(dataScope, deptId)
 	}
 	return dataScope, false

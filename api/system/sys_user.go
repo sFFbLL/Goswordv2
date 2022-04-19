@@ -152,7 +152,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 	}
 }
 
-// DeleteUser @Tags SysUser
+// @Tags SysUser
 // @Summary 删除用户
 // @Security ApiKeyAuth
 // @accept application/json
@@ -196,7 +196,7 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 	}
 }
 
-// SetUserAuthorities @Tags SysUser
+// @Tags SysUser
 // @Summary 设置用户角色
 // @Security ApiKeyAuth
 // @accept application/json
@@ -207,6 +207,10 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 	var sua systemReq.SetUserAuthorities
 	_ = c.ShouldBindJSON(&sua)
+	if err := utils.Verify(sua, utils.SetUserAuthorityVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	curUser := utils.GetUser(c)
 	err, updateUser := userService.FindUserById(sua.ID)
 	if err != nil {
@@ -221,18 +225,18 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 		response.FailWithMessage("操作失败, 无权操作该用户!", c)
 		return
 	}
-	var updateAuthoritys []system.SysAuthority
+	var updateAuthorities []system.SysAuthority
 	for _, authorityId := range sua.AuthorityIds {
 		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
 			global.GSD_LOG.Error(c, "设置角色不存在!")
 			response.FailWithMessage("设置角色不存在!", c)
 			return
 		} else {
-			updateAuthoritys = append(updateAuthoritys, authority)
+			updateAuthorities = append(updateAuthorities, authority)
 		}
 	}
 	//校验目标level是否垂直越权
-	if dataScope.GetMaxLevel(updateAuthoritys) < dataScope.GetMaxLevel(curUser.Authority) {
+	if dataScope.GetMaxLevel(updateAuthorities) < dataScope.GetMaxLevel(curUser.Authority) {
 		global.GSD_LOG.Error(c, "设置角色级别高于当前用户级别!")
 		response.FailWithMessage("设置角色级别高于当前用户级别!", c)
 		return
