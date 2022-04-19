@@ -24,6 +24,9 @@ func CasbinHandler() gin.HandlerFunc {
 		for _, v := range waitUse.Authority {
 			sub := strconv.Itoa(int(v.AuthorityId))
 			success, _ = global.GSD_Casbin.Enforce(sub, obj, act)
+			if success {
+				break
+			}
 		}
 		if global.GSD_CONFIG.System.Env == "develop" || success {
 			c.Next()

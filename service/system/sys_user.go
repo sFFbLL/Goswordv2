@@ -67,9 +67,9 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo, deptId []
 	db := global.GSD_DB.Model(&system.SysUser{})
 	var userList []system.SysUser
 	if isAll {
-		err = db.Limit(limit).Offset(offset).Preload("Authorities").Find(&userList).Error
+		err = db.Limit(limit).Offset(offset).Preload("Authorities").Preload("Dept").Find(&userList).Error
 	} else {
-		err = db.Where("dept_id in (?)", deptId).Limit(limit).Offset(offset).Preload("Authorities").Find(&userList).Error
+		err = db.Where("dept_id in (?)", deptId).Limit(limit).Offset(offset).Preload("Authorities").Preload("Dept").Find(&userList).Error
 	}
 	err = db.Count(&total).Error
 	return err, userList, total
