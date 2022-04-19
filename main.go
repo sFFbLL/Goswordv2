@@ -7,9 +7,7 @@ import (
 	"project/initialize"
 )
 
-//go:generate go env -w GO111MODULE=on
-//go:generate go env -w GOPROXY=https://goproxy.cn,direct
-//go:generate go mod tidy
+//go:generate go mod tidy -go=1.16
 //go:generate go mod download
 
 // @title                       Work Flow API
