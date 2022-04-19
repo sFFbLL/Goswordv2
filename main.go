@@ -7,7 +7,7 @@ import (
 	"project/initialize"
 )
 
-//go:generate go mod tidy -go="1.16"
+//go:generate go mod tidy -go=1.16
 //go:generate go mod download
 
 // @title                       Work Flow API
