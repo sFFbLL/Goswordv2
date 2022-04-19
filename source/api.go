@@ -59,7 +59,7 @@ var apis = []system.SysApi{
 	{global.GSD_MODEL{ID: 42, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/deleteDept", "删除部门（必选）", "department", "POST"},
 	{global.GSD_MODEL{ID: 43, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/updateDept", "更新部门（必选）", "department", "POST"},
 	{global.GSD_MODEL{ID: 44, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/lists", "查询部门列表（必选）", "department", "POST"},
-	{global.GSD_MODEL{ID: 45, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/id", "根据parentID查询部门（必选）", "department", "POST"},
+	//{global.GSD_MODEL{ID: 45, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/id", "根据parentID查询部门（必选）", "department", "POST"},
 }
 
 // Init @author: [chenguanglan](https://github.com/sFFbLL)
