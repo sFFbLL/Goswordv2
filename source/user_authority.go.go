@@ -3,7 +3,6 @@ package source
 import (
 	"project/global"
 	"project/model/system"
-	"strconv"
 
 	"github.com/gookit/color"
 	"gorm.io/gorm"
@@ -25,9 +24,6 @@ func (a *userAuthority) Init() error {
 			return nil
 		}
 		if err := tx.Create(&userAuthorityModel).Error; err != nil { // 遇到错误时回滚事务
-			return err
-		}
-		if success, err := global.GSD_Casbin.AddRoleForUser(strconv.Itoa(1), strconv.Itoa(1)); !success {
 			return err
 		}
 		color.Info.Println("\n[Mysql] --> sys_user_authority 表初始数据成功!")

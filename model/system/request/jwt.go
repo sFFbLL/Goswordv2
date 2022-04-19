@@ -11,10 +11,23 @@ import (
 type CustomClaims struct {
 	UUID       uuid.UUID
 	ID         uint
-	DeptId     uint
 	Username   string
-	NickName   string
-	Authority  []system.SysAuthority
 	BufferTime int64
 	jwt.StandardClaims
+}
+
+// User cache structure
+type UserCache struct {
+	UUID        string                `redis:"uuid"`
+	ID          uint                  `redis:"id"`
+	DeptId      uint                  `redis:"deptId"`
+	AuthorityId []uint                `redis:"authorityId"`
+	Authority   []system.SysAuthority `redis:"-"`
+}
+
+// User cache structure
+type UserCacheRedis struct {
+	ID          uint   `redis:"id"`
+	DeptId      uint   `redis:"deptId"`
+	AuthorityId []byte `redis:"authorityId"`
 }

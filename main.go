@@ -26,8 +26,8 @@ func main() {
 	global.GSD_REDIS = initialize.Redis()   // 初始化redis
 	global.GSD_Casbin = initialize.Casbin() // casbin初始化
 	if global.GSD_DB != nil {
-		//initialize.MysqlTables(global.GSD_DB) // 初始化表
-		//initialize.InitDB()                   // 初始化表数据
+		initialize.MysqlTables(global.GSD_DB) // 初始化表
+		initialize.InitDB()                   // 初始化表数据
 		// 程序结束前关闭数据库链接
 		db, _ := global.GSD_DB.DB()
 		defer func(db *sql.DB) {

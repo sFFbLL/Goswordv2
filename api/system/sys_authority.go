@@ -108,6 +108,17 @@ func (a *AuthorityApi) UpdateAuthority(c *gin.Context) {
 		return
 	}
 	curUser := utils.GetUser(c)
+	err, curAuthority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{AuthorityId: r.AuthorityId})
+	if err != nil {
+		response.FailWithMessage("更新失败, 修改的角色不存在", c)
+		return
+	}
+	if curAuthority.Level < dataScope.GetMaxLevel(curUser.Authority) {
+		global.GSD_LOG.Error(c, "更新失败, 当前用户无权修改该角色!")
+		response.FailWithMessage("更新失败, 当前用户无权修改该角色!", c)
+		return
+	}
+	//判断改级别是否高于当前用户级别
 	if r.Level < dataScope.GetMaxLevel(curUser.Authority) {
 		global.GSD_LOG.Error(c, "更新失败, 修改级别高于当前用户级别!")
 		response.FailWithMessage("更新失败, 修改级别高于当前用户级别", c)

@@ -46,7 +46,6 @@ func (cas *CasbinApi) UpdateCasbin(c *gin.Context) {
 // @Param data body request.CasbinInReceive true "权限id, 权限模型列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
 // @Router /casbin/getPolicyPathByAuthorityId [post]
-
 func (cas *CasbinApi) GetPolicyPathByAuthorityId(c *gin.Context) {
 	var casbin request.CasbinInReceive
 	_ = c.ShouldBindJSON(&casbin)

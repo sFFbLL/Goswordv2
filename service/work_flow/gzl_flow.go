@@ -96,13 +96,13 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 			if node.Type == 4 {
 				var userIds []uint
 				//	通过部门获取用户
-				err, ids := userService.FindUserByDept(1)
+				err, ids := userService.FindUserByDept(line.Depts)
 				if err != nil {
 					return err
 				}
 				userIds = append(userIds, ids...)
 				//	通过角色获取用户
-				err, ids = userService.FindUserByAuthority(1)
+				err, ids = userService.FindUserByAuthority(line.Authoritys)
 				if err != nil {
 					return err
 				}
@@ -129,13 +129,13 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 				}
 				var userIds []uint
 				//	通过部门获取用户
-				err, ids := userService.FindUserByDept(1)
+				err, ids := userService.FindUserByDept(line.Depts)
 				if err != nil {
 					return err
 				}
 				userIds = append(userIds, ids...)
 				//	通过角色获取用户
-				err, ids = userService.FindUserByAuthority(1)
+				err, ids = userService.FindUserByAuthority(line.Authoritys)
 				if err != nil {
 					return err
 				}

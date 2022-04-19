@@ -1,13 +1,14 @@
 package system
 
 import (
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"project/global"
 	"project/model/common/request"
 	"project/model/common/response"
 	"project/model/system"
 	"project/utils"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type DeptApi struct {
@@ -113,7 +114,7 @@ func (d *DeptApi) GetDeptList(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "部门pid"
 // @Success 200 {object} response.Response{data=response.PageResult,msg=string} "分页获取部门列表,返回包括列表,总数,页码,每页数量"
-// @Router /department/lists [post]
+// @Router /department/id [post]
 
 func (d *DeptApi) GetDeptListById(c *gin.Context) {
 	var Pid request.GetById
@@ -122,7 +123,9 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err, deptList, total := DeptService.GetDeptListById(Pid.ID); err != nil {
+	user := utils.GetUser(c)
+	scope, all := dataScope.GetDataScope(user)
+	if err, deptList, total := DeptService.GetDeptListById(Pid.ID, scope, all); err != nil {
 		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

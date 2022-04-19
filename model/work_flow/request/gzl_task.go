@@ -20,7 +20,7 @@ type Dynamic struct {
 	CheckState         uint8     `json:"checkState"`         // 审批状态
 	Remarks            string    `json:"remarks"`            // 备注
 }
-type Schedule struct {
+type Function struct {
 	CreatedAt          time.Time  `json:"createdAt"`          // 创建时间
 	Applicant          string     `json:"applicant"`          // 申请人
 	Inspector           uint      `json:"inspector" gorm:"not null;comment:审批人"`

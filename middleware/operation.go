@@ -32,7 +32,7 @@ func OperationRecord() gin.HandlerFunc {
 			}
 		}
 		if claims, ok := c.Get("claims"); ok {
-			waitUse := claims.(*request.CustomClaims)
+			waitUse := claims.(*request.UserCache)
 			userId = int(waitUse.ID)
 		} else {
 			id, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
