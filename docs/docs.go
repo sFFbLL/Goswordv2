@@ -313,8 +313,10 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "应用id",
                         "name": "appId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -867,8 +869,10 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "记录id",
                         "name": "recordId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -887,7 +891,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "record"
+                    "Record"
                 ],
                 "summary": "我发起的",
                 "parameters": [
@@ -922,11 +926,13 @@ const docTemplate = `{
                 "summary": "提交表单",
                 "parameters": [
                     {
-                        "type": "integer",
                         "description": "string",
                         "name": "data",
-                        "in": "query",
-                        "required": true
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RecordSubmit"
+                        }
                     }
                 ],
                 "responses": {
@@ -1141,8 +1147,10 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "记录id",
                         "name": "recordId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1621,13 +1629,31 @@ const docTemplate = `{
                 }
             }
         },
-<<<<<<< HEAD
-=======
-        "request.Record": {
+        "request.RecordSubmit": {
             "type": "object",
             "properties": {
-                "recordId": {
+                "appId": {
                     "type": "integer"
+                },
+                "createBy": {
+                    "description": "创建人",
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "currentNode": {
+                    "type": "string"
+                },
+                "depId": {
+                    "type": "integer"
+                },
+                "form": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -1717,7 +1743,6 @@ const docTemplate = `{
                 }
             }
         },
->>>>>>> 20f96b0f82b541fd129ec94b801fd685c2a9ca7b
         "request.SetUserAuthorities": {
             "type": "object",
             "properties": {

@@ -77,12 +77,24 @@ definitions:
         description: 每页大小
         type: integer
     type: object
-<<<<<<< HEAD
-=======
-  request.Record:
+  request.RecordSubmit:
     properties:
-      recordId:
+      appId:
         type: integer
+      createBy:
+        description: 创建人
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      currentNode:
+        type: string
+      depId:
+        type: integer
+      form:
+        items:
+          type: integer
+        type: array
     type: object
   request.Register:
     properties:
@@ -145,7 +157,6 @@ definitions:
         description: 更新时间
         type: string
     type: object
->>>>>>> 20f96b0f82b541fd129ec94b801fd685c2a9ca7b
   request.SetUserAuthorities:
     properties:
       authorityIds:
@@ -689,8 +700,10 @@ paths:
   /app/empty:
     get:
       parameters:
-      - in: query
+      - description: 应用id
+        in: query
         name: appId
+        required: true
         type: integer
       produces:
       - application/json
@@ -1018,8 +1031,10 @@ paths:
   /record/data:
     get:
       parameters:
-      - in: query
+      - description: 记录id
+        in: query
         name: recordId
+        required: true
         type: integer
       produces:
       - application/json
@@ -1049,15 +1064,16 @@ paths:
             type: string
       summary: 我发起的
       tags:
-      - record
+      - Record
   /record/submit:
     post:
       parameters:
       - description: string
-        in: query
+        in: body
         name: data
         required: true
-        type: integer
+        schema:
+          $ref: '#/definitions/request.RecordSubmit'
       produces:
       - application/json
       responses:
@@ -1186,8 +1202,10 @@ paths:
   /task/dynamic:
     get:
       parameters:
-      - in: query
+      - description: 记录id
+        in: query
         name: recordId
+        required: true
         type: integer
       produces:
       - application/json
