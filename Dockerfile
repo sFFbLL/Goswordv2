@@ -10,10 +10,13 @@ RUN go env -w GOPROXY=https://goproxy.cn,direct \
 # 第二阶段构建运行环境
 FROM alpine:latest
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories \
+    && apk update && apk add git
+
 WORKDIR /go/src/go-sword
 
 COPY --from=builder /go/src/go-sword ./
 
 EXPOSE 8888
 
-ENTRYPOINT ./server -c config.docker.yaml
+ENTRYPOINT ./server -c config.docdeker.yaml
