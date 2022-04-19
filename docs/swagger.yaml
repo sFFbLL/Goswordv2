@@ -872,6 +872,130 @@ paths:
       summary: 获取权限列表
       tags:
       - Casbin
+  /department/addDept:
+    post:
+      parameters:
+      - description: 部门名称, 是否父子级
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 新增部门
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 新增部门
+      tags:
+      - Department
+  /department/deleteDept:
+    post:
+      parameters:
+      - description: 部门id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除部门
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 删除部门
+      tags:
+      - Department
+  /department/id:
+    post:
+      parameters:
+      - description: 部门pid
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分页获取部门列表,返回包括列表,总数,页码,每页数量
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.PageResult'
+                msg:
+                  type: string
+              type: object
+      summary: 根据pid查询部门列表
+      tags:
+      - Department
+  /department/lists:
+    post:
+      parameters:
+      - description: 页码, 每页大小
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分页获取部门列表,返回包括列表,总数,页码,每页数量
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.PageResult'
+                msg:
+                  type: string
+              type: object
+      summary: 查询部门列表
+      tags:
+      - Department
+  /department/updateDept:
+    post:
+      parameters:
+      - description: 部门名称, 是否父子级
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改部门
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 修改部门
+      tags:
+      - Department
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -888,7 +1012,7 @@ paths:
       summary: jwt加入黑名单
       tags:
       - Jwt
-  /menu/addition:
+  /menu/addBaseMenu:
     post:
       parameters:
       - description: 路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记
@@ -912,7 +1036,7 @@ paths:
       summary: 菜单管理-新增菜单
       tags:
       - Menu
-  /menu/deleteMenu:
+  /menu/deleteBaseMenu:
     post:
       parameters:
       - description: 菜单id
@@ -934,6 +1058,32 @@ paths:
                   type: string
               type: object
       summary: 菜单管理-删除菜单
+      tags:
+      - Menu
+  /menu/getMenu:
+    post:
+      parameters:
+      - description: 空
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Empty'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取当前用户菜单,返回包括系统菜单列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.SysBaseMenusResponse'
+                msg:
+                  type: string
+              type: object
+      summary: 获取当前用户菜单
       tags:
       - Menu
   /menu/getMenuList:
@@ -962,33 +1112,7 @@ paths:
       summary: 分页获取基础menu列表
       tags:
       - Menu
-  /menu/getUserMenu:
-    post:
-      parameters:
-      - description: 空
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.Empty'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: 获取当前用户菜单,返回包括系统菜单列表
-          schema:
-            allOf:
-            - $ref: '#/definitions/response.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/response.SysBaseMenusResponse'
-                msg:
-                  type: string
-              type: object
-      summary: 获取当前用户菜单
-      tags:
-      - Menu
-  /menu/updateMenu:
+  /menu/updateBaseMenu:
     post:
       parameters:
       - description: 路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记

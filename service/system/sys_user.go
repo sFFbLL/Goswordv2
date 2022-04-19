@@ -4,12 +4,15 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"project/global"
 	"project/model/common/request"
 	"project/model/system"
 	"project/utils"
+	"strconv"
 
 	uuid "github.com/satori/go.uuid"
+	"github.com/xuri/excelize/v2"
 	"gorm.io/gorm"
 )
 
@@ -144,7 +147,6 @@ func (userService *UserService) DeleteUser(id uint) (err error) {
 //@description: 修改用户信息
 //@param: reqUser model.SysUser
 //@return: err error, user model.SysUser
-
 func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, user system.SysUser) {
 	tx := global.GSD_DB.Begin()
 	err = tx.Updates(&reqUser).Error
@@ -167,7 +169,6 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 //@description: 获取用户信息
 //@param: uuid uuid.UUID
 //@return: err error, user system.SysUser
-
 func (userService *UserService) GetUserInfo(uuid string) (err error, user system.SysUser) {
 	var reqUser system.SysUser
 	err = global.GSD_DB.Preload("Authorities").Preload("Dept").First(&reqUser, "uuid = ?", uuid).Error
@@ -213,4 +214,75 @@ func (userService *UserService) FindUserByDept(deptId []uint) (err error, userId
 func (userService *UserService) FindUserByAuthority(authorityId []uint) (err error, userId []uint) {
 	global.GSD_DB.Model(system.SysUseAuthority{}).Distinct("sys_user_id").Where("`sys_authority_authority_id` in (?)", authorityId).Find(&userId)
 	return
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: ParseExcelToDataList
+//@description: 加载excel
+//@return: user []system.SysUser, err error
+func (userService *UserService) ParseExcelToDataList() ([]system.SysUser, error) {
+	skipHeader := true
+	fixedHeader := []string{"ID", "用户名", "昵称", "电话号", "邮箱", "部门名称"}
+	file, err := excelize.OpenFile(global.GSD_CONFIG.Excel.Dir + "ExcelImport.xlsx")
+	if err != nil {
+		return nil, err
+	}
+	users := make([]system.SysUser, 0)
+	rows, err := file.Rows("Sheet1")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		row, err := rows.Columns()
+		if err != nil {
+			return nil, err
+		}
+		if skipHeader {
+			if utils.CompareStrSlice(row, fixedHeader) {
+				skipHeader = false
+				continue
+			} else {
+				return nil, errors.New("excel格式错误")
+			}
+		}
+		if len(row) != len(fixedHeader) {
+			continue
+		}
+		id, _ := strconv.Atoi(row[0])
+		user := system.SysUser{
+			GSD_MODEL: global.GSD_MODEL{
+				ID: uint(id),
+			},
+			Username: row[1],
+			NickName: row[2],
+			Phone:    row[3],
+			Email:    row[4],
+			Dept:     system.SysDept{DeptName: row[5]},
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: ParseDataListToExcel
+//@description: 导出excel
+//@param: info []system.SysUser, path string
+//@return: err error
+func (userService *UserService) ParseDataListToExcel(info []system.SysUser, path string) error {
+	excel := excelize.NewFile()
+	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "电话号", "邮箱", "部门名称"})
+	for i, user := range info {
+		axis := fmt.Sprintf("A%d", i+2)
+		excel.SetSheetRow("Sheet1", axis, &[]interface{}{
+			user.ID,
+			user.Username,
+			user.NickName,
+			user.Phone,
+			user.Email,
+			user.Dept.DeptName,
+		})
+	}
+	err := excel.SaveAs(path)
+	return err
 }
