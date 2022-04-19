@@ -7,6 +7,7 @@ import (
 	"project/model/work_flow"
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
+	WorkFlowRes "project/model/work_flow/response"
 	"time"
 )
 
@@ -17,9 +18,9 @@ type TaskService struct {
 // @author: [tanshaokang](https://github.com/worryfreet)
 // @function: GetDynamic
 // @description: 从mysql中获取流程动态数据
-// @param: WorkFlowReq.Record
+// @param: WorkFlowReq.RecordById
 // @return: data []WorkFlowReq.Dynamic, err error
-func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowReq.Dynamic, err error) {
+func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowRes.Dynamic, err error) {
 	db := global.GSD_DB.
 		Model(modelWF.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", applicantId).
@@ -69,12 +70,12 @@ func (t *TaskService) GetScheduleList(userId, appid int) (err error, tasks []Wor
 	return
 }
 
-func (t *TaskService) GetHandleList(userId int,appid int) (err error, tasks []WorkFlowReq.Function) {
+func (t *TaskService) GetHandleList(userId int, appid int) (err error, tasks []WorkFlowReq.Function) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", userId).
 		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
 		Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
-		"gzl_tasks.inspector as Inspector","gzl_apps.name as AppName", "check_state as CheckState").
+			"gzl_tasks.inspector as Inspector", "gzl_apps.name as AppName", "check_state as CheckState").
 		Where("gzl_tasks.inspector=Inspector")
 	if err = db.Find(&tasks).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
@@ -85,7 +86,6 @@ func (t *TaskService) GetHandleList(userId int,appid int) (err error, tasks []Wo
 	}
 	return
 }
-
 
 func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 	//获取任务详细信息
@@ -107,11 +107,11 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 // @author: [tanshaokang](https://github.com/worryfreet)
 // @function: GetReceive
 // @description: 从mysql中获取我收到的信息列表
-// @param: WorkFlowReq.Record
+// @param: WorkFlowReq.RecordById
 // @return: data []WorkFlowReq.Dynamic, err error
 func (t TaskService) GetReceive(userId int) (err error, tasks []modelWF.GzlTask) {
-	// 1. 申请人姓名
-	// 2. 审批人姓名
+	// 1. 申请人姓名  userId -> sys_users.username
+	// 2. 审批人姓名  userId ->
 	// 3. 审批状态
 	// 4. 应用名称
 	// 5. 当前节点
@@ -120,6 +120,6 @@ func (t TaskService) GetReceive(userId int) (err error, tasks []modelWF.GzlTask)
 
 // GetTaskInfo 根据id获取信息
 func (t TaskService) GetTaskInfo(taskId uint) (task work_flow.GzlTask, err error) {
-	err = global.GSD_DB.Preload("Record.App").First(&task, taskId).Error
+	err = global.GSD_DB.Preload("RecordById.EmptyApp").First(&task, taskId).Error
 	return task, err
 }
