@@ -419,5 +419,4 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 	}
 	c.Writer.Header().Add("success", "true")
 	c.File(filePath)
-	
 }
