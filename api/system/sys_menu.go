@@ -46,7 +46,7 @@ func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success 200 {object} response.Response{msg=string} "新增菜单"
-// @Router /menu/addition [post]
+// @Router /menu/addBaseMenu [post]
 func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
 	var menu system.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
@@ -71,7 +71,7 @@ func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "菜单id"
 // @Success 200 {object} response.Response{msg=string} "删除菜单"
-// @Router /menu/deleteMenu [post]
+// @Router /menu/deleteBaseMenu [post]
 func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
 	var menu request.GetById
 	_ = c.ShouldBindJSON(&menu)
@@ -93,7 +93,7 @@ func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success 200 {object} response.Response{msg=string} "更新菜单"
-// @Router /menu/updateMenu [post]
+// @Router /menu/updateBaseMenu [post]
 func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 	var menu system.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
@@ -118,7 +118,7 @@ func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.Empty true "空"
 // @Success 200 {object} response.Response{data=systemRes.SysBaseMenusResponse,msg=string} "获取当前用户菜单,返回包括系统菜单列表"
-// @Router /menu/getUserMenu [post]
+// @Router /menu/getMenu [post]
 func (a *AuthorityMenuApi) GetUserMenuTree(c *gin.Context) {
 	if err, menus := menuService.GetUserMenu(utils.GetUserAuthority(c)); err != nil {
 		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
