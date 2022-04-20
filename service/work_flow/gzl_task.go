@@ -51,15 +51,15 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowReq.D
 // @function: GetScheduleList
 // @description: 从mysql中获取待办数据
 // @param: WorkFlowReq.Task
-// @return: data []WorkFlowReq.Schedule, err error
-func (t *TaskService) GetScheduleList(userId, appid int) (err error, tasks []WorkFlowReq.Function) {
+// @return: data []WorkFlowReq.Function, err error
+func (t *TaskService) GetScheduleList(userId, appid int) (err error, schedules []WorkFlowReq.Handle) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", userId).
 		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
 		Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
 			"gzl_apps.name as AppName", "check_state as CheckState").
 		Where("gzl_tasks.inspector=Inspector")
-	if err = db.Find(&tasks).Error; err != nil {
+	if err = db.Find(&schedules).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
 			return nil, nil
 		} else {
@@ -69,14 +69,20 @@ func (t *TaskService) GetScheduleList(userId, appid int) (err error, tasks []Wor
 	return
 }
 
-func (t *TaskService) GetHandleList(userId int,appid int) (err error, tasks []WorkFlowReq.Function) {
+// GetHandleList
+// @author: [zhaozijie](https://github.com/worryfreet)
+// @function: GetHandleList
+// @description: 从mysql中获取我处理的数据
+// @param: WorkFlowReq.Task
+// @return: data []WorkFlowReq.Function, err error
+func (t *TaskService) GetHandleList(userId int,appid int) (err error, handles []WorkFlowReq.Handle) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", userId).
 		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
 		Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
 		"gzl_tasks.inspector as Inspector","gzl_apps.name as AppName", "check_state as CheckState").
 		Where("gzl_tasks.inspector=Inspector")
-	if err = db.Find(&tasks).Error; err != nil {
+	if err = db.Find(&handles).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
 			return nil, nil
 		} else {

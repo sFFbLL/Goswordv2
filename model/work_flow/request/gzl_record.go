@@ -4,6 +4,6 @@ type Record struct {
 	RecordId int `form:"recordId"`
 }
 
-type APP struct {
+type Schedule struct {
 	AppId int `form:"appId"`
 }

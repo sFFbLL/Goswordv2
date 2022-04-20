@@ -32,13 +32,3 @@ func (f *AppApi) Empty(c *gin.Context) {
 	}
 }
 
-// Create
-// @Tags App
-// @Summary 创建表单
-// @Produce  application/json
-// @Param data body uint true "创建人"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
-// @Router /app/create [post]
-func (f *AppApi) Create(c *gin.Context) {
-
-}

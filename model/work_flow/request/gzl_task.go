@@ -2,9 +2,6 @@ package request
 
 import "time"
 
-type Task struct {
-	State uint8
-}
 type Inspect struct {
 	TaskId uint  `json:"taskId"`
 	State  uint8 `json:"state"`
@@ -20,7 +17,7 @@ type Dynamic struct {
 	CheckState         uint8     `json:"checkState"`         // 审批状态
 	Remarks            string    `json:"remarks"`            // 备注
 }
-type Function struct {
+type Handle struct {
 	CreatedAt          time.Time  `json:"createdAt"`          // 创建时间
 	Applicant          string     `json:"applicant"`          // 申请人
 	Inspector           uint      `json:"inspector" gorm:"not null;comment:审批人"`
