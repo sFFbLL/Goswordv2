@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM centos:latest
 
 WORKDIR /go/src/go-sword
 
