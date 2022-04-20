@@ -6,6 +6,8 @@ import (
 	"project/global"
 	"project/model/common/response"
 	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
+	"strconv"
 )
 
 type AppApi struct {
@@ -16,13 +18,17 @@ type AppApi struct {
 // @Tags App
 // @Summary 返回空表单
 // @Produce  application/json
-// @Param data query WorkFlowReq.App true "string"
+// @Param appId query int true "应用id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /app/empty [get]
 func (f *AppApi) Empty(c *gin.Context) {
-	var app WorkFlowReq.App
-	_ = c.ShouldBindJSON(&app)
-	data, err := appService.GetAppEmpty(app)
+	appId, _ := strconv.Atoi(c.Query("appId"))
+	app := WorkFlowReq.EmptyApp{AppId: appId}
+	if err := utils.Verify(app, utils.EmptyAppIdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	data, err := appService.GetAppEmpty(appId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取空应用表单失败", zap.Any("err", err))
 		response.FailWithMessage("该应用不存在", c)

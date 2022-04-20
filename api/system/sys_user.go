@@ -359,3 +359,85 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 		response.OkWithDetailed(gin.H{"userinfo": sysUser}, "设置成功", c)
 	}
 }
+
+// @Tags SysUser
+// @Summary 导入用户Excel文件
+// @Security ApiKeyAuth
+// @accept multipart/form-data
+// @Produce  application/json
+// @Param file formData file true "导入Excel文件"
+// @Success 200 {object} response.Response{msg=string} "导入Excel文件"
+// @Router /user/importExcel [post]
+func (b *BaseApi) ImportExcel(c *gin.Context) {
+	_, header, err := c.Request.FormFile("file")
+	if err != nil {
+		global.GSD_LOG.Error(c, "接收文件失败!", zap.Error(err))
+		response.FailWithMessage("接收文件失败", c)
+		return
+	}
+	_ = c.SaveUploadedFile(header, global.GSD_CONFIG.Excel.Dir+"ExcelImport.xlsx")
+	response.OkWithMessage("导入成功", c)
+}
+
+// @Tags SysUser
+// @Summary 加载Excel数据
+// @Security ApiKeyAuth
+// @Produce  application/json
+// @Success 200 {object} response.Response{data=response.PageResult,msg=string} "加载Excel数据,返回包括列表,总数,页码,每页数量"
+// @Router /user/loadExcel [get]
+func (b *BaseApi) LoadExcel(c *gin.Context) {
+	list, err := userService.ParseExcelToDataList()
+	if err != nil {
+		global.GSD_LOG.Error(c, "加载数据失败", zap.Error(err))
+		response.FailWithMessage("加载数据失败", c)
+		return
+	}
+	response.OkWithDetailed(response.PageResult{
+		List:     list,
+		Total:    int64(len(list)),
+		Page:     1,
+		PageSize: 999,
+	}, "加载数据成功", c)
+}
+
+// @Tags SysUser
+// @Summary 导出Excel
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce  application/octet-stream
+// @Param data body example.ExcelInfo true "导出Excel文件信息"
+// @Success 200
+// @Router /user/exportExcel [post]
+func (b *BaseApi) ExportExcel(c *gin.Context) {
+	var excelInfo system.ExcelInfo
+	_ = c.ShouldBindJSON(&excelInfo)
+	filePath := global.GSD_CONFIG.Excel.Dir + excelInfo.FileName
+	if err := userService.ParseDataListToExcel(excelInfo.InfoList, filePath); err != nil {
+		global.GSD_LOG.Error(c, "导出excel失败", zap.Error(err))
+		response.FailWithMessage("导出excel失败", c)
+		return
+	}
+	c.Writer.Header().Add("success", "true")
+	c.File(filePath)
+
+}
+
+// @Tags SysUser
+// @Summary 下载模板
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce  application/octet-stream
+// @Param data body example.ExcelInfo true "下载模板信息"
+// @Success 200
+// @Router /user/downloadTemplate [post]
+func (b *BaseApi) DownloadTemplate(c *gin.Context) {
+	name := c.Query("fileName")
+	filePath := global.GSD_CONFIG.Excel.Dir + name
+	if err := userService.Template(filePath); err != nil {
+		global.GSD_LOG.Error(c, "模板下载失败", zap.Error(err))
+		response.FailWithMessage("模板下载失败", c)
+		return
+	}
+	c.Writer.Header().Add("success", "true")
+	c.File(filePath)
+}

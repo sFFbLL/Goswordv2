@@ -1,5 +1,5 @@
 package request
 
-type App struct {
+type EmptyApp struct {
 	AppId int `form:"AppId"`
 }
