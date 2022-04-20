@@ -14,7 +14,7 @@ func (t *RecordRouter) InitRecordRouter(Router *gin.RouterGroup) (R gin.IRoutes)
 	{
 		recordRouter.POST("submit", recordApi.Submit)
 		recordRouter.GET("data", recordApi.Data)
-		recordRouter.GET("launch", recordApi.Launch)
+		recordRouter.GET("initiated", recordApi.MyInitiated)
 	}
 	return recordRouter
 }

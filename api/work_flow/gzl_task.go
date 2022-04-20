@@ -28,15 +28,13 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	gzlTask := &WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}
-	if err := taskService.Inspect(*gzlTask); err != nil {
+	if err := taskService.Inspect(WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}); err != nil {
 		global.GSD_LOG.Error(c, "审批错误", zap.Any("err", err))
 		response.FailWithMessage("审批错误", c)
 		return
 	} else {
 		response.OkWithMessage("审批成功", c)
 	}
-
 }
 
 // Dynamic
@@ -48,14 +46,13 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	_, _ = strconv.Atoi(c.Request.Header.Get("x-user-id"))
-	recordId, _ := strconv.Atoi(c.Query("recordId"))
-	record := WorkFlowReq.RecordById{RecordId: recordId}
+	var record WorkFlowReq.RecordById
+	_ = c.ShouldBindQuery(&record)
 	if err := utils.Verify(record, utils.RecordIdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	tasks, err := taskService.GetDynamic(1, recordId)
+	tasks, err := taskService.GetDynamic(1, record.RecordId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取流程动态错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)

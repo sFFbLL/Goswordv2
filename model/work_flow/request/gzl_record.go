@@ -10,12 +10,11 @@ type RecordById struct {
 }
 
 type RecordSubmit struct {
-	CreateBy    uint       //创建人
-	CreatedAt   time.Time  // 创建时间
-	AppId       uint       `json:"appId" gorm:"not null;comment:应用id"`
-	Form        utils.JSON `json:"form" gorm:"not null;type:json;comment:表单JSON"`
-	CurrentNode string     `json:"currentNode" gorm:"comment:当前节点"`
-	DeptId      uint       `json:"deptId" gorm:"comment:部门id"`
+	CreateBy    uint        //创建人
+	AppId       uint        `json:"appId"`
+	Form        interface{} `json:"form"`
+	CurrentNode string      `json:"currentNode" gorm:"comment:当前节点"`
+	DeptId      uint        `json:"deptId" gorm:"comment:部门id"`
 }
 
 type FormItem struct {
