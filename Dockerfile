@@ -8,4 +8,6 @@ EXPOSE 8888
 
 #ENTRYPOINT ./server -c config.docker.yaml
 
-ENTRYPOINT pwd
+ENTRYPOINT ls
+
+ENTRYPOINT /go/src/go-sword/server -c config.docker.yaml
