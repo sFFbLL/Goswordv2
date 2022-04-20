@@ -15,7 +15,7 @@ var Authority = new(authority)
 type authority struct{}
 
 var authorities = []system.SysAuthority{
-	{CreatedAt: time.Now(), UpdatedAt: time.Now(), AuthorityId: 1, AuthorityName: "超级管理员", DataScope: "全部", Level: 1},
+	{CreatedAt: time.Now(), UpdatedAt: time.Now(), AuthorityId: 1, AuthorityName: "超级管理员", DataScope: "全部", Level: 1, DefaultRouter: "dashboard"},
 }
 
 // Init @author: [chenguanglan](https://github.com/sFFbLL)

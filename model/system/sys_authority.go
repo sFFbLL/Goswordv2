@@ -13,6 +13,7 @@ type SysAuthority struct {
 	DataScope     string         `json:"dataScope" gorm:"not null"`
 	Depts         []SysDept      `json:"depts" gorm:"many2many:sys_authority_depts"`
 	SysBaseMenus  []SysBaseMenu  `json:"menus" gorm:"many2many:sys_authority_menus;"`
+	DefaultRouter string         `json:"defaultRouter" gorm:"comment:默认菜单;default:dashboard"` // 默认菜单(默认dashboard)
 	CreateBy      uint           //创建人
 	UpdateBy      uint           //更新人
 	CreatedAt     time.Time      // 创建时间
