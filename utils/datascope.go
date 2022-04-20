@@ -15,7 +15,7 @@ type DataScope struct {
 // GetDataScope @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: GetDataScope
 //@description: 获取数据权限
-//@param: user request.CustomClaims
+//@param: user request.UserCache
 //@return: dataScope []uint 部门id, isAll bool 是否为全部
 func (DataScope) GetDataScope(user *request.UserCache) (dataScope []uint, isAll bool) {
 	keyMap, all := getDataScopeMap(user)
@@ -31,7 +31,7 @@ func (DataScope) GetDataScope(user *request.UserCache) (dataScope []uint, isAll 
 // CanDoToTargetUser @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: CanDoToTargetUser
 //@description: 是否有权操作该数据
-//@param: users []system.SysUser 操作用户对象
+//@param: user *request.UserCache, users []system.SysUser 操作用户对象
 //@return: bool 是否有权操作对象
 func (d DataScope) CanDoToTargetUser(user *request.UserCache, users []*system.SysUser) bool {
 	//校验等级
@@ -70,7 +70,7 @@ func (DataScope) GetMaxLevel(roles []system.SysAuthority) (maxLevel uint) {
 //@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: getDataScopeMap
 //@description: 获取数据权限
-//@param: user request.CustomClaims
+//@param: user request.UserCache
 //@return: dataScope []uint 部门id, isAll bool 是否为全部
 func getDataScopeMap(user *request.UserCache) (keyMap map[uint]uint, isAll bool) {
 	keyMap = make(map[uint]uint, 0)
