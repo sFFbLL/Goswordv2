@@ -24,5 +24,6 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouter.POST("importExcel", baseApi.ImportExcel)               //导入用户信息
 		userRouter.GET("loadExcel", baseApi.LoadExcel)                    //加载excel数据
 		userRouter.POST("exportExcel", baseApi.ExportExcel)               //导出用户数据
+		userRouter.GET("downloadTemplate", baseApi.DownloadTemplate)      //下载模板
 	}
 }
