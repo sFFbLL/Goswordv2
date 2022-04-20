@@ -12,7 +12,6 @@ import (
 )
 
 type TaskApi struct {
-
 }
 
 // Inspect
@@ -29,15 +28,13 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	gzlTask := &WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}
-	if err := taskService.Inspect(*gzlTask); err != nil {
+	if err := taskService.Inspect(WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}); err != nil {
 		global.GSD_LOG.Error(c, "审批错误", zap.Any("err", err))
 		response.FailWithMessage("审批错误", c)
 		return
 	} else {
 		response.OkWithMessage("审批成功", c)
 	}
-
 }
 
 // Dynamic
@@ -45,14 +42,17 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
-// @Param data body WorkFlowReq.Record true "记录id"
+// @Param recordId query int true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
-	var record WorkFlowReq.Record
-	_ = c.ShouldBindJSON(&record)
-	tasks, err := taskService.GetDynamic(userId, record.RecordId)
+	var record WorkFlowReq.RecordById
+	_ = c.ShouldBindQuery(&record)
+	if err := utils.Verify(record, utils.RecordIdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	tasks, err := taskService.GetDynamic(1, record.RecordId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取流程动态错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)
@@ -72,7 +72,7 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	var app WorkFlowReq.Schedule
 	_ = c.ShouldBindJSON(&app)
-	if err, schedule := taskService.GetScheduleList(userId,app.AppId); err != nil {
+	if err, schedule := taskService.GetScheduleList(userId, app.AppId); err != nil {
 		global.GSD_LOG.ZapLog.Error("获取我的待办信息失败", zap.Error(err))
 		response.FailWithMessage("获取我的待办信息失败", c)
 		return
@@ -93,13 +93,13 @@ func (t *TaskApi) Handle(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	var app WorkFlowReq.Schedule
 	_ = c.ShouldBindJSON(&app)
-	if err, handle := taskService.GetHandleList(userId,app.AppId); err != nil {
-		global.GSD_LOG.ZapLog.Error( "获取我处理的信息失败", zap.Error(err))
+	if err, handle := taskService.GetHandleList(userId, app.AppId); err != nil {
+		global.GSD_LOG.ZapLog.Error("获取我处理的信息失败", zap.Error(err))
 		response.FailWithMessage("获取我处理的信息失败", c)
 		return
 	} else {
-		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))//打印日志
-		response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c)//给前端返回信息
+		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))    //打印日志
+		response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c) //给前端返回信息
 	}
 }
 
@@ -108,12 +108,14 @@ func (t *TaskApi) Handle(c *gin.Context) {
 // @Tags Task
 // @Summary 我收到的
 // @Produce  application/json
-// @Param data query uint8  true "节点类型"
+// @Param data query int  true "节点类型"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]
 func (t *TaskApi) Receive(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	tasks, err := taskService.GetReceive(userId)
+	// TODO ReceiveVerify && params select
+
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取我收到的信息列表错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)
@@ -121,5 +123,4 @@ func (t *TaskApi) Receive(c *gin.Context) {
 		global.GSD_LOG.ZapLog.Info("我收到的信息成功返回", zap.Any("success", tasks))
 		response.OkWithData(tasks, c)
 	}
-
 }

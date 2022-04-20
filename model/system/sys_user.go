@@ -19,3 +19,8 @@ type SysUser struct {
 	Dept        SysDept        `json:"dept" gorm:"foreignKey:DeptId;references:ID;"`
 	Authorities []SysAuthority `json:"authorities" gorm:"many2many:sys_user_authority;"`
 }
+
+type ExcelInfo struct {
+	FileName string    `json:"fileName"` // 文件名
+	InfoList []SysUser `json:"infoList"`
+}

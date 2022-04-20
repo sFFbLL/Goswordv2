@@ -1,5 +1,10 @@
 package request
 
-type App struct {
+type EmptyApp struct {
 	AppId int `form:"AppId"`
+}
+
+type AddApp struct {
+	Name string `json:"name"`
+	Icon string `json:"icon"`
 }

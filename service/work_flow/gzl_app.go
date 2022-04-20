@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 	"project/global"
 	modelWF "project/model/work_flow"
-	WorkFlowReq "project/model/work_flow/request"
 	"project/utils"
 )
 
@@ -16,13 +15,13 @@ type AppService struct {
 // @author: [tanshaokang](https://github.com/worryfreet)
 // @function: GetAppEmpty
 // @description: 从mysql中获取空表单
-// @param: WorkFlowReq.App
+// @param: WorkFlowReq.EmptyApp
 // @return: data utils.JSON, err error
-func (a AppService) GetAppEmpty(app WorkFlowReq.App) (data utils.JSON, err error) {
+func (a AppService) GetAppEmpty(appId int) (data utils.JSON, err error) {
 	var datas = make([]utils.JSON, 1)
 	db := global.GSD_DB.Model(&modelWF.GzlApp{}).
 		Select("form").
-		Where("id = ?", app.AppId)
+		Where("id = ?", appId)
 	if err = db.First(&datas).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("数据为空")
@@ -31,5 +30,18 @@ func (a AppService) GetAppEmpty(app WorkFlowReq.App) (data utils.JSON, err error
 		}
 	}
 	data = datas[0]
+	return
+}
+
+// AddApp
+// @author: [chenpipi]
+// @function: AddApp
+// @description: 添加应用
+// @param: WorkFlowReq.AddApp
+// @return: err error
+func (a AppService) AddApp(app modelWF.GzlApp) (err error) {
+	if err = global.GSD_DB.Create(&app).Error; err != nil {
+		return
+	}
 	return
 }

@@ -12,9 +12,9 @@ func (t *RecordRouter) InitRecordRouter(Router *gin.RouterGroup) (R gin.IRoutes)
 	recordRouter := Router.Group("record")
 	var recordApi = v1.ApiGroupApp.RecordApiGroup.RecordApi
 	{
-		recordRouter.GET("submit", recordApi.Submit)
+		recordRouter.POST("submit", recordApi.Submit)
 		recordRouter.GET("data", recordApi.Data)
-		recordRouter.GET("launch", recordApi.Launch)
+		recordRouter.GET("initiated", recordApi.MyInitiated)
 	}
 	return recordRouter
 }

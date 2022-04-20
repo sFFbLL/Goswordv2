@@ -305,8 +305,10 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "应用id",
                         "name": "appId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -859,8 +861,10 @@
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "记录id",
                         "name": "recordId",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -879,7 +883,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "record"
+                    "Record"
                 ],
                 "summary": "我发起的",
                 "parameters": [
@@ -919,7 +923,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/request.RecordSubmit"
                         }
                     }
                 ],
@@ -1134,13 +1138,11 @@
                 "summary": "流程动态信息",
                 "parameters": [
                     {
+                        "type": "integer",
                         "description": "记录id",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.Record"
-                        }
+                        "name": "recordId",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1643,11 +1645,31 @@
                 }
             }
         },
-        "request.Record": {
+        "request.RecordSubmit": {
             "type": "object",
             "properties": {
-                "recordId": {
+                "appId": {
                     "type": "integer"
+                },
+                "createBy": {
+                    "description": "创建人",
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "currentNode": {
+                    "type": "string"
+                },
+                "depId": {
+                    "type": "integer"
+                },
+                "form": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

@@ -94,10 +94,24 @@ definitions:
         description: 每页大小
         type: integer
     type: object
-  request.Record:
+  request.RecordSubmit:
     properties:
-      recordId:
+      appId:
         type: integer
+      createBy:
+        description: 创建人
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      currentNode:
+        type: string
+      depId:
+        type: integer
+      form:
+        items:
+          type: integer
+        type: array
     type: object
   request.Register:
     properties:
@@ -703,8 +717,10 @@ paths:
   /app/empty:
     get:
       parameters:
-      - in: query
+      - description: 应用id
+        in: query
         name: appId
+        required: true
         type: integer
       produces:
       - application/json
@@ -1032,8 +1048,10 @@ paths:
   /record/data:
     get:
       parameters:
-      - in: query
+      - description: 记录id
+        in: query
         name: recordId
+        required: true
         type: integer
       produces:
       - application/json
@@ -1063,7 +1081,7 @@ paths:
             type: string
       summary: 我发起的
       tags:
-      - record
+      - Record
   /record/submit:
     post:
       parameters:
@@ -1072,7 +1090,7 @@ paths:
         name: data
         required: true
         schema:
-          type: integer
+          $ref: '#/definitions/request.RecordSubmit'
       produces:
       - application/json
       responses:
@@ -1202,11 +1220,10 @@ paths:
     get:
       parameters:
       - description: 记录id
-        in: body
-        name: data
+        in: query
+        name: recordId
         required: true
-        schema:
-          $ref: '#/definitions/request.Record'
+        type: integer
       produces:
       - application/json
       responses:
