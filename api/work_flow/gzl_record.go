@@ -1,15 +1,13 @@
 package work_flow
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"project/utils"
-	"strconv"
-
 	"project/global"
 	"project/model/common/response"
 	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
+	"strconv"
 )
 
 type RecordApi struct {
@@ -24,18 +22,17 @@ type RecordApi struct {
 // @Success 200 {} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
-	_, _ = strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	var recordSubmit WorkFlowReq.RecordSubmit
 	err := c.ShouldBindJSON(&recordSubmit)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("json解析失败", zap.Any("err", err))
 	}
-	fmt.Println("recordSubmit: ", recordSubmit)
+
 	recordSubmit.CreateBy = uint(1)
-	//if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
-	//	response.FailWithMessage(err.Error(), c)
-	//	return
-	//}
+	if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	err = recordService.Submit(recordSubmit)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("记录提交失败", zap.Any("err", err))
@@ -70,13 +67,21 @@ func (r *RecordApi) Data(c *gin.Context) {
 	}
 }
 
-// Launch
-// @Tags RecordById
+// MyInitiated
+// @author: [chenpipi]
+// @Tags Record
 // @Summary 我发起的
 // @Produce  application/json
-// @Param data body uint true "创建人"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我发起的任务成功"}"
-// @Router /record/schedule [get]
-func (r *RecordApi) Launch(c *gin.Context) {
-
+// @Param data body uint true
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"操作成功"}"
+// @Router /record/initiated [get]
+func (r *RecordApi) MyInitiated(c *gin.Context) {
+	myInitiated, err := recordService.MyInitiated(utils.GetUserID(c))
+	if err != nil {
+		global.GSD_LOG.ZapLog.Error("我发起的列表查询失败", zap.Any("err", err))
+		response.FailWithMessage("数据获取失败", c)
+	} else {
+		global.GSD_LOG.ZapLog.Info("我发起的列表查询成功", zap.Any("Record Form Data([]byte -> string)", myInitiated))
+		response.OkWithData(myInitiated, c)
+	}
 }

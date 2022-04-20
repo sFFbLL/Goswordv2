@@ -32,3 +32,16 @@ func (a AppService) GetAppEmpty(appId int) (data utils.JSON, err error) {
 	data = datas[0]
 	return
 }
+
+// AddApp
+// @author: [chenpipi]
+// @function: AddApp
+// @description: 添加应用
+// @param: WorkFlowReq.AddApp
+// @return: err error
+func (a AppService) AddApp(app modelWF.GzlApp) (err error) {
+	if err = global.GSD_DB.Create(&app).Error; err != nil {
+		return
+	}
+	return
+}
