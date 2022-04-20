@@ -421,3 +421,23 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 	c.File(filePath)
 
 }
+
+// @Tags SysUser
+// @Summary 下载模板
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce  application/octet-stream
+// @Param data body example.ExcelInfo true "下载模板信息"
+// @Success 200
+// @Router /user/downloadTemplate [post]
+func (b *BaseApi) DownloadTemplate(c *gin.Context) {
+	name := c.Query("fileName")
+	filePath := global.GSD_CONFIG.Excel.Dir + name
+	if err := userService.Template(filePath); err != nil {
+		global.GSD_LOG.Error(c, "模板下载失败", zap.Error(err))
+		response.FailWithMessage("模板下载失败", c)
+		return
+	}
+	c.Writer.Header().Add("success", "true")
+	c.File(filePath)
+}

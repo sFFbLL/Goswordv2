@@ -60,16 +60,17 @@ var apis = []system.SysApi{
 	{global.GSD_MODEL{ID: 43, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/updateDept", "更新部门（必选）", "department", "POST"},
 	{global.GSD_MODEL{ID: 44, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/lists", "查询部门列表（必选）", "department", "POST"},
 	{global.GSD_MODEL{ID: 45, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/department/id", "根据parentID查询部门（必选）", "department", "POST"},
-	{global.GSD_MODEL{ID: 46, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/importExcel", "根据parentID查询部门（必选）", "department", "POST"},
-	{global.GSD_MODEL{ID: 47, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/loadExcel", "根据parentID查询部门（必选）", "department", "POST"},
-	{global.GSD_MODEL{ID: 48, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/exportExcel", "根据parentID查询部门（必选）", "department", "POST"},
+	{global.GSD_MODEL{ID: 46, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/importExcel", "导出数据（必选）", "user", "POST"},
+	{global.GSD_MODEL{ID: 47, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/loadExcel", "加载用户数据（必选）", "user", "GET"},
+	{global.GSD_MODEL{ID: 48, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/exportExcel", "导出用户数据（必选）", "user", "POST"},
+	{global.GSD_MODEL{ID: 49, CreatedAt: time.Now(), UpdatedAt: time.Now()}, "/user/downloadTemplate", "下载模板数据（必选）", "user", "GET"},
 }
 
 // Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: sys_apis 表数据初始化
 func (a *api) Init() error {
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
-		if tx.Where("id IN ?", []int{1, 45}).Find(&[]system.SysApi{}).RowsAffected == 2 {
+		if tx.Where("id IN ?", []int{1, 49}).Find(&[]system.SysApi{}).RowsAffected == 2 {
 			color.Danger.Println("\n[Mysql] --> sys_apis 表的初始数据已存在!")
 			return nil
 		}

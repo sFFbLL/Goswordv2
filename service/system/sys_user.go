@@ -288,3 +288,25 @@ func (userService *UserService) ParseDataListToExcel(info []system.SysUser, path
 	err := excel.SaveAs(path)
 	return err
 }
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: Template
+//@description: 下载模板
+//@param: path string
+//@return: err error
+func (userService *UserService) Template(path string) error {
+	excel := excelize.NewFile()
+	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "电话号", "邮箱", "部门名称"})
+	axis := fmt.Sprintf("A%d", 2)
+	excel.SetSheetRow("Sheet1", axis, &[]interface{}{
+		"1",
+		"test",
+		"测试用户",
+		"156***",
+		"xxx@xx.com",
+		"顶级部门",
+	})
+
+	err := excel.SaveAs(path)
+	return err
+}
