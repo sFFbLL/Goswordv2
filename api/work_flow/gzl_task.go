@@ -28,15 +28,13 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	gzlTask := &WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}
-	if err := taskService.Inspect(*gzlTask); err != nil {
+	if err := taskService.Inspect(WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}); err != nil {
 		global.GSD_LOG.Error(c, "审批错误", zap.Any("err", err))
 		response.FailWithMessage("审批错误", c)
 		return
 	} else {
 		response.OkWithMessage("审批成功", c)
 	}
-
 }
 
 // Dynamic

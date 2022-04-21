@@ -9,6 +9,7 @@ import (
 	"project/model/system"
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
+	WorkFlowRes "project/model/work_flow/response"
 	"project/utils"
 	"reflect"
 )
@@ -81,5 +82,25 @@ func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
 		tx.Model(&modelWF.GzlFormItem{}).CreateInBatches(formItems, len(formItems))
 		return err
 	})
+	return
+}
+
+// MyInitiated
+// @author: [chenpipi]
+// @function: MyInitiated
+// @description: 从mysql中获取record数据
+// @param: record WorkFlowRes.MyInitiated
+// @return: data utils.JSON, err error
+func (r RecordService) MyInitiated(id uint) (myInitiated WorkFlowRes.MyInitiated, err error) {
+	var ids []uint
+	if err = global.GSD_DB.Select("current_state,current_node").Model(&modelWF.GzlRecord{}).Find(&myInitiated, "create_by = ?", id).Error; err != nil {
+		return
+	}
+	if err = global.GSD_DB.Select("inspector").Model(&modelWF.GzlTask{}).Find(&ids, "node_key = ?", myInitiated.CurrentNode).Error; err != nil {
+		return
+	}
+	if err = global.GSD_DB.Select("nick_name").Model(&system.SysUser{}).Find(&myInitiated.InspectorName, "id in ?", ids).Error; err != nil {
+		return
+	}
 	return
 }

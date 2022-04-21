@@ -13,7 +13,12 @@ type RecordSubmit struct {
 
 // Form 表单结构体
 type Form struct {
-	Fields []FormItem `json:"fields"`
+	Fields      []FormItem  `json:"fields"`
+	CreateBy    uint        //创建人
+	AppId       uint        `json:"appId"`
+	Form        interface{} `json:"form"`
+	CurrentNode string      `json:"currentNode" gorm:"comment:当前节点"`
+	DeptId      uint        `json:"deptId" gorm:"comment:部门id"`
 }
 
 type FormItem struct {

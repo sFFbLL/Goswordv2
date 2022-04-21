@@ -94,12 +94,12 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 		if err != nil {
 			return err
 		}
-		//流程流转
-		err = ProcessFlow(taskInfo.Record)
+		err = tx.Updates(&task).Error
 		if err != nil {
 			return err
 		}
-		return tx.Updates(&task).Error
+		//流程流转
+		return ProcessFlow(taskInfo.Record)
 	})
 }
 
@@ -118,7 +118,7 @@ func (t TaskService) GetReceive(userId uint) (err error, tasks []modelWF.GzlTask
 	return
 }
 
-// GetTaskInfo 根据id获取信息
+// GetTaskInfo 根据id获取详细信息
 func (t TaskService) GetTaskInfo(taskId uint) (task work_flow.GzlTask, err error) {
 	err = global.GSD_DB.Preload("RecordById.EmptyApp").First(&task, taskId).Error
 	return task, err
