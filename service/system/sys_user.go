@@ -24,7 +24,7 @@ type UserService struct {
 //@description: 用户注册
 //@param: u model.SysUser
 //@return: err error, userInter model.SysUser
-func (userService *UserService) Register(u system.SysUser, roles []uint) (err error, userInter system.SysUser) {
+func (userService *UserService) Register(u system.SysUser) (err error, userInter system.SysUser) {
 	var user system.SysUser
 	if !errors.Is(global.GSD_DB.Where("username = ?", u.Username).First(&user).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
 		return errors.New("用户名已注册"), userInter
@@ -37,10 +37,6 @@ func (userService *UserService) Register(u system.SysUser, roles []uint) (err er
 		if TxErr != nil {
 			return TxErr
 		}
-		//TxErr = CasbinServiceApp.UpdateUserAuthority(u.ID, roles)
-		//if TxErr != nil {
-		//	return TxErr
-		//}
 		return nil
 	})
 	return err, u
