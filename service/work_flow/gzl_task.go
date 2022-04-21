@@ -20,7 +20,7 @@ type TaskService struct {
 // @description: 从mysql中获取流程动态数据
 // @param: WorkFlowReq.RecordById
 // @return: data []WorkFlowReq.Dynamic, err error
-func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowRes.Dynamic, err error) {
+func (t TaskService) GetDynamic(applicantId, recordId uint) (data []WorkFlowRes.Dynamic, err error) {
 	db := global.GSD_DB.
 		Model(modelWF.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", applicantId).
@@ -109,7 +109,7 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 // @description: 从mysql中获取我收到的信息列表
 // @param: WorkFlowReq.RecordById
 // @return: data []WorkFlowReq.Dynamic, err error
-func (t TaskService) GetReceive(userId int) (err error, tasks []modelWF.GzlTask) {
+func (t TaskService) GetReceive(userId uint) (err error, tasks []modelWF.GzlTask) {
 	// 1. 申请人姓名  userId -> sys_users.username
 	// 2. 审批人姓名  userId ->
 	// 3. 审批状态

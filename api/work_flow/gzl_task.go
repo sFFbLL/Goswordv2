@@ -40,7 +40,6 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 }
 
 // Dynamic
-// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
@@ -48,14 +47,14 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	_, _ = strconv.Atoi(c.Request.Header.Get("x-user-id"))
-	recordId, _ := strconv.Atoi(c.Query("recordId"))
-	record := WorkFlowReq.RecordById{RecordId: recordId}
+	userId := utils.GetUserID(c)
+	var record WorkFlowReq.RecordById
+	_ = c.ShouldBindQuery(&record)
 	if err := utils.Verify(record, utils.RecordIdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	tasks, err := taskService.GetDynamic(1, recordId)
+	tasks, err := taskService.GetDynamic(userId, record.RecordId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取流程动态错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)
@@ -107,15 +106,13 @@ func (t *TaskApi) Handle(c *gin.Context) {
 }
 
 // Receive
-// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Task
 // @Summary 我收到的
 // @Produce  application/json
-// @Param data query int  true "节点类型"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]
 func (t *TaskApi) Receive(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	userId := utils.GetUserID(c)
 	tasks, err := taskService.GetReceive(userId)
 	// TODO ReceiveVerify && params select
 

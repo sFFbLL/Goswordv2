@@ -1,66 +1,65 @@
 package work_flow
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"project/utils"
-	"strconv"
-
 	"project/global"
 	"project/model/common/response"
+	modelMF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
+	"project/utils"
 )
 
 type RecordApi struct {
 }
 
 // Submit
-// @author: [tanshaokang](https://github.com/worryfreet)
-// @Tags RecordById
+// @Tags Record
 // @Summary 提交表单
 // @Produce  application/json
 // @Param data body WorkFlowReq.RecordSubmit true "string"
 // @Success 200 {} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
-	_, _ = strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	var recordSubmit WorkFlowReq.RecordSubmit
 	err := c.ShouldBindJSON(&recordSubmit)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("json解析失败", zap.Any("err", err))
+		global.GSD_LOG.ZapLog.Error("json绑定失败", zap.Any("err", err))
 	}
-	fmt.Println("recordSubmit: ", recordSubmit)
-	recordSubmit.CreateBy = uint(1)
-	//if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
-	//	response.FailWithMessage(err.Error(), c)
-	//	return
-	//}
-	err = recordService.Submit(recordSubmit)
+	if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	// 定义record结构体, 将入参的值赋进去
+	var record modelMF.GzlRecord
+	record.Form, _ = json.Marshal(recordSubmit.Form)
+	record.AppId = recordSubmit.AppId
+	record.GSD_MODEL.CreateBy = 1
+	err = recordService.Submit(record)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("记录提交失败", zap.Any("err", err))
 		response.FailWithMessage("提交失败", c)
 	} else {
-		response.OkWithMessage("提交成功", c)
+		response.Ok(c)
 	}
 }
 
 // Data
-// @author: [tanshaokang](https://github.com/worryfreet)
-// @Tags RecordById
+// @Tags Record
 // @Summary 返回之前填写过的表单数据
 // @Produce  application/json
-// @Param recordId query int true "记录id"
+// @Param recordId query WorkFlowReq.RecordById true "记录id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/data [get]
 func (r *RecordApi) Data(c *gin.Context) {
-	recordId, _ := strconv.Atoi(c.Query("recordId"))
-	record := WorkFlowReq.RecordById{RecordId: recordId}
+	var record WorkFlowReq.RecordById
+	_ = c.ShouldBindQuery(&record)
 	if err := utils.Verify(record, utils.RecordIdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	data, err := recordService.GetData(recordId)
+	data, err := recordService.GetData(record.RecordId)
 	if err != nil {
 		global.GSD_LOG.ZapLog.Error("表单数据获取失败", zap.Any("err", err))
 		response.FailWithMessage("该记录不存在", c)
@@ -71,7 +70,7 @@ func (r *RecordApi) Data(c *gin.Context) {
 }
 
 // Launch
-// @Tags RecordById
+// @Tags Record
 // @Summary 我发起的
 // @Produce  application/json
 // @Param data body uint true "创建人"
