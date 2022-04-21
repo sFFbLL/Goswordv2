@@ -20,7 +20,7 @@ zap:
 
 # redis configuration
 redis:
-  db: 0
+  db: 1
   addr: ''
   password: ''
 
@@ -55,7 +55,7 @@ captcha:
 mysql:
   path: ''
   config: ''
-  db-name: 'work_flow'
+  db-name: 'gosword'
   username: 'root'
   password: ''
   max-idle-conns: 10

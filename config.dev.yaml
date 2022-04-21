@@ -20,7 +20,7 @@ zap:
 
 # redis configuration
 redis:
-  db: 0
+  db: 1
   addr: 'cppwnn.top:6379'
   password: 'cpp@19990909'
 
@@ -55,7 +55,7 @@ captcha:
 mysql:
   path: 'cppwnn.top:3306'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
-  db-name: 'work_flow'
+  db-name: 'gosword'
   username: 'root'
   password: 'cpp@19990909'
   max-idle-conns: 10
