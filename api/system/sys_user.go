@@ -153,7 +153,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 		response.FailWithMessage("注册失败, 无权注册该用户!", c)
 		return
 	}
-	err, userReturn := userService.Register(*user, r.AuthorityIds)
+	err, userReturn := userService.Register(*user)
 	if err != nil {
 		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)

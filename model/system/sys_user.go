@@ -21,6 +21,7 @@ type SysUser struct {
 	AuthorityId uint           `json:"authorityId" gorm:"default:1;comment:用户角色ID"`       // 用户角色ID
 	DeptId      uint           `json:"deptId" gorm:"comment:用户所属部门"`
 	Dept        SysDept        `json:"dept" gorm:"foreignKey:DeptId;references:ID;"`
+	Authority   SysAuthority   `json:"authority" gorm:"foreignKey:AuthorityId;references:AuthorityId;comment:用户角色"`
 	Authorities []SysAuthority `json:"authorities" gorm:"many2many:sys_user_authority;"`
 }
 
