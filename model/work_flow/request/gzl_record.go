@@ -9,10 +9,6 @@ type RecordById struct {
 	RecordId int `form:"recordId"`
 }
 
-type Schedule struct {
-	AppId int `form:"appId"`
-}
-
 type RecordSubmit struct {
 	CreateBy    uint        //创建人
 	AppId       uint        `json:"appId"`
