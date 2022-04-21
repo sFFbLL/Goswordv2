@@ -2,12 +2,10 @@ package router
 
 import (
 	"project/router/system"
-	WorkFlow "project/router/work_flow"
 )
 
 type RouterGroup struct {
-	System   system.RouterGroup
-	WorkFlow WorkFlow.RouterGroup
+	System system.RouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

@@ -1,1 +1,1 @@
-#GoSwordServer
+#GoSword

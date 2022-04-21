@@ -15,6 +15,10 @@ type SysUser struct {
 	HeaderImg   string         `json:"headerImg" gorm:"not null;default:http://r9qsta3s9.hn-bkt.clouddn.com/head.png;comment:用户头像"` // 用户头像
 	Email       string         `json:"email" gorm:"not null;comment:用户邮箱"`
 	Phone       string         `json:"phone" gorm:"comment:用户手机号"`
+	SideMode    string         `json:"sideMode" gorm:"default:dark;comment:用户角色ID"`       // 用户侧边主题
+	ActiveColor string         `json:"activeColor" gorm:"default:#1890ff;comment:用户角色ID"` // 活跃颜色
+	BaseColor   string         `json:"baseColor" gorm:"default:#fff;comment:用户角色ID"`      // 基础颜色
+	AuthorityId uint           `json:"authorityId" gorm:"default:1;comment:用户角色ID"`       // 用户角色ID
 	DeptId      uint           `json:"deptId" gorm:"comment:用户所属部门"`
 	Dept        SysDept        `json:"dept" gorm:"foreignKey:DeptId;references:ID;"`
 	Authorities []SysAuthority `json:"authorities" gorm:"many2many:sys_user_authority;"`
