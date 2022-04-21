@@ -1,5 +1,4 @@
-# 第二阶段构建运行环境
-FROM alpine:latest
+FROM golang
 
 WORKDIR /go/src/go-sword
 

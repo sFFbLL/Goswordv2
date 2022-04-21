@@ -24,7 +24,7 @@ type UserService struct {
 //@description: 用户注册
 //@param: u model.SysUser
 //@return: err error, userInter model.SysUser
-func (userService *UserService) Register(u system.SysUser, roles []uint) (err error, userInter system.SysUser) {
+func (userService *UserService) Register(u system.SysUser) (err error, userInter system.SysUser) {
 	var user system.SysUser
 	if !errors.Is(global.GSD_DB.Where("username = ?", u.Username).First(&user).Error, gorm.ErrRecordNotFound) { // 判断用户名是否注册
 		return errors.New("用户名已注册"), userInter
@@ -37,10 +37,6 @@ func (userService *UserService) Register(u system.SysUser, roles []uint) (err er
 		if TxErr != nil {
 			return TxErr
 		}
-		//TxErr = CasbinServiceApp.UpdateUserAuthority(u.ID, roles)
-		//if TxErr != nil {
-		//	return TxErr
-		//}
 		return nil
 	})
 	return err, u
@@ -54,7 +50,7 @@ func (userService *UserService) Register(u system.SysUser, roles []uint) (err er
 func (userService *UserService) Login(u *system.SysUser) (err error, userInter *system.SysUser) {
 	var user system.SysUser
 	u.Password = utils.MD5V([]byte(u.Password))
-	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Dept").Preload("Authorities.Depts").First(&user).Error
+	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).Preload("Dept").Preload("Authority").Preload("Authorities.Depts").First(&user).Error
 	return err, &user
 }
 
@@ -89,6 +85,21 @@ func (userService *UserService) UpdatePassword(u *system.SysUser, newPassword st
 	u.Password = utils.MD5V([]byte(u.Password))
 	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Username).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
 	return err, u
+}
+
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: SetUserAuthority
+//@description: 设置一个用户的权限
+//@param: uuid uuid.UUID, authorityId string
+//@return: err error
+
+func (userService *UserService) SetUserAuthority(id uint, uuid string, authorityId uint) (err error) {
+	assignErr := global.GSD_DB.Where("sys_user_id = ? AND sys_authority_authority_id = ?", id, authorityId).First(&system.SysUseAuthority{}).Error
+	if errors.Is(assignErr, gorm.ErrRecordNotFound) {
+		return errors.New("该用户无此角色")
+	}
+	err = global.GSD_DB.Where("uuid = ?", uuid).First(&system.SysUser{}).Update("authority_id", authorityId).Error
+	return err
 }
 
 // SetUserAuthorities @author: [chenguanglan](https://github.com/sFFbLL)

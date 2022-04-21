@@ -76,6 +76,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 		} else {
 			c.Set("claims", &userInfo)
+			c.Set("tokenClaims", claims)
 			c.Next()
 		}
 	}

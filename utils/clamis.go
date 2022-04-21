@@ -52,3 +52,14 @@ func GetUserAuthority(c *gin.Context) []system.SysAuthority {
 		return waitUse.Authority
 	}
 }
+
+// 从Gin的Context中获取从jwt解析出来的用户信息
+func GetClaim(c *gin.Context) *systemReq.CustomClaims {
+	if claims, exists := c.Get("tokenClaims"); !exists {
+		global.GSD_LOG.Error(c, "从Gin的Context中获取从jwt解析出来的用户失败, 请检查路由是否使用jwt中间件!")
+		return nil
+	} else {
+		waitUse := claims.(*systemReq.CustomClaims)
+		return waitUse
+	}
+}

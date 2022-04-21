@@ -9,6 +9,7 @@ import (
 	systemReq "project/model/system/request"
 	systemRes "project/model/system/response"
 	"project/utils"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -48,10 +49,11 @@ func (b *BaseApi) Login(c *gin.Context) {
 func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	j := &middleware.JWT{SigningKey: []byte(global.GSD_CONFIG.JWT.SigningKey)} // 唯一签名
 	claims := systemReq.CustomClaims{
-		UUID:       user.UUID,
-		ID:         user.ID,
-		Username:   user.Username,
-		BufferTime: global.GSD_CONFIG.JWT.BufferTime, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
+		UUID:        user.UUID,
+		ID:          user.ID,
+		Username:    user.Username,
+		AuthorityId: user.AuthorityId,
+		BufferTime:  global.GSD_CONFIG.JWT.BufferTime, // 缓冲时间1天 缓冲时间内会获得新的token刷新令牌 此时一个用户会存在两个有效令牌 但是前端只留一个 另一个会丢失
 		StandardClaims: jwt.StandardClaims{
 			NotBefore: time.Now().Unix() - 1000,                              // 签名生效时间
 			ExpiresAt: time.Now().Unix() + global.GSD_CONFIG.JWT.ExpiresTime, // 过期时间 7天  配置文件
@@ -151,7 +153,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 		response.FailWithMessage("注册失败, 无权注册该用户!", c)
 		return
 	}
-	err, userReturn := userService.Register(*user, r.AuthorityIds)
+	err, userReturn := userService.Register(*user)
 	if err != nil {
 		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)
@@ -203,6 +205,41 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 		//删除用户缓存
 		_ = jwtService.DelRedisUserInfo(deleteUser.UUID.String())
 		response.OkWithMessage("删除成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 更改用户权限
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body systemReq.SetUserAuth true "用户UUID, 角色ID"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
+// @Router /user/setUserAuthority [post]
+func (b *BaseApi) SetUserAuthority(c *gin.Context) {
+	var sua systemReq.SetUserAuth
+	_ = c.ShouldBindJSON(&sua)
+	if UserVerifyErr := utils.Verify(sua, utils.SetUserAuthorityVerify); UserVerifyErr != nil {
+		response.FailWithMessage(UserVerifyErr.Error(), c)
+		return
+	}
+	userID := utils.GetUserID(c)
+	uuid := utils.GetUserUuid(c)
+	if err := userService.SetUserAuthority(userID, uuid, sua.AuthorityId); err != nil {
+		global.GSD_LOG.Error(c, "修改失败!", zap.Any("err", err))
+		response.FailWithMessage(err.Error(), c)
+	} else {
+		claims := utils.GetClaim(c)
+		j := &middleware.JWT{SigningKey: []byte(global.GSD_CONFIG.JWT.SigningKey)} // 唯一签名
+		claims.AuthorityId = sua.AuthorityId
+		if token, err := j.CreateToken(*claims); err != nil {
+			global.GSD_LOG.Error(c, "修改失败!", zap.Any("err", err))
+			response.FailWithMessage(err.Error(), c)
+		} else {
+			c.Header("new-token", token)
+			c.Header("new-expires-at", strconv.FormatInt(claims.ExpiresAt, 10))
+			response.OkWithMessage("修改成功", c)
+		}
 	}
 }
 
@@ -405,7 +442,7 @@ func (b *BaseApi) LoadExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/octet-stream
-// @Param data body example.ExcelInfo true "导出Excel文件信息"
+// @Param data body system.ExcelInfo true "导出Excel文件信息"
 // @Success 200
 // @Router /user/exportExcel [post]
 func (b *BaseApi) ExportExcel(c *gin.Context) {
@@ -426,7 +463,7 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/octet-stream
-// @Param data body example.ExcelInfo true "下载模板信息"
+// @Param data body system.ExcelInfo true "下载模板信息"
 // @Success 200
 // @Router /user/downloadTemplate [post]
 func (b *BaseApi) DownloadTemplate(c *gin.Context) {
