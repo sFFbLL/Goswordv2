@@ -72,7 +72,7 @@ func (r *RecordApi) Data(c *gin.Context) {
 // @Tags Record
 // @Summary 我发起的
 // @Produce  application/json
-// @Param data body uint true
+// @Param data body uint true "创建人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"操作成功"}"
 // @Router /record/initiated [get]
 func (r *RecordApi) MyInitiated(c *gin.Context) {

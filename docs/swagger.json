@@ -263,6 +263,36 @@
                 }
             }
         },
+        "/app/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "创建应用",
+                "parameters": [
+                    {
+                        "description": "创建人",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/app/create": {
             "post": {
                 "produces": [
@@ -855,7 +885,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Record"
+                    "RecordById"
                 ],
                 "summary": "返回之前填写过的表单数据",
                 "parameters": [
@@ -877,7 +907,7 @@
                 }
             }
         },
-        "/record/schedule": {
+        "/record/initiated": {
             "get": {
                 "produces": [
                     "application/json"
@@ -899,7 +929,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我发起的任务成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"操作成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -913,7 +943,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Record"
+                    "RecordById"
                 ],
                 "summary": "提交表单",
                 "parameters": [
@@ -1335,6 +1365,76 @@
                 }
             }
         },
+        "/user/downloadTemplate": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "下载模板",
+                "parameters": [
+                    {
+                        "description": "下载模板信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.ExcelInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/user/exportExcel": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "导出Excel",
+                "parameters": [
+                    {
+                        "description": "导出Excel文件信息",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.ExcelInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/user/getUserInfo": {
             "get": {
                 "security": [
@@ -1395,6 +1495,93 @@
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/importExcel": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "导入用户Excel文件",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "导入Excel文件",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "导入Excel文件",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "/user/loadExcel": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "加载Excel数据",
+                "responses": {
+                    "200": {
+                        "description": "加载Excel数据,返回包括列表,总数,页码,每页数量",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.PageResult"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -1631,22 +1818,13 @@
                     "description": "创建人",
                     "type": "integer"
                 },
-                "createdAt": {
-                    "description": "创建时间",
-                    "type": "string"
-                },
                 "currentNode": {
                     "type": "string"
                 },
-                "depId": {
+                "deptId": {
                     "type": "integer"
                 },
-                "form": {
-                    "type": "array",
-                    "items": {
-                        "type": "integer"
-                    }
-                }
+                "form": {}
             }
         },
         "request.Register": {
@@ -1864,6 +2042,21 @@
                 }
             }
         },
+        "system.ExcelInfo": {
+            "type": "object",
+            "properties": {
+                "fileName": {
+                    "description": "文件名",
+                    "type": "string"
+                },
+                "infoList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/system.SysUser"
+                    }
+                }
+            }
+        },
         "system.SysApi": {
             "type": "object",
             "properties": {
@@ -1925,6 +2118,10 @@
                     "type": "string"
                 },
                 "dataScope": {
+                    "type": "string"
+                },
+                "defaultRouter": {
+                    "description": "默认菜单(默认dashboard)",
                     "type": "string"
                 },
                 "depts": {
@@ -2184,11 +2381,26 @@
         "system.SysUser": {
             "type": "object",
             "properties": {
+                "activeColor": {
+                    "description": "活跃颜色",
+                    "type": "string"
+                },
                 "authorities": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/system.SysAuthority"
                     }
+                },
+                "authority": {
+                    "$ref": "#/definitions/system.SysAuthority"
+                },
+                "authorityId": {
+                    "description": "用户角色ID",
+                    "type": "integer"
+                },
+                "baseColor": {
+                    "description": "基础颜色",
+                    "type": "string"
                 },
                 "createBy": {
                     "description": "创建人",
@@ -2220,6 +2432,10 @@
                     "type": "string"
                 },
                 "phone": {
+                    "type": "string"
+                },
+                "sideMode": {
+                    "description": "用户侧边主题",
                     "type": "string"
                 },
                 "updateBy": {
