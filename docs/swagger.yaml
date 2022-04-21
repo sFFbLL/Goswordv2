@@ -101,17 +101,11 @@ definitions:
       createBy:
         description: 创建人
         type: integer
-      createdAt:
-        description: 创建时间
-        type: string
       currentNode:
         type: string
-      depId:
+      deptId:
         type: integer
-      form:
-        items:
-          type: integer
-        type: array
+      form: {}
     type: object
   request.Register:
     properties:
@@ -265,6 +259,16 @@ definitions:
           $ref: '#/definitions/system.SysBaseMenu'
         type: array
     type: object
+  system.ExcelInfo:
+    properties:
+      fileName:
+        description: 文件名
+        type: string
+      infoList:
+        items:
+          $ref: '#/definitions/system.SysUser'
+        type: array
+    type: object
   system.SysApi:
     properties:
       apiGroup:
@@ -310,6 +314,9 @@ definitions:
         description: 创建时间
         type: string
       dataScope:
+        type: string
+      defaultRouter:
+        description: 默认菜单(默认dashboard)
         type: string
       depts:
         items:
@@ -496,10 +503,21 @@ definitions:
     type: object
   system.SysUser:
     properties:
+      activeColor:
+        description: 活跃颜色
+        type: string
       authorities:
         items:
           $ref: '#/definitions/system.SysAuthority'
         type: array
+      authority:
+        $ref: '#/definitions/system.SysAuthority'
+      authorityId:
+        description: 用户角色ID
+        type: integer
+      baseColor:
+        description: 基础颜色
+        type: string
       createBy:
         description: 创建人
         type: integer
@@ -522,6 +540,9 @@ definitions:
         description: 用户昵称
         type: string
       phone:
+        type: string
+      sideMode:
+        description: 用户侧边主题
         type: string
       updateBy:
         description: 更新人
@@ -695,6 +716,25 @@ paths:
       summary: 创建基础api
       tags:
       - SysApi
+  /app/:
+    post:
+      parameters:
+      - description: 创建人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 创建应用
+      tags:
+      - App
   /app/create:
     post:
       parameters:
@@ -1062,8 +1102,8 @@ paths:
             type: string
       summary: 返回之前填写过的表单数据
       tags:
-      - Record
-  /record/schedule:
+      - RecordById
+  /record/initiated:
     get:
       parameters:
       - description: 创建人
@@ -1076,7 +1116,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"查询我发起的任务成功"}'
+          description: '{"success":true,"data":{},"msg":"操作成功"}'
           schema:
             type: string
       summary: 我发起的
@@ -1100,7 +1140,7 @@ paths:
             type: ""
       summary: 提交表单
       tags:
-      - Record
+      - RecordById
   /sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
@@ -1346,6 +1386,48 @@ paths:
       summary: 删除用户
       tags:
       - SysUser
+  /user/downloadTemplate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 下载模板信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.ExcelInfo'
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: 下载模板
+      tags:
+      - SysUser
+  /user/exportExcel:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 导出Excel文件信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.ExcelInfo'
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: 导出Excel
+      tags:
+      - SysUser
   /user/getUserInfo:
     get:
       consumes:
@@ -1383,6 +1465,54 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 分页获取用户列表
+      tags:
+      - SysUser
+  /user/importExcel:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 导入Excel文件
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 导入Excel文件
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 导入用户Excel文件
+      tags:
+      - SysUser
+  /user/loadExcel:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 加载Excel数据,返回包括列表,总数,页码,每页数量
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.PageResult'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 加载Excel数据
       tags:
       - SysUser
   /user/register:

@@ -151,7 +151,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 		response.FailWithMessage("注册失败, 无权注册该用户!", c)
 		return
 	}
-	err, userReturn := userService.Register(*user, r.AuthorityIds)
+	err, userReturn := userService.Register(*user)
 	if err != nil {
 		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)
@@ -405,7 +405,7 @@ func (b *BaseApi) LoadExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/octet-stream
-// @Param data body example.ExcelInfo true "导出Excel文件信息"
+// @Param data body system.ExcelInfo true "导出Excel文件信息"
 // @Success 200
 // @Router /user/exportExcel [post]
 func (b *BaseApi) ExportExcel(c *gin.Context) {
@@ -427,7 +427,7 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/octet-stream
-// @Param data body example.ExcelInfo true "下载模板信息"
+// @Param data body system.ExcelInfo true "下载模板信息"
 // @Success 200
 // @Router /user/downloadTemplate [post]
 func (b *BaseApi) DownloadTemplate(c *gin.Context) {
