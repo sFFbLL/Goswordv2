@@ -442,7 +442,7 @@ func (b *BaseApi) LoadExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/octet-stream
-// @Param data body example.ExcelInfo true "导出Excel文件信息"
+// @Param data body system.ExcelInfo true "导出Excel文件信息"
 // @Success 200
 // @Router /user/exportExcel [post]
 func (b *BaseApi) ExportExcel(c *gin.Context) {
@@ -463,7 +463,7 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/octet-stream
-// @Param data body example.ExcelInfo true "下载模板信息"
+// @Param data body system.ExcelInfo true "下载模板信息"
 // @Success 200
 // @Router /user/downloadTemplate [post]
 func (b *BaseApi) DownloadTemplate(c *gin.Context) {
