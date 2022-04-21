@@ -17,4 +17,5 @@ var (
 	RecordIdVerify         = Rules{"RecordId": {NotEmpty()}}
 	EmptyAppIdVerify       = Rules{"AppId": {NotEmpty()}}
 	RecordSubmitVerify     = Rules{"AppId": {NotEmpty()}, "Form": {NotEmpty()}, "CurrentNode": {NotEmpty()}, "DeptId": {NotEmpty()}}
+	AddApp                 = Rules{"Name": {NotEmpty()}, "Icon": {NotEmpty()}}
 )
