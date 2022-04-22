@@ -31,7 +31,7 @@ func (cas *CasbinApi) UpdateCasbin(c *gin.Context) {
 		return
 	}
 	if err := casbinService.UpdateCasbin(strconv.Itoa(int(cmr.AuthorityId)), cmr.CasbinInfos); err != nil {
-		global.GSD_LOG.Error("更新失败!", zap.Any("err", err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "更新失败!", zap.Any("err", err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)

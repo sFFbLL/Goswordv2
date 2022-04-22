@@ -12,7 +12,7 @@ type SysUser struct {
 	Username    string         `json:"userName" gorm:"not null;comment:用户登录名"`                                                      // 用户登录名
 	Password    string         `json:"-"  gorm:"not null;comment:用户登录密码"`                                                           // 用户登录密码
 	NickName    string         `json:"nickName" gorm:"not null;default:系统用户;comment:用户昵称"`                                          // 用户昵称
-	HeaderImg   string         `json:"headerImg" gorm:"not null;default:http://r9qsta3s9.hn-bkt.clouddn.com/head.jpg;comment:用户头像"` // 用户头像
+	HeaderImg   string         `json:"headerImg" gorm:"not null;default:http://r9qsta3s9.hn-bkt.clouddn.com/head.png;comment:用户头像"` // 用户头像
 	Email       string         `json:"email" gorm:"not null;comment:用户邮箱"`
 	Phone       string         `json:"phone" gorm:"comment:用户手机号"`
 	SideMode    string         `json:"sideMode" gorm:"default:dark;comment:用户角色ID"`       // 用户侧边主题

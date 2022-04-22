@@ -30,7 +30,7 @@ func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
 		return
 	}
 	if err, list, total := menuService.GetMenuList(); err != nil {
-		global.GSD_LOG.Error("获取失败", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "获取失败", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
@@ -60,7 +60,7 @@ func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
 		return
 	}
 	if err := menuService.AddMenu(menu); err != nil {
-		global.GSD_LOG.Error("添加菜单失败", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "添加菜单失败", zap.Error(err))
 		response.FailWithMessage("添加菜单失败", c)
 	} else {
 		response.OkWithMessage("添加菜单成功", c)
@@ -81,7 +81,7 @@ func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
 		return
 	}
 	if err := menuService.DeleteMenu(menu.ID); err != nil {
-		global.GSD_LOG.Error("删除菜单失败", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "删除菜单失败", zap.Error(err))
 		response.FailWithMessage("菜单删除失败", c)
 		return
 	} else {
@@ -107,7 +107,7 @@ func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 		return
 	}
 	if err := menuService.UpdateMenu(menu); err != nil {
-		global.GSD_LOG.Error("更新菜单失败", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "更新菜单失败", zap.Error(err))
 		response.FailWithMessage("菜单更新失败", c)
 	} else {
 		response.OkWithMessage("菜单更新成功", c)
@@ -122,7 +122,7 @@ func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 // @Router /menu/getMenu [post]
 func (a *AuthorityMenuApi) GetUserMenuTree(c *gin.Context) {
 	if err, menus := menuService.GetUserMenu(utils.GetUserAuthority(c)); err != nil {
-		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		if menus == nil {
@@ -141,7 +141,7 @@ func (a *AuthorityMenuApi) GetUserMenuTree(c *gin.Context) {
 // @Router /menu/getBaseMenuTree [post]
 func (a *AuthorityMenuApi) GetBaseMenuTree(c *gin.Context) {
 	if err, menus := menuService.GetBaseMenuTree(); err != nil {
-		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysBaseMenusResponse{Menus: menus}, "获取成功", c)
@@ -164,7 +164,7 @@ func (a *AuthorityMenuApi) GetMenuAuthority(c *gin.Context) {
 		return
 	}
 	if err, menus := menuService.GetMenuAuthority(&param); err != nil {
-		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithDetailed(systemRes.SysMenusResponse{Menus: menus}, "获取失败", c)
 	} else {
 		response.OkWithDetailed(gin.H{"menus": menus}, "获取成功", c)
@@ -187,7 +187,7 @@ func (a *AuthorityMenuApi) GetBaseMenuById(c *gin.Context) {
 		return
 	}
 	if err, menu := menuService.GetBaseMenuById(idInfo.ID); err != nil {
-		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysBaseMenuResponse{Menu: menu}, "获取成功", c)
@@ -210,7 +210,7 @@ func (a *AuthorityMenuApi) AddMenuAuthority(c *gin.Context) {
 		return
 	}
 	if err := menuService.AddMenuAuthority(authorityMenu.Menus, authorityMenu.AuthorityId); err != nil {
-		global.GSD_LOG.Error("添加失败!", zap.Error(err), utils.GetRequestID(c))
+		global.GSD_LOG.Error(c, "添加失败!", zap.Error(err))
 		response.FailWithMessage("添加失败", c)
 	} else {
 		response.OkWithMessage("添加成功", c)
