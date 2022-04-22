@@ -128,7 +128,7 @@ func (c *customLogger) Trace(ctx context.Context, begin time.Time, fc func() (st
 
 func (c *customLogger) Printf(message string, data ...interface{}) {
 	if global.GSD_CONFIG.Mysql.LogZap {
-		global.GSD_LOG.ZapLog.Info(fmt.Sprintf(message, data...))
+		global.GSD_LOG.Info(fmt.Sprintf(message, data...))
 	} else {
 		c.Writer.Printf(message, data...)
 	}
