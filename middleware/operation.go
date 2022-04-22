@@ -8,7 +8,6 @@ import (
 	"project/model/system"
 	"project/model/system/request"
 	"project/service"
-	"project/utils"
 	"strconv"
 	"strings"
 	"time"
@@ -27,7 +26,7 @@ func OperationRecord() gin.HandlerFunc {
 			var err error
 			body, err = ioutil.ReadAll(c.Request.Body)
 			if err != nil {
-				global.GSD_LOG.Error("read body from request error:", zap.Any("err", err), utils.GetRequestID(c))
+				global.GSD_LOG.Error(c, "read body from request error:", zap.Any("err", err))
 			} else {
 				c.Request.Body = ioutil.NopCloser(bytes.NewBuffer(body))
 			}
@@ -70,7 +69,7 @@ func OperationRecord() gin.HandlerFunc {
 		record.Resp = writer.body.String()
 
 		if err := operationRecordService.CreateSysOperationRecord(record); err != nil {
-			global.GSD_LOG.Error("create operation record error:", zap.Any("err", err), utils.GetRequestID(c))
+			global.GSD_LOG.Error(c, "create operation record error:", zap.Any("err", err))
 		}
 	}
 }

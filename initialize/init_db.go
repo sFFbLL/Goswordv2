@@ -24,12 +24,13 @@ func InitDB() {
 		source.Dept,
 		source.UserAuthority,
 		source.Api,
+		source.Casbin,
 	)
 	if err != nil {
-		global.GSD_LOG.Error("init table data failed", zap.Any("err", err))
+		global.GSD_LOG.ZapLog.Error("init table data failed", zap.Any("err", err))
 		os.Exit(0)
 	}
-	global.GSD_LOG.Info("init table data success")
+	global.GSD_LOG.ZapLog.Info("init table data success")
 }
 
 //@author: [chenguanglan](https://github.com/sFFbLL)

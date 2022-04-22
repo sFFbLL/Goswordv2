@@ -13,7 +13,7 @@ import (
 
 var level zapcore.Level
 
-func Zap() (logger *zap.Logger) {
+func Zap() (logger *global.NewLogger) {
 	if ok, _ := utils.PathExists(global.GSD_CONFIG.Zap.Director); !ok { // 判断是否有Director文件夹
 		fmt.Printf("create %v directory\n", global.GSD_CONFIG.Zap.Director)
 		_ = os.Mkdir(global.GSD_CONFIG.Zap.Director, os.ModePerm)
@@ -37,14 +37,16 @@ func Zap() (logger *zap.Logger) {
 	default:
 		level = zap.InfoLevel
 	}
-	logger = &zap.Logger{}
+	logger = &global.NewLogger{
+		ZapLog: &zap.Logger{},
+	}
 	if level == zap.DebugLevel || level == zap.ErrorLevel {
-		logger = zap.New(getEncoderCore(), zap.AddStacktrace(level))
+		logger.ZapLog = zap.New(getEncoderCore(), zap.AddStacktrace(level))
 	} else {
-		logger = zap.New(getEncoderCore())
+		logger.ZapLog = zap.New(getEncoderCore())
 	}
 	if global.GSD_CONFIG.Zap.ShowLine {
-		logger = logger.WithOptions(zap.AddCaller())
+		logger.ZapLog = logger.ZapLog.WithOptions(zap.AddCaller())
 	}
 	return logger
 }

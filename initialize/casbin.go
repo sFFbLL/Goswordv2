@@ -22,7 +22,7 @@ func Casbin() *casbin.SyncedEnforcer {
 	syncedEnforcer.AddFunction("ParamsMatch", paramsMatchFunc)
 	err = syncedEnforcer.LoadPolicy()
 	if err != nil {
-		global.GSD_LOG.Error("Casbin初始化异常", zap.Any("err", err))
+		global.GSD_LOG.ZapLog.Error("Casbin初始化异常", zap.Any("err", err))
 		os.Exit(0)
 		return nil
 	}
