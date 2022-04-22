@@ -398,6 +398,34 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 }
 
 // @Tags SysUser
+// @Summary 设置当前用户信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body system.SysUser true "ID, 用户名, 昵称, 头像链接"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
+// @Router /user/setSelfInfo [put]
+func (b *BaseApi) SetSelfInfo(c *gin.Context) {
+	var user system.SysUser
+	_ = c.ShouldBindJSON(&user)
+	if err := utils.Verify(user, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	user.Username = ""
+	user.Password = ""
+	curUser := utils.GetUser(c)
+	user.CreateBy = curUser.ID
+	user.ID = curUser.ID
+	if err, sysUser := userService.SetSelfInfo(user); err != nil {
+		global.GSD_LOG.Error(c, "设置失败", zap.Error(err))
+		response.FailWithMessage("设置失败", c)
+	} else {
+		response.OkWithDetailed(gin.H{"userinfo": sysUser}, "设置成功", c)
+	}
+}
+
+// @Tags SysUser
 // @Summary 导入用户Excel文件
 // @Security ApiKeyAuth
 // @accept multipart/form-data

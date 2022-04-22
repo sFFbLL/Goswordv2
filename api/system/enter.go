@@ -14,6 +14,7 @@ type ApiGroup struct {
 	SystemApiApi
 	OperationRecordApi
 	CasbinApi
+	SystemApi
 }
 
 var dataScope = utils.DataScope{}
@@ -26,3 +27,4 @@ var apiService = service.ServiceGroupApp.SystemServiceGroup.ApiService
 var operationRecordService = service.ServiceGroupApp.SystemServiceGroup.OperationRecordService
 var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
 var DeptService = service.ServiceGroupApp.SystemServiceGroup.DeptService
+var systemConfigService = service.ServiceGroupApp.SystemServiceGroup.SystemConfigService
