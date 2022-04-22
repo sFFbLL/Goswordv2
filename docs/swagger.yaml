@@ -70,6 +70,22 @@ definitions:
         description: 每页大小
         type: integer
     type: object
+<<<<<<< HEAD
+=======
+  request.RecordSubmit:
+    properties:
+      appId:
+        type: integer
+      createBy:
+        description: 创建人
+        type: integer
+      currentNode:
+        type: string
+      deptId:
+        type: integer
+      form: {}
+    type: object
+>>>>>>> develop
   request.Register:
     properties:
       authorityIds:
@@ -685,6 +701,65 @@ paths:
       summary: 创建基础api
       tags:
       - SysApi
+<<<<<<< HEAD
+=======
+  /app/:
+    post:
+      parameters:
+      - description: 创建人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 创建应用
+      tags:
+      - App
+  /app/create:
+    post:
+      parameters:
+      - description: 创建人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 创建表单
+      tags:
+      - App
+  /app/empty:
+    get:
+      parameters:
+      - description: 应用id
+        in: query
+        name: appId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"null"}'
+          schema:
+            type: string
+      summary: 返回空表单
+      tags:
+      - App
+>>>>>>> develop
   /authority/createAuthority:
     post:
       consumes:
@@ -1122,6 +1197,65 @@ paths:
       summary: 菜单管理-更新菜单
       tags:
       - Menu
+<<<<<<< HEAD
+=======
+  /record/data:
+    get:
+      parameters:
+      - description: 记录id
+        in: query
+        name: recordId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"null"}'
+          schema:
+            type: string
+      summary: 返回之前填写过的表单数据
+      tags:
+      - RecordById
+  /record/initiated:
+    get:
+      parameters:
+      - description: 创建人
+        in: body
+        name: data
+        required: true
+        schema:
+          type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"操作成功"}'
+          schema:
+            type: string
+      summary: 我发起的
+      tags:
+      - Record
+  /record/submit:
+    post:
+      parameters:
+      - description: string
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.RecordSubmit'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"null"}'
+          schema:
+            type: ""
+      summary: 提交表单
+      tags:
+      - RecordById
+>>>>>>> develop
   /sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
