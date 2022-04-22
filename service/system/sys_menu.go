@@ -176,11 +176,7 @@ func (menuService *MenuService) getMenuTree(authorities []system.SysAuthority) (
 	if err != nil {
 		return
 	}
-	authorityIDMap := make(map[uint]system.SysMenu)
 	for _, v := range allMenus {
-		authorityIDMap[v.ID] = v
-	}
-	for _, v := range authorityIDMap {
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
 	return err, treeMap
