@@ -2,10 +2,12 @@ package system
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"project/global"
+	"project/model/common/request"
 	"project/model/system"
 	"strconv"
+
+	"gorm.io/gorm"
 )
 
 type MenuService struct{}
@@ -176,11 +178,7 @@ func (menuService *MenuService) getMenuTree(authorities []system.SysAuthority) (
 	if err != nil {
 		return
 	}
-	authorityIDMap := make(map[uint]system.SysMenu)
 	for _, v := range allMenus {
-		authorityIDMap[v.ID] = v
-	}
-	for _, v := range authorityIDMap {
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
 	return err, treeMap
@@ -196,5 +194,53 @@ func (menuService *MenuService) getChildrenList(menu *system.SysMenu, treeMap ma
 	for i := 0; i < len(menu.Children); i++ {
 		err = menuService.getChildrenList(&menu.Children[i], treeMap)
 	}
+	return err
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: GetBaseMenuTree
+//@description: 获取基础路由树
+//@return: err error, menus []model.SysBaseMenu
+func (menuService *MenuService) GetBaseMenuTree() (err error, menus []system.SysBaseMenu) {
+	err, treeMap := menuService.getBaseMenuTreeMap()
+	menus = treeMap["0"]
+	for i := 0; i < len(menus); i++ {
+		err = menuService.getBaseChildrenList(&menus[i], treeMap)
+	}
+	return err, menus
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: GetMenuAuthority
+//@description: 查看当前角色树
+//@param: info *request.GetAuthorityId
+//@return: err error, menus []model.SysMenu
+func (menuService *MenuService) GetMenuAuthority(info *request.GetAuthorityId) (err error, menus []system.SysMenu) {
+	err = global.GSD_DB.Where("authority_id = ? ", info.AuthorityId).Order("sort").Find(&menus).Error
+	// sql := "SELECT authority_menu.keep_alive,authority_menu.default_menu,authority_menu.created_at,authority_menu.updated_at,authority_menu.deleted_at,authority_menu.menu_level,authority_menu.parent_id,authority_menu.path,authority_menu.`name`,authority_menu.hidden,authority_menu.component,authority_menu.title,authority_menu.icon,authority_menu.sort,authority_menu.menu_id,authority_menu.authority_id FROM authority_menu WHERE authority_menu.authority_id = ? ORDER BY authority_menu.sort ASC"
+	// err = global.GVA_DB.Raw(sql, authorityId).Scan(&menus).Error
+	return err, menus
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: GetBaseMenuById
+//@description: 返回当前选中menu
+//@param: id float64
+//@return: err error, menu model.SysBaseMenu
+func (menuService *MenuService) GetBaseMenuById(id uint) (err error, menu system.SysBaseMenu) {
+	err = global.GSD_DB.Preload("Parameters").Where("id = ?", id).First(&menu).Error
+	return
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: AddMenuAuthority
+//@description: 为角色增加menu树
+//@param: menus []model.SysBaseMenu, authorityId string
+//@return: err error
+func (menuService *MenuService) AddMenuAuthority(menus []system.SysBaseMenu, authorityId uint) (err error) {
+	var auth system.SysAuthority
+	auth.AuthorityId = authorityId
+	auth.SysBaseMenus = menus
+	err = AuthorityServiceApp.SetMenuAuthority(&auth)
 	return err
 }
