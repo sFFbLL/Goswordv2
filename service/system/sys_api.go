@@ -9,15 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
+type ApiService struct {
+}
+
+var ApiServiceApp = new(ApiService)
+
 // ApiService @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: CreateApi
 //@description: 新增基础api
 //@param: api model.SysApi
 //@return: err error
-type ApiService struct {
-}
-
-var ApiServiceApp = new(ApiService)
 
 func (apiService *ApiService) CreateApi(api system.SysApi) (err error) {
 	if !errors.Is(global.GSD_DB.Where("path = ? AND method = ?", api.Path, api.Method).First(&system.SysApi{}).Error, gorm.ErrRecordNotFound) {

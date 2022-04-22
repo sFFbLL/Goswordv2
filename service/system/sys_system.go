@@ -45,15 +45,15 @@ func (systemConfigService *SystemConfigService) GetServerInfo() (server *utils.S
 	var s utils.Server
 	s.Os = utils.InitOS()
 	if s.Cpu, err = utils.InitCPU(); err != nil {
-		global.GSD_LOG.ZapLog.Error("func utils.InitCPU() Failed", zap.String("err", err.Error()))
+		global.GSD_LOG.Error("func utils.InitCPU() Failed", zap.String("err", err.Error()))
 		return &s, err
 	}
 	if s.Rrm, err = utils.InitRAM(); err != nil {
-		global.GSD_LOG.ZapLog.Error("func utils.InitRAM() Failed", zap.String("err", err.Error()))
+		global.GSD_LOG.Error("func utils.InitRAM() Failed", zap.String("err", err.Error()))
 		return &s, err
 	}
 	if s.Disk, err = utils.InitDisk(); err != nil {
-		global.GSD_LOG.ZapLog.Error("func utils.InitDisk() Failed", zap.String("err", err.Error()))
+		global.GSD_LOG.Error("func utils.InitDisk() Failed", zap.String("err", err.Error()))
 		return &s, err
 	}
 
