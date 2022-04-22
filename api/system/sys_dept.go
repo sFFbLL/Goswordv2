@@ -28,7 +28,7 @@ func (d *DeptApi) AddDepartment(c *gin.Context) {
 		return
 	}
 	if err := DeptService.AddDepartment(dept); err != nil {
-		global.GSD_LOG.Error(c, "添加部门失败", zap.Error(err))
+		global.GSD_LOG.Error("添加部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("添加部门失败", c)
 	} else {
 		response.OkWithMessage("添加部门成功", c)
@@ -49,7 +49,7 @@ func (d *DeptApi) DeleteDepartment(c *gin.Context) {
 		return
 	}
 	if err := DeptService.DeleteDepartment(dept.ID); err != nil {
-		global.GSD_LOG.Error(c, "删除部门失败", zap.Error(err))
+		global.GSD_LOG.Error("删除部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("删除部门失败", c)
 	} else {
 		response.OkWithMessage("删除部门成功", c)
@@ -70,7 +70,7 @@ func (d *DeptApi) UpdateDepartment(c *gin.Context) {
 		return
 	}
 	if err := DeptService.UpdateDepartment(dept); err != nil {
-		global.GSD_LOG.Error(c, "更新部门失败", zap.Error(err))
+		global.GSD_LOG.Error("更新部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("更新部门失败", c)
 	} else {
 		response.FailWithMessage("更新部门成功", c)
@@ -93,7 +93,7 @@ func (d *DeptApi) GetDeptList(c *gin.Context) {
 	user := utils.GetUser(c)
 	scope, all := dataScope.GetDataScope(user)
 	if err, deptList, total := DeptService.GetDeptList(pageInfo, scope, all); err != nil {
-		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
+		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
@@ -121,7 +121,7 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 	user := utils.GetUser(c)
 	scope, all := dataScope.GetDataScope(user)
 	if err, deptList, total := DeptService.GetDeptListById(Pid.ID, scope, all); err != nil {
-		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
+		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
