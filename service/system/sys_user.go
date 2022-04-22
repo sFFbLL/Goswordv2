@@ -161,6 +161,17 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 	return err, reqUser
 }
 
+//@author: [chenguanglan](https://github.com/sFFbLL)
+//@function: SetSelfInfo
+//@description: 修改用户信息
+//@param: reqUser model.SysUser
+//@return: err error, user model.SysUser
+
+func (userService *UserService) SetSelfInfo(reqUser system.SysUser) (err error, user system.SysUser) {
+	err = global.GSD_DB.Updates(&reqUser).Error
+	return err, reqUser
+}
+
 //@author: [houruotong](https://github.com/Monkey-Pear)
 //@function: GetUserInfo
 //@description: 获取用户信息

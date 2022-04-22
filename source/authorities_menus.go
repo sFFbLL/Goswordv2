@@ -27,28 +27,13 @@ var authorityMenus = []AuthorityMenus{
 	{1, 8},
 	{1, 9},
 	{1, 10},
-	{1, 11},
-	{1, 12},
-	{1, 13},
-	{1, 14},
-	{1, 15},
-	{1, 16},
-	{1, 17},
-	{1, 18},
-	{1, 19},
-	{1, 20},
-	{1, 21},
-	{1, 22},
-	{1, 23},
-	{1, 24},
-	{1, 25},
 }
 
 // Init @author: [chenguanglan](https://github.com/sFFbLL)
 //@description: sys_authority_menus 表数据初始化
 func (a *authoritiesMenus) Init() error {
 	return global.GSD_DB.Table("sys_authority_menus").Transaction(func(tx *gorm.DB) error {
-		if tx.Where("sys_authority_authority_id IN (1)").Find(&[]AuthorityMenus{}).RowsAffected == 25 {
+		if tx.Where("sys_authority_authority_id IN (1)").Find(&[]AuthorityMenus{}).RowsAffected == 10 {
 			color.Danger.Println("\n[Mysql] --> sys_authority_menus 表的初始数据已存在!")
 			return nil
 		}
