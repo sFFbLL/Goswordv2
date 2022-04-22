@@ -38,9 +38,7 @@ func GinLogger() gin.HandlerFunc {
 		start := time.Now()
 		path := c.Request.URL.Path
 		requestId, _ := gonanoid.Nanoid()
-		c.Set("requestId", &global.Request{
-			RequestId: requestId,
-		})
+		c.Set("requestId", requestId)
 		mBody, queryGet := utils.OperateRequestLog(c)
 		cost := time.Since(start)
 		status := c.Writer.Status()
