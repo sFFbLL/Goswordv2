@@ -45,10 +45,10 @@ func MysqlTables(db *gorm.DB) {
 		work_flow.GzlTask{},
 	)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("register table failed", zap.Any("err", err))
+		global.GSD_LOG.Error("register table failed", zap.Any("err", err))
 		os.Exit(0)
 	}
-	global.GSD_LOG.ZapLog.Info("register table success")
+	global.GSD_LOG.Info("register table success")
 }
 
 //@function: GormMysql
@@ -70,7 +70,7 @@ func GormMysql() *gorm.DB {
 		SkipInitializeWithVersion: false, // 根据版本自动配置
 	}
 	if db, err := gorm.Open(mysql.New(mysqlConfig), gormConfig()); err != nil {
-		global.GSD_LOG.ZapLog.Error("MySQL启动异常", zap.Any("err", err))
+		global.GSD_LOG.Error("MySQL启动异常", zap.Any("err", err))
 		os.Exit(0)
 		return nil
 	} else {

@@ -18,12 +18,12 @@ func Routers() *gin.Engine {
 	var Router = gin.New()
 	Router.Use(middleware.GinLogger(), middleware.GinRecovery(true))
 	Router.StaticFS(global.GSD_CONFIG.Local.Path, http.Dir(global.GSD_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
-	global.GSD_LOG.ZapLog.Info("use middleware logger")
+	global.GSD_LOG.Info("use middleware logger")
 	// 跨域
 	Router.Use(middleware.Cors()) // 如需跨域可以打开
-	global.GSD_LOG.ZapLog.Info("use middleware cors")
+	global.GSD_LOG.Info("use middleware cors")
 	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	global.GSD_LOG.ZapLog.Info("register swagger handler")
+	global.GSD_LOG.Info("register swagger handler")
 	// 方便统一添加路由组前缀 多服务器上线使用
 
 	//获取路由组实例
@@ -58,6 +58,6 @@ func Routers() *gin.Engine {
 		//workFlow.InitAppRouter(PrivateGroup)    //应用路由
 		//workFlow.InitRecordRouter(PrivateGroup) //记录路由
 	}
-	global.GSD_LOG.ZapLog.Info("router register success")
+	global.GSD_LOG.Info("router register success")
 	return Router
 }
