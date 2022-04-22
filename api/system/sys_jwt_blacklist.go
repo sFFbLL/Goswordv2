@@ -4,6 +4,7 @@ import (
 	"project/global"
 	"project/model/common/response"
 	"project/model/system"
+	"project/utils"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -23,7 +24,7 @@ func (j *JwtApi) JsonInBlacklist(c *gin.Context) {
 	token := c.Request.Header.Get("x-token")
 	jwt := system.JwtBlacklist{Jwt: token}
 	if err := jwtService.JoinInBlacklist(jwt); err != nil {
-		global.GSD_LOG.Error(c, "jwt作废失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("jwt作废失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("jwt作废失败", c)
 	} else {
 		response.OkWithMessage("jwt作废成功", c)

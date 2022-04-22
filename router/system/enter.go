@@ -10,4 +10,5 @@ type RouterGroup struct {
 	ApiRouter
 	OperationRecordRouter
 	CasbinRouter
+	SysRouter
 }

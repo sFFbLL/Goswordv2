@@ -57,7 +57,7 @@ func (r RecordService) Submit(recordSubmit WorkFlowReq.RecordSubmit) (err error)
 	global.GSD_DB.Where("id = ?", 1).Updates(&modelWF.GzlApp{Form: form})
 	err = json.Unmarshal(form, &formItems)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("表单解析错误", zap.Any("err", err))
+		global.GSD_LOG.Error("表单解析错误", zap.Any("err", err))
 		// 遇见解析错误, 回滚
 		global.GSD_DB.Rollback()
 		return

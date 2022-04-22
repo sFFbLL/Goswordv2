@@ -37,7 +37,7 @@ func (b *BaseApi) Login(c *gin.Context) {
 	//}
 	u := &system.SysUser{Username: l.Username, Password: l.Password}
 	if err, user := userService.Login(u); err != nil {
-		global.GSD_LOG.Error(c, "登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err))
+		global.GSD_LOG.Error("登陆失败! 用户名不存在或者密码错误!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("用户名不存在或者密码错误", c)
 	} else {
 		b.tokenNext(c, *user)
@@ -60,7 +60,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	}
 	token, err := j.CreateToken(claims)
 	if err != nil {
-		global.GSD_LOG.Error(c, "获取token失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("获取token失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("获取token失败", c)
 		return
 	}
@@ -86,7 +86,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 	}
 	if err, jwtStr := jwtService.GetRedisJWT(user.Username); err == redis.Nil {
 		if err := jwtService.SetRedisJWT(token, user.Username); err != nil {
-			global.GSD_LOG.Error(c, "设置登录状态失败!", zap.Any("err", err))
+			global.GSD_LOG.Error("设置登录状态失败!", zap.Any("err", err), utils.GetRequestID(c))
 			response.FailWithMessage("设置登录状态失败", c)
 			return
 		}
@@ -96,7 +96,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 			ExpiresAt: claims.StandardClaims.ExpiresAt * 1000,
 		}, "登录成功", c)
 	} else if err != nil {
-		global.GSD_LOG.Error(c, "设置登录状态失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("设置登录状态失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("设置登录状态失败", c)
 	} else {
 		var blackJWT system.JwtBlacklist
@@ -136,7 +136,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{
 			AuthorityId: v,
 		}); err != nil {
-			global.GSD_LOG.Error(c, "注册失败, 角色不存在!")
+			global.GSD_LOG.Error("注册失败, 角色不存在!", utils.GetRequestID(c))
 			response.FailWithMessage("注册失败, 角色不存在!", c)
 		} else {
 			authorities = append(authorities, authority)
@@ -147,13 +147,13 @@ func (b *BaseApi) Register(c *gin.Context) {
 	//数据权限校验
 	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{user})
 	if !canDo {
-		global.GSD_LOG.Error(c, "注册失败, 无权注册该用户!")
+		global.GSD_LOG.Error("注册失败, 无权注册该用户!", utils.GetRequestID(c))
 		response.FailWithMessage("注册失败, 无权注册该用户!", c)
 		return
 	}
 	err, userReturn := userService.Register(*user)
 	if err != nil {
-		global.GSD_LOG.Error(c, "注册失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("注册失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysUserResponse{User: userReturn}, "注册成功", c)
@@ -184,20 +184,20 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 	curUser := utils.GetUser(c)
 	err, deleteUser := userService.FindUserById(reqId.ID)
 	if err != nil {
-		global.GSD_LOG.Error(c, "删除失败, 该用户不存在!")
+		global.GSD_LOG.Error("删除失败, 该用户不存在!", utils.GetRequestID(c))
 		response.FailWithMessage("删除失败, 该用户不存在!", c)
 		return
 	}
 	//数据权限校验
 	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{deleteUser})
 	if !canDo {
-		global.GSD_LOG.Error(c, "删除失败, 无权删除该用户!")
+		global.GSD_LOG.Error("删除失败, 无权删除该用户!", utils.GetRequestID(c))
 		response.FailWithMessage("删除失败, 无权删除该用户!", c)
 		return
 	}
 	//删除用户
 	if err := userService.DeleteUser(reqId.ID); err != nil {
-		global.GSD_LOG.Error(c, "删除失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("删除失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		//删除用户缓存
@@ -224,21 +224,21 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 	curUser := utils.GetUser(c)
 	err, updateUser := userService.FindUserById(sua.ID)
 	if err != nil {
-		global.GSD_LOG.Error(c, "修改失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("修改失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("操作用户不存在", c)
 		return
 	}
 	//校验数据权限
 	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{updateUser})
 	if !canDo {
-		global.GSD_LOG.Error(c, "修改失败, 无权修改该用户!")
+		global.GSD_LOG.Error("修改失败, 无权修改该用户!", utils.GetRequestID(c))
 		response.FailWithMessage("操作失败, 无权操作该用户!", c)
 		return
 	}
 	var updateAuthorities []system.SysAuthority
 	for _, authorityId := range sua.AuthorityIds {
 		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
-			global.GSD_LOG.Error(c, "设置角色不存在!")
+			global.GSD_LOG.Error("设置角色不存在!", utils.GetRequestID(c))
 			response.FailWithMessage("设置角色不存在!", c)
 			return
 		} else {
@@ -247,12 +247,12 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 	}
 	//校验目标level是否垂直越权
 	if dataScope.GetMaxLevel(updateAuthorities) < dataScope.GetMaxLevel(curUser.Authority) {
-		global.GSD_LOG.Error(c, "设置角色级别高于当前用户级别!")
+		global.GSD_LOG.Error("设置角色级别高于当前用户级别!", utils.GetRequestID(c))
 		response.FailWithMessage("设置角色级别高于当前用户级别!", c)
 		return
 	}
 	if err := userService.SetUserAuthorities(*updateUser, sua.AuthorityIds); err != nil {
-		global.GSD_LOG.Error(c, "修改失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("修改失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("修改失败", c)
 	} else {
 		response.OkWithMessage("修改成功", c)
@@ -277,7 +277,7 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 	curUser := utils.GetUser(c)
 	deptId, isAll := dataScope.GetDataScope(curUser)
 	if err, list, total := userService.GetUserInfoList(pageInfo, deptId, isAll); err != nil {
-		global.GSD_LOG.Error(c, "获取失败!", zap.Error(err))
+		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(response.PageResult{
@@ -308,7 +308,7 @@ func (b *BaseApi) UpdatePassword(c *gin.Context) {
 		Password: user.Password,
 	}
 	if err, _ := userService.UpdatePassword(u, user.NewPassword); err != nil {
-		global.GSD_LOG.Error(c, "修改失败", zap.Error(err))
+		global.GSD_LOG.Error("修改失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("修改失败， 原密码与当前账户不符", c)
 	} else {
 		response.OkWithMessage("修改成功", c)
@@ -325,7 +325,7 @@ func (b *BaseApi) UpdatePassword(c *gin.Context) {
 func (b *BaseApi) GetUserInfo(c *gin.Context) {
 	uuid := utils.GetUserUuid(c)
 	if err, userInfo := userService.GetUserInfo(uuid); err != nil {
-		global.GSD_LOG.Error(c, "获取用户信息失败", zap.Error(err))
+		global.GSD_LOG.Error("获取用户信息失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取用户信息失败", c)
 		return
 	} else {
@@ -353,7 +353,35 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 	curUser := utils.GetUser(c)
 	user.CreateBy = curUser.ID
 	if err, sysUser := userService.SetUserInfo(user); err != nil {
-		global.GSD_LOG.Error(c, "设置失败", zap.Error(err))
+		global.GSD_LOG.Error("设置失败", zap.Error(err), utils.GetRequestID(c))
+		response.FailWithMessage("设置失败", c)
+	} else {
+		response.OkWithDetailed(gin.H{"userinfo": sysUser}, "设置成功", c)
+	}
+}
+
+// @Tags SysUser
+// @Summary 设置当前用户信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body system.SysUser true "ID, 用户名, 昵称, 头像链接"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
+// @Router /user/setSelfInfo [put]
+func (b *BaseApi) SetSelfInfo(c *gin.Context) {
+	var user system.SysUser
+	_ = c.ShouldBindJSON(&user)
+	if err := utils.Verify(user, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	user.Username = ""
+	user.Password = ""
+	curUser := utils.GetUser(c)
+	user.CreateBy = curUser.ID
+	user.ID = curUser.ID
+	if err, sysUser := userService.SetSelfInfo(user); err != nil {
+		global.GSD_LOG.Error("设置失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("设置失败", c)
 	} else {
 		response.OkWithDetailed(gin.H{"userinfo": sysUser}, "设置成功", c)
@@ -371,7 +399,7 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 func (b *BaseApi) ImportExcel(c *gin.Context) {
 	_, header, err := c.Request.FormFile("file")
 	if err != nil {
-		global.GSD_LOG.Error(c, "接收文件失败!", zap.Error(err))
+		global.GSD_LOG.Error("接收文件失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("接收文件失败", c)
 		return
 	}
@@ -388,7 +416,7 @@ func (b *BaseApi) ImportExcel(c *gin.Context) {
 func (b *BaseApi) LoadExcel(c *gin.Context) {
 	list, err := userService.ParseExcelToDataList()
 	if err != nil {
-		global.GSD_LOG.Error(c, "加载数据失败", zap.Error(err))
+		global.GSD_LOG.Error("加载数据失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("加载数据失败", c)
 		return
 	}
@@ -413,7 +441,7 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 	_ = c.ShouldBindJSON(&excelInfo)
 	filePath := global.GSD_CONFIG.Excel.Dir + excelInfo.FileName
 	if err := userService.ParseDataListToExcel(excelInfo.InfoList, filePath); err != nil {
-		global.GSD_LOG.Error(c, "导出excel失败", zap.Error(err))
+		global.GSD_LOG.Error("导出excel失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("导出excel失败", c)
 		return
 	}
@@ -434,7 +462,7 @@ func (b *BaseApi) DownloadTemplate(c *gin.Context) {
 	name := c.Query("fileName")
 	filePath := global.GSD_CONFIG.Excel.Dir + name
 	if err := userService.Template(filePath); err != nil {
-		global.GSD_LOG.Error(c, "模板下载失败", zap.Error(err))
+		global.GSD_LOG.Error("模板下载失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("模板下载失败", c)
 		return
 	}
