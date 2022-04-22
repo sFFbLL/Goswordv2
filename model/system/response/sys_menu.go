@@ -9,3 +9,7 @@ type SysBaseMenusResponse struct {
 type SysMenusResponse struct {
 	Menus []system.SysMenu `json:"menus"`
 }
+
+type SysBaseMenuResponse struct {
+	Menu system.SysBaseMenu `json:"menu"`
+}
