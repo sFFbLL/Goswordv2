@@ -3,7 +3,6 @@ package work_flow
 import (
 	"encoding/json"
 	"errors"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"project/global"
 	"project/model/system"
@@ -54,12 +53,7 @@ func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
 
 		var formItems []modelWF.GzlFormItem
 		var form WorkFlowReq.Form
-		err = json.Unmarshal(record.Form, &form)
-		if err != nil {
-			global.GSD_LOG.ZapLog.Error("表单解析错误", zap.Any("err", err))
-			// 遇见解析错误, 回滚
-			return err
-		}
+		_ = json.Unmarshal(record.Form, &form)
 		for _, item := range form.Fields {
 			var isRequired uint8 = 1
 			if !item.IsRequired {

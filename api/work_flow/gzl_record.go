@@ -23,8 +23,11 @@ type RecordApi struct {
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
 	var recordSubmit WorkFlowReq.RecordSubmit
-	_ = c.ShouldBindJSON(&recordSubmit)
-	if err := utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
+	err := c.ShouldBindJSON(&recordSubmit)
+	if err != nil {
+		global.GSD_LOG.Error("json解析失败", zap.Any("err", err), utils.GetRequestID(c))
+	}
+	if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -38,7 +41,7 @@ func (r *RecordApi) Submit(c *gin.Context) {
 	record.AppId = recordSubmit.AppId
 	record.GSD_MODEL.CreateBy = utils.GetUserID(c)
 	if err = recordService.Submit(record); err != nil {
-		global.GSD_LOG.ZapLog.Error("记录提交失败", zap.Any("err", err))
+		global.GSD_LOG.Error("记录提交失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("提交失败", c)
 	} else {
 		response.Ok(c)
@@ -61,10 +64,10 @@ func (r *RecordApi) Data(c *gin.Context) {
 	}
 	data, err := recordService.GetData(record.RecordId)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("表单数据获取失败", zap.Any("err", err))
+		global.GSD_LOG.Error("表单数据获取失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("该记录不存在", c)
 	} else {
-		global.GSD_LOG.ZapLog.Info("表单数据获取成功", zap.Any("RecordById Form Data([]byte -> string)", string(data)))
+		global.GSD_LOG.Info("表单数据获取成功", zap.Any("RecordById Form Data([]byte -> string)", string(data)), utils.GetRequestID(c))
 		response.OkWithData(data, c)
 	}
 }
@@ -80,10 +83,10 @@ func (r *RecordApi) Data(c *gin.Context) {
 func (r *RecordApi) MyInitiated(c *gin.Context) {
 	myInitiated, err := recordService.MyInitiated(utils.GetUserID(c))
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("我发起的列表查询失败", zap.Any("err", err))
+		global.GSD_LOG.Error("我发起的列表查询失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("数据获取失败", c)
 	} else {
-		global.GSD_LOG.ZapLog.Info("我发起的列表查询成功", zap.Any("Record Form Data([]byte -> string)", myInitiated))
+		global.GSD_LOG.Info("我发起的列表查询成功", zap.Any("Record Form Data([]byte -> string)", myInitiated), utils.GetRequestID(c))
 		response.OkWithData(myInitiated, c)
 	}
 }

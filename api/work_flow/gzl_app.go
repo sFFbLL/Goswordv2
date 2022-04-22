@@ -29,10 +29,10 @@ func (f *AppApi) Empty(c *gin.Context) {
 	}
 	data, err := appService.GetAppEmpty(app.AppId)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("获取空应用表单失败", zap.Any("err", err))
+		global.GSD_LOG.Error("获取空应用表单失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("该应用不存在", c)
 	} else {
-		global.GSD_LOG.ZapLog.Info("获取空应用表单成功", zap.Any("GetAppEmpty Success", string(data)))
+		global.GSD_LOG.Info("获取空应用表单成功", zap.Any("GetAppEmpty Success", string(data)), utils.GetRequestID(c))
 		response.OkWithData(data, c)
 	}
 }
@@ -64,7 +64,7 @@ func (f *AppApi) AddApp(c *gin.Context) {
 	}
 	err := appService.AddApp(modelWF.GzlApp{GSD_MODEL: global.GSD_MODEL{CreateBy: utils.GetUserID(c)}, Name: addApp.Name, Icon: addApp.Icon})
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("添加应用失败", zap.Any("err", err))
+		global.GSD_LOG.Error("添加应用失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("操作失败", c)
 	} else {
 		response.OkWithMessage("添加应用成功", c)
