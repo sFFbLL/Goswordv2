@@ -9,4 +9,5 @@ type SysGroup struct {
 	MenuService
 	ApiService
 	DeptService
+	SystemConfigService
 }
