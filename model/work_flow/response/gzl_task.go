@@ -12,6 +12,7 @@ type Dynamic struct {
 }
 
 type Receive struct {
+	RecordId     uint     `json:"recordId"`
 	Applicant    string   `json:"applicant"`    // 申请人
 	Inspectors   []string `json:"inspector"`    // 审批人
 	CurrentState uint8    `json:"currentState"` // 审批状态

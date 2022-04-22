@@ -11,7 +11,6 @@ import (
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
 	WorkFlowRes "project/model/work_flow/response"
-	"time"
 )
 
 type TaskService struct {
@@ -36,14 +35,9 @@ func (t TaskService) GetDynamic(applicantId, recordId uint) (data []WorkFlowRes.
 			return nil, nil
 		}
 	}
-	// 计算耗时, 格式化时间
+	// 计算耗时
 	for i := 0; i < len(data); i++ {
-		born := "2006-01-02 15:04:05"
-		beginStr := data[i].CreatedAt.Format(born)
-		endStr := data[i].InspectAt.Format(born)
-		begin, _ := time.ParseInLocation(born, beginStr, time.Local)
-		end, _ := time.ParseInLocation(born, endStr, time.Local)
-		data[i].ConsumeTime = end.Unix() - begin.Unix()
+		data[i].ConsumeTime = data[i].InspectAt.Unix() - data[i].CreatedAt.Unix()
 	}
 	return
 }
@@ -113,7 +107,7 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err error) {
 	var recordIds []uint
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
-		Where("node_type = ? AND Inspector = ?", 4, 1).
+		Where("node_type = ? AND Inspector = ?", 4, userId).
 		Find(&recordIds)
 
 	for i := 0; i < len(recordIds); i++ {
@@ -124,6 +118,8 @@ func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err er
 			Find(&tasks)
 		if len(tasks) > 0 {
 			var receive WorkFlowRes.Receive
+			// 记录id
+			receive.RecordId = tasks[0].RecordId
 			// 申请人姓名
 			global.GSD_DB.Model(&system.SysUser{}).
 				Where("id = ?", tasks[0].Record.CreateBy).

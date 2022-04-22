@@ -23,18 +23,14 @@ type RecordService struct {
 // @param: recordId int
 // @return: data utils.JSON, err error
 func (r RecordService) GetData(recordId uint) (data utils.JSON, err error) {
-	var dataArr = make([]utils.JSON, 1)
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
 		Where("id = ?", recordId)
-	if err = db.Take(&dataArr).Error; err != nil {
+	if err = db.Find(&data).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("数据为空")
-		} else {
-			return
 		}
 	}
-	data = dataArr[0]
 	return
 }
 
