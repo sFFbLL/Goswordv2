@@ -48,7 +48,7 @@ func GinLogger() gin.HandlerFunc {
 		ip := c.ClientIP()
 		errString := c.Errors.ByType(gin.ErrorTypePrivate).String()
 		userAgent := c.Request.UserAgent()
-		global.GSD_LOG.Info(c, path,
+		global.GSD_LOG.Info(path,
 			zap.String("requestId", requestId),
 			zap.Int("status", status),
 			zap.String("method", method),
@@ -69,7 +69,7 @@ func GinLogger() gin.HandlerFunc {
 		var respStruct response
 		_ = json.Unmarshal([]byte(resp), &respStruct)
 		c.Next()
-		global.GSD_LOG.Info(c, path,
+		global.GSD_LOG.Info(path,
 			zap.Int("code", respStruct.Code),
 			zap.String("msg", respStruct.Msg),
 			zap.Any("data", respStruct.Data),

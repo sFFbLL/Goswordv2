@@ -31,12 +31,12 @@ func (b *BaseApi) Captcha(c *gin.Context) {
 	cp := base64Captcha.NewCaptcha(driver, store)
 	id, err := global.GetRequestId(c)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("requestId获取失败", zap.Any("err", err))
+		global.GSD_LOG.Error("requestId获取失败", zap.Any("err", err))
 	}
-	global.GSD_LOG.ZapLog.Info("requestId获取成功", zap.Any("requestId", id))
+	global.GSD_LOG.Info("requestId获取成功", zap.Any("requestId", id))
 	if id, b64s, err := cp.Generate(); err != nil {
 
-		global.GSD_LOG.ZapLog.Error("验证码获取失败!", zap.Any("err", err))
+		global.GSD_LOG.Error("验证码获取失败!", zap.Any("err", err))
 		response.FailWithMessage("验证码获取失败", c)
 	} else {
 		response.OkWithDetailed(systemRes.SysCaptchaResponse{

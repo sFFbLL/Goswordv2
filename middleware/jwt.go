@@ -7,6 +7,7 @@ import (
 	"project/model/system"
 	"project/model/system/request"
 	"project/service"
+	"project/utils"
 	"strconv"
 	"time"
 
@@ -62,7 +63,7 @@ func JWTAuth() gin.HandlerFunc {
 			if global.GSD_CONFIG.System.UseMultipoint {
 				err, RedisJwtToken := jwtService.GetRedisJWT(newClaims.Username)
 				if err != nil {
-					global.GSD_LOG.Error(c, "get redis jwt failed", zap.Any("err", err))
+					global.GSD_LOG.Error("get redis jwt failed", zap.Any("err", err), utils.GetRequestID(c))
 				} else { // 当之前的取成功时才进行拉黑操作
 					_ = jwtService.JoinInBlacklist(system.JwtBlacklist{Jwt: RedisJwtToken})
 				}
