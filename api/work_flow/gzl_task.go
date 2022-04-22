@@ -77,8 +77,8 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 		response.FailWithMessage("获取我的待办信息失败", c)
 		return
 	} else {
-		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", schedule))      //打印日志
-		response.OkWithDetailed(gin.H{"schedule": schedule}, "获取我的待办信息成功", c) //给前端返回信息
+		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", schedule)) //打印日志
+		response.OkWithData(schedule, c)                                 //给前端返回信息
 	}
 }
 

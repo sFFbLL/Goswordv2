@@ -13,8 +13,8 @@ type Dynamic struct {
 
 type Receive struct {
 	Applicant    string   `json:"applicant"`    // 申请人
-	Inspector    []string `json:"inspector"`    // 审批人
+	Inspectors   []string `json:"inspector"`    // 审批人
 	CurrentState uint8    `json:"currentState"` // 审批状态
 	AppName      string   `json:"appName"`      // 应用名称
-	CurrentNode  string   `json:"currentNode"`  // 当前节点
+	CurrentNode  string   `json:"currentNode"`  // 当前节点名称
 }

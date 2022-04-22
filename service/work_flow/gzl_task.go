@@ -1,10 +1,12 @@
 package work_flow
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"project/global"
+	"project/model/system"
 	"project/model/work_flow"
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
@@ -26,7 +28,7 @@ func (t TaskService) GetDynamic(applicantId, recordId uint) (data []WorkFlowRes.
 		Model(modelWF.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", applicantId).
 		Joins("JOIN gzl_records ON gzl_records.id = ?", recordId).
-		Select("sys_users.username as Applicant", "gzl_tasks.created_at as InspectAt",
+		Select("sys_users.nick_name as Applicant", "gzl_tasks.created_at as InspectAt",
 			"gzl_records.created_at as CreatedAt", "check_state as CheckState", "remarks as Remarks").
 		Where("gzl_tasks.record_id = gzl_records.id")
 	if err = db.Find(&data).Error; err != nil {
@@ -107,22 +109,53 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 // @function: GetReceive
 // @description: 从mysql中获取我收到的信息列表
 // @param: WorkFlowReq.RecordById
-// @return: err error, data []WorkFlowRes.Receive
-func (t TaskService) GetReceive(userId uint) (err error, data []WorkFlowRes.Receive) {
-	task := modelWF.GzlTask{
-		NodeType:  4,
-		Inspector: userId,
-	}
+// @return: data []WorkFlowRes.Receive, err error
+func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err error) {
 	var recordIds []uint
-	global.GSD_DB.Model(&task).Select("record_id").Find(&recordIds)
+	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
+		Where("node_type = ? AND Inspector = ?", 4, 1).
+		Find(&recordIds)
 
-	var tasks []modelWF.GzlTask
-	global.GSD_DB.Where("record_id IN ? AND node_type = ?", recordIds, 3).Preload("Record").
-		Select("gzl_records.app_id", "gzl_records.create_by", "gzl_records.current_state",
-			"gzl_tasks/inspector", "gzl_tasks.check_state").
-		Find(&tasks)
-
-	fmt.Println("Test tasks: ", tasks)
+	for i := 0; i < len(recordIds); i++ {
+		var tasks []modelWF.GzlTask
+		global.GSD_DB.
+			Where("record_id = ? AND node_type = ?", recordIds[i], 3).
+			Preload("Record.App").
+			Find(&tasks)
+		if len(tasks) > 0 {
+			var receive WorkFlowRes.Receive
+			// 申请人姓名
+			global.GSD_DB.Model(&system.SysUser{}).
+				Where("id = ?", tasks[0].Record.CreateBy).
+				Select("nick_name as Applicant").
+				Find(&receive.Applicant)
+			// 应用名称
+			receive.AppName = tasks[0].Record.App.Name
+			// 当前状态
+			receive.CurrentState = tasks[0].Record.CurrentState
+			// 获取审批人姓名(可能会有多个, 所以需要遍历)
+			for j := 0; j < len(tasks); j++ {
+				var Inspector string
+				global.GSD_DB.Model(&system.SysUser{}).
+					Where("id = ?", tasks[j].Inspector).
+					Select("nick_name as Inspector").
+					Find(&Inspector)
+				if Inspector != "" {
+					receive.Inspectors = append(receive.Inspectors, Inspector)
+				}
+			}
+			// 当前节点名称 (解析Flow)
+			var flow Flow
+			_ = json.Unmarshal(tasks[0].Record.App.Flow, &flow)
+			for _, node := range flow.FlowElementList {
+				if node.Key == tasks[0].Record.CurrentNode {
+					receive.CurrentNode = node.Name
+				}
+			}
+			data = append(data, receive)
+		}
+	}
+	fmt.Println(err)
 	return
 }
 
