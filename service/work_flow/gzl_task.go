@@ -4,9 +4,9 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"project/global"
+	"project/model/system"
 	"project/model/work_flow"
 	modelWF "project/model/work_flow"
-	WorkFlowReq "project/model/work_flow/request"
 	WorkFlowRes "project/model/work_flow/response"
 	"time"
 )
@@ -52,20 +52,21 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowRes.D
 // @function: GetScheduleList
 // @description: 从mysql中获取待办数据
 // @param: WorkFlowReq.Task
-// @return: data []WorkFlowReq.Handle, err error
-func (t *TaskService) GetScheduleList(userId uint) (err error, schedules []WorkFlowReq.Handle) {
-	//db := global.GSD_DB.Model(&work_flow.GzlTask{}).
-	//	Joins("JOIN sys_users ON sys_users.id = ?", userId).
-	//	Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
-	//	Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
-	//		"gzl_apps.name as AppName", "check_state as CheckState").
-	//	Where("gzl_tasks.record_id=gzl_records.id && gzl.records.app_id=gzl_apps.id &&gzl_apps.Users.UUID=sys_users.UUID")
-	db := global.GSD_DB.Model(&work_flow.GzlTask{})
-	db.Preload("sys_users").Preload("gzl_apps").Preload("gzl_records").
-		Select("sys_users.username as Applicant", "gzl_records.created_at as CreatedAt",
-			"gzl_apps.name as AppName", "gzl_records.check_state as CheckState").
-		Where("gzl_tasks.inspector=? AND gzl_records.app_id=gzl_apps.id AND gzl_tasks.record_id=gzl_records.id",1).
-		Find(&schedules)
+// @return: data []WorkFlowReq.ScheduleList, err error
+func (t TaskService) GetScheduleList(userId uint) (schedules WorkFlowRes.ScheduleList,err error) {
+
+	if err=global.GSD_DB.Select("check_state").Model(&modelWF.GzlTask{}).Find(&schedules,"inspector = ?",userId).Error;err!=nil{
+		return
+	}
+	if err=global.GSD_DB.Select("created_at").Model(&modelWF.GzlRecord{}).Find(&schedules).Error;err!=nil{
+		return
+	}
+	//if err=global.GSD_DB.Select("nick_name").Model(&modelSys.SysUser{}).Find(&schedules).Error;err!=nil{
+	//	return
+	//}
+	if err=global.GSD_DB.Select("name").Model(&modelWF.GzlApp{}).Find(&schedules).Error;err!=nil {
+		return
+	}
 	return
 }
 
@@ -74,21 +75,25 @@ func (t *TaskService) GetScheduleList(userId uint) (err error, schedules []WorkF
 // @function: GetHandleList
 // @description: 从mysql中获取我处理的数据
 // @param: WorkFlowReq.Task
-// @return: data []WorkFlowReq.Handle, err error
-func (t *TaskService) GetHandleList(userId uint) (err error, handles []WorkFlowReq.Handle) {
-	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
-		Joins("JOIN sys_users ON sys_users.id = ?", userId).
-		//Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
-		Select("sys_users.username as Applicant", "gzl_tasks.created_at as CreatedAt",
-			"gzl_tasks.inspector as Inspector", "gzl_apps.name as AppName", "check_state as CheckState").
-		Where("gzl_tasks.inspector=Inspector")
-	if err = db.Find(&handles).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) { //如果待办为空，返回空
-			return nil, nil
-		} else {
-			return
-		}
+// @return: data []WorkFlowReq.HandleList, err error
+func (t TaskService) GetHandleList(userId uint) (handles WorkFlowRes.HandleList,err error) {
+	var userIds []uint
+	if err = global.GSD_DB.Select("current_state,current_node").Model(&modelWF.GzlRecord{}).Find(&handles, "create_by = ?", userId).Error; err != nil {
+		return
 	}
+	if err =global.GSD_DB.Select("inspector").Model(&modelWF.GzlTask{}).Find(&userIds,"node_key=?",handles.CurrentNode).Error;err!=nil{
+		return
+	}
+	if err = global.GSD_DB.Select("nick_name").Model(&system.SysUser{}).Find(&handles.InspectorName,"id in ?", userIds).Error; err != nil {
+		return
+	}
+	if err=global.GSD_DB.Select("created_at").Model(&modelWF.GzlRecord{}).Find(&handles.CreatedAt).Error;err!=nil{
+		return
+	}
+	if err=global.GSD_DB.Select("name").Model(&modelWF.GzlApp{}).Find(&handles.Name).Error;err!=nil {
+		return
+	}
+
 	return
 }
 

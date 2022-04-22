@@ -69,8 +69,7 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
-	userId:= utils.GetUserID(c)
-	schedule,err := taskService.GetScheduleList(userId)
+	schedule,err := taskService.GetScheduleList(1)
 	 if err != nil {
 		global.GSD_LOG.ZapLog.Error("获取我的待办信息失败", zap.Any("err",err))
 		response.FailWithMessage("获取我的待办信息失败", c)
@@ -84,18 +83,19 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // @Tags Task
 // @Summary 我处理的
 // @Produce  application/json
-// @Param data body WorkFlowReq.Handle true "审批人"
+// @Param data body WorkFlowReq.HandleList true "审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
 	userId:= utils.GetUserID(c)
-	if err, handle := taskService.GetHandleList(userId); err != nil {
-		global.GSD_LOG.ZapLog.Error("获取我处理的信息失败", zap.Error(err))
+	handle ,err:= taskService.GetHandleList(userId)
+	if err != nil {
+		global.GSD_LOG.ZapLog.Error("获取我处理的信息失败", zap.Any("err",err))
 		response.FailWithMessage("获取我处理的信息失败", c)
 		return
 	} else {
 		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))    //打印日志
-		response.OkWithDetailed(handle, "获取我处理的信息成功", c) //给前端返回信息
+		response.OkWithData(handle, c) //给前端返回信息
 	}
 }
 

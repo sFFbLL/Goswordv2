@@ -15,3 +15,17 @@ type Dynamic struct {
 
 type Receive struct {
 }
+type ScheduleList struct {
+	CreatedAt  time.Time `json:"createdAt"`  // 创建时间
+	Applicant  string    `json:"applicant"`  // 申请人
+	Name       string          `json:"name"` //应用名称
+	CheckState uint8     `json:"checkState"` //审批状态
+}
+type HandleList struct {
+	CreatedAt      time.Time `json:"createdAt"`     // 创建时间
+	Applicant      string    `json:"applicant"`     // 申请人
+	Name           string    `json:"name"`          //应用名称
+	CurrentState   uint8     `json:"currentState"`  //当前状态(进行中1默认、已完成2、已结束3)
+	InspectorName  []string    `json:"inspector"`     //审批人
+	CurrentNode   string     `json:"currentNode"`     //当前节点
+}
