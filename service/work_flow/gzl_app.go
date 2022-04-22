@@ -12,7 +12,7 @@ type AppService struct {
 }
 
 // GetAppEmpty
-// @author: [tanshaokang](https://github.com/worryfreet)
+// @author: [tanshaokang]
 // @function: GetAppEmpty
 // @description: 从mysql中获取空表单
 // @param: WorkFlowReq.EmptyApp

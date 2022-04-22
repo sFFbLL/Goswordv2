@@ -2,6 +2,7 @@ package work_flow
 
 import (
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"project/global"
 	"project/model/work_flow"
@@ -15,7 +16,7 @@ type TaskService struct {
 }
 
 // GetDynamic
-// @author: [tanshaokang](https://github.com/worryfreet)
+// @author: [tanshaokang]
 // @function: GetDynamic
 // @description: 从mysql中获取流程动态数据
 // @param: WorkFlowReq.RecordById
@@ -41,14 +42,12 @@ func (t TaskService) GetDynamic(applicantId, recordId uint) (data []WorkFlowRes.
 		begin, _ := time.ParseInLocation(born, beginStr, time.Local)
 		end, _ := time.ParseInLocation(born, endStr, time.Local)
 		data[i].ConsumeTime = end.Unix() - begin.Unix()
-		data[i].CreatedAtFormatStr = beginStr[:len(beginStr)-3]
-		data[i].InspectAtFormatStr = endStr[:len(endStr)-3]
 	}
 	return
 }
 
 // GetScheduleList
-// @author: [zhaozijie](https://github.com/worryfreet)
+// @author: [zhaozijie]
 // @function: GetScheduleList
 // @description: 从mysql中获取待办数据
 // @param: WorkFlowReq.Task
@@ -104,22 +103,31 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 }
 
 // GetReceive
-// @author: [tanshaokang](https://github.com/worryfreet)
+// @author: [tanshaokang]
 // @function: GetReceive
 // @description: 从mysql中获取我收到的信息列表
 // @param: WorkFlowReq.RecordById
-// @return: data []WorkFlowReq.Dynamic, err error
-func (t TaskService) GetReceive(userId uint) (err error, tasks []modelWF.GzlTask) {
-	// 1. 申请人姓名  userId -> sys_users.username
-	// 2. 审批人姓名  userId ->
-	// 3. 审批状态
-	// 4. 应用名称
-	// 5. 当前节点
+// @return: err error, data []WorkFlowRes.Receive
+func (t TaskService) GetReceive(userId uint) (err error, data []WorkFlowRes.Receive) {
+	task := modelWF.GzlTask{
+		NodeType:  4,
+		Inspector: userId,
+	}
+	var recordIds []uint
+	global.GSD_DB.Model(&task).Select("record_id").Find(&recordIds)
+
+	var tasks []modelWF.GzlTask
+	global.GSD_DB.Where("record_id IN ? AND node_type = ?", recordIds, 3).Preload("Record").
+		Select("gzl_records.app_id", "gzl_records.create_by", "gzl_records.current_state",
+			"gzl_tasks/inspector", "gzl_tasks.check_state").
+		Find(&tasks)
+
+	fmt.Println("Test tasks: ", tasks)
 	return
 }
 
 // GetTaskInfo 根据id获取详细信息
 func (t TaskService) GetTaskInfo(taskId uint) (task work_flow.GzlTask, err error) {
-	err = global.GSD_DB.Preload("RecordById.EmptyApp").First(&task, taskId).Error
+	err = global.GSD_DB.Preload("Record.App").First(&task, taskId).Error
 	return task, err
 }

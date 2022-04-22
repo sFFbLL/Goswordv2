@@ -23,26 +23,21 @@ type RecordApi struct {
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
 	var recordSubmit WorkFlowReq.RecordSubmit
-	err := c.ShouldBindJSON(&recordSubmit)
-	if err != nil {
-		global.GSD_LOG.ZapLog.Error("json绑定失败", zap.Any("err", err))
-	}
-	if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
+	_ = c.ShouldBindJSON(&recordSubmit)
+	if err := utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	form, err := json.Marshal(recordSubmit.Form)
+	if err != nil {
 		return
 	}
 	// 定义record结构体, 将入参的值赋进去
 	var record modelMF.GzlRecord
-	record.Form, _ = json.Marshal(recordSubmit.Form)
+	record.Form = form
 	record.AppId = recordSubmit.AppId
-	record.GSD_MODEL.CreateBy = 1
-	err = recordService.Submit(record)
-	if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
-	err = recordService.Submit(record)
-	if err != nil {
+	record.GSD_MODEL.CreateBy = utils.GetUserID(c)
+	if err = recordService.Submit(record); err != nil {
 		global.GSD_LOG.ZapLog.Error("记录提交失败", zap.Any("err", err))
 		response.FailWithMessage("提交失败", c)
 	} else {

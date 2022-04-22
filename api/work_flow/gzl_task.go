@@ -112,13 +112,11 @@ func (t *TaskApi) Handle(c *gin.Context) {
 func (t *TaskApi) Receive(c *gin.Context) {
 	userId := utils.GetUserID(c)
 	tasks, err := taskService.GetReceive(userId)
-	// TODO ReceiveVerify && params select
-
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("获取我收到的信息列表错误", zap.Any("err", err))
+		//global.GSD_LOG.ZapLog.Error("获取我收到的信息列表错误", zap.Any("err", err))
 		response.FailWithMessage("数据不存在", c)
 	} else {
-		global.GSD_LOG.ZapLog.Info("我收到的信息成功返回", zap.Any("success", tasks))
+		//global.GSD_LOG.ZapLog.Info("我收到的信息成功返回", zap.Any("success", tasks))
 		response.OkWithData(tasks, c)
 	}
 }
