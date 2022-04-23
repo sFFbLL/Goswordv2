@@ -29,6 +29,7 @@ func GinBodyLogMiddleware(c *gin.Context) string {
 	// 替换的目的是把 response 返回值缓存起来
 	w := &bodyLogWriter{body: &bytes.Buffer{}, ResponseWriter: c.Writer}
 	c.Writer = w
+	c.Next()
 	return w.body.String()
 }
 
@@ -68,8 +69,8 @@ func GinLogger() gin.HandlerFunc {
 		resp := GinBodyLogMiddleware(c)
 		var respStruct response
 		_ = json.Unmarshal([]byte(resp), &respStruct)
-		c.Next()
-		global.GSD_LOG.Info(c, path,
+		global.GSD_LOG.Info(path,
+			zap.String("requestId", requestId),
 			zap.Int("code", respStruct.Code),
 			zap.String("msg", respStruct.Msg),
 			zap.Any("data", respStruct.Data),
