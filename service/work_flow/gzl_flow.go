@@ -26,11 +26,8 @@ type Properties struct {
 	Users         []uint   `json:"users"`         //用户
 	Conditions    []string `json:"conditions"`    //条件
 	IsCountersign uint8    `json:"isCountersign"` //是否会签(会签1,或签2)
-<<<<<<< HEAD
-	Name          string   `json:"name"`
-=======
 	Name          string   `json:"name"`          // 节点自定义名称
->>>>>>> 59dc76da08ede95d7ed50aa4067e653d4e7d24a3
+
 }
 
 // Form 表单结构体
