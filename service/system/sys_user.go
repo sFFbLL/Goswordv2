@@ -230,11 +230,22 @@ func (userService *UserService) FindUserByDept(deptId []uint) (err error, userId
 }
 
 // FindUserByAuthority @function: FindUserByAuthority
-//@description: 通过uuid获取用户信息
+//@description: 通过角色id获取用户信息
 //@param: uuid string
 //@return: err error, user []uint
 func (userService *UserService) FindUserByAuthority(authorityId []uint) (err error, userId []uint) {
-	global.GSD_DB.Model(system.SysUseAuthority{}).Distinct("sys_user_id").Where("`sys_authority_authority_id` in (?)", authorityId).Find(&userId)
+	err = global.GSD_DB.Model(system.SysUseAuthority{}).Distinct("sys_user_id").Where("`sys_authority_authority_id` in (?)", authorityId).Find(&userId).Error
+	return
+}
+
+// FindUserInfoByAuthority @function: FindUserInfoByAuthority
+//@description: 通过角色id获取用户信息
+//@param: uuid string
+//@return: err error, user []uint
+func (userService *UserService) FindUserInfoByAuthority(authorityId uint) (err error, user []system.SysUser, count int64) {
+	userId := make([]uint, 0)
+	err = global.GSD_DB.Model(system.SysUseAuthority{}).Distinct("sys_user_id").Where("`sys_authority_authority_id` = ?", authorityId).Find(&userId).Error
+	err = global.GSD_DB.Where("id in (?)", userId).Find(&user).Count(&count).Error
 	return
 }
 

@@ -5,6 +5,7 @@ import (
 	"project/model/common/request"
 	"project/model/common/response"
 	"project/model/system"
+	systemRes "project/model/system/response"
 	"project/utils"
 
 	"github.com/gin-gonic/gin"
@@ -27,28 +28,28 @@ func (d *DeptApi) AddDepartment(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := DeptService.AddDepartment(dept); err != nil {
+	if err, dept := DeptService.AddDepartment(dept); err != nil {
 		global.GSD_LOG.Error("添加部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("添加部门失败", c)
 	} else {
-		response.OkWithMessage("添加部门成功", c)
+		response.OkWithDetailed(systemRes.SysDeptResponse{Dept: dept}, "添加成功", c)
 	}
 }
 
 // @Tags Department
 // @Summary 删除部门
 // @Produce application/json
-// @Param data body request.GetById true "部门id"
+// @Param data body system.SysDept true "删除部门"
 // @Success 200 {object} response.Response{msg=string} "删除部门"
 // @Router /department/deleteDept [post]
 func (d *DeptApi) DeleteDepartment(c *gin.Context) {
-	var dept request.GetById
+	var dept system.SysDept
 	_ = c.ShouldBindJSON(&dept)
-	if err := utils.Verify(dept, utils.IdVerify); err != nil {
+	if err := utils.Verify(dept, utils.DeleteDeptVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := DeptService.DeleteDepartment(dept.ID); err != nil {
+	if err := DeptService.DeleteDepartment(&dept); err != nil {
 		global.GSD_LOG.Error("删除部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("删除部门失败", c)
 	} else {
@@ -69,11 +70,11 @@ func (d *DeptApi) UpdateDepartment(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := DeptService.UpdateDepartment(dept); err != nil {
+	if err, dept := DeptService.UpdateDepartment(dept); err != nil {
 		global.GSD_LOG.Error("更新部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("更新部门失败", c)
 	} else {
-		response.FailWithMessage("更新部门成功", c)
+		response.OkWithDetailed(systemRes.SysDeptResponse{Dept: dept}, "修改成功", c)
 	}
 }
 
@@ -118,9 +119,7 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	user := utils.GetUser(c)
-	scope, all := dataScope.GetDataScope(user)
-	if err, deptList, total := DeptService.GetDeptListById(Pid.ID, scope, all); err != nil {
+	if err, deptList, total := DeptService.GetDeptListById(Pid.ID); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -128,5 +127,29 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 			List:  deptList,
 			Total: total,
 		}, "获取成功", c)
+	}
+}
+
+// @Tags Department
+// @Summary 获取部门下的用户
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce  application/octet-stream
+// @Param data body system.SysDept true "部门id"
+// @Success 200
+// @Router /department/users [post]
+func (d *DeptApi) GetDeptUser(c *gin.Context) {
+	var dept system.SysDept
+	_ = c.ShouldBindJSON(&dept)
+	if err := utils.Verify(dept, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err, user := DeptService.GetUserByDeptId(dept); err != nil {
+		global.GSD_LOG.Error("获取部门用户失败", zap.Error(err), utils.GetRequestID(c))
+		response.FailWithMessage("获取部门用户失败", c)
+		return
+	} else {
+		response.OkWithDetailed(gin.H{"userList": user}, "获取部门下用户成功", c)
 	}
 }

@@ -66,7 +66,7 @@ func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
 func (a *AuthorityApi) DeleteAuthority(c *gin.Context) {
 	var authority system.SysAuthority
 	_ = c.ShouldBindJSON(&authority)
-	if err := utils.Verify(authority, utils.AuthorityIdVerify); err != nil {
+	if err := utils.Verify(authority, utils.DeleteAuthorityVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
