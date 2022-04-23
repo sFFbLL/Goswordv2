@@ -18,4 +18,7 @@ var (
 	EmptyAppVerify         = Rules{"AppId": {NotEmpty()}}
 	RecordSubmitVerify     = Rules{"AppId": {NotEmpty()}, "Form": {NotEmpty()}}
 	AddApp                 = Rules{"Name": {NotEmpty()}, "Icon": {NotEmpty()}}
+	DeleteAuthorityVerify  = Rules{"AuthorityId": {NotEmpty(), Gt("3")}}
+	DeleteUserVerify       = Rules{"ID": {NotEmpty(), Gt("2")}}
+	DeleteDeptVerify       = Rules{"ID": {NotEmpty(), Gt("2")}}
 )

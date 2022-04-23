@@ -45,7 +45,7 @@ func (d *DeptApi) AddDepartment(c *gin.Context) {
 func (d *DeptApi) DeleteDepartment(c *gin.Context) {
 	var dept system.SysDept
 	_ = c.ShouldBindJSON(&dept)
-	if err := utils.Verify(dept, utils.IdVerify); err != nil {
+	if err := utils.Verify(dept, utils.DeleteDeptVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
