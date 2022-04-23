@@ -35,6 +35,9 @@ func (departService *DeptService) DeleteDepartment(dept *system.SysDept) (err er
 	if errors.Is(global.GSD_DB.First(&dept).Error, gorm.ErrRecordNotFound) {
 		return errors.New("该部门不存在")
 	}
+	if !errors.Is(global.GSD_DB.Where("parent_id = ?", dept.ID).First(&system.SysDept{}).Error, gorm.ErrRecordNotFound) {
+		return errors.New("此部门下有子部门禁止删除")
+	}
 	if !errors.Is(global.GSD_DB.Where("dept_id = ?", dept.ID).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
 		return errors.New("此部门下有用户禁止删除")
 	}

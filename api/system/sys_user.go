@@ -171,7 +171,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 func (b *BaseApi) DeleteUser(c *gin.Context) {
 	var reqId request.GetById
 	_ = c.ShouldBindJSON(&reqId)
-	if err := utils.Verify(reqId, utils.IdVerify); err != nil {
+	if err := utils.Verify(reqId, utils.DeleteUserVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -287,6 +287,32 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 			PageSize: pageInfo.PageSize,
 		}, "获取成功", c)
 	}
+}
+
+// @Tags SysUser
+// @Summary 分页获取用户列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body request.GetById true "角色id"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
+// @Router /user/getUserByAuthority [post]
+func (b *BaseApi) GetUserByAuthority(c *gin.Context) {
+	var reqId request.GetById
+	_ = c.ShouldBindJSON(&reqId)
+	if err := utils.Verify(reqId, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	err, users, count := userService.FindUserInfoByAuthority(reqId.ID)
+	if err != nil {
+		response.FailWithMessage("根据角色获取用户信息失败", c)
+		return
+	}
+	response.OkWithData(systemRes.AuthorityUser{
+		Count: count,
+		Users: users,
+	}, c)
 }
 
 // @Tags SysUser
