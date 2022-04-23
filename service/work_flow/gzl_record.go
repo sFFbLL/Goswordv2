@@ -3,7 +3,6 @@ package work_flow
 import (
 	"encoding/json"
 	"errors"
-	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"project/global"
 	"project/model/system"
@@ -11,67 +10,71 @@ import (
 	WorkFlowReq "project/model/work_flow/request"
 	WorkFlowRes "project/model/work_flow/response"
 	"project/utils"
+	"reflect"
 )
 
 type RecordService struct {
 }
 
 // GetData
-// @author: [tanshaokang](https://github.com/worryfreet)
+// @author: [tanshaokang]
 // @function: GetData
 // @description: 从mysql中获取record数据
 // @param: recordId int
 // @return: data utils.JSON, err error
-func (r RecordService) GetData(recordId int) (data utils.JSON, err error) {
-	var dataArr = make([]utils.JSON, 1)
+func (r RecordService) GetData(recordId uint) (data utils.JSON, err error) {
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
 		Where("id = ?", recordId)
-	if err = db.Take(&dataArr).Error; err != nil {
+	if err = db.Find(&data).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, errors.New("数据为空")
-		} else {
-			return
 		}
 	}
-	data = dataArr[0]
 	return
 }
 
 // Submit
-// @author: [tanshaokang](https://github.com/worryfreet)
+// @author: [tanshaokang]
 // @function: Submit
 // @description: 提交记录
 // @param: WorkFlowReq.RecordSubmit
 // @return: err error
-func (r RecordService) Submit(recordSubmit WorkFlowReq.RecordSubmit) (err error) {
-	// 先存进 gzl_record 数据库中
-	// 保证多表操作时是原子操作, 开启事务
-	global.GSD_DB.Begin()
-	global.GSD_DB.Model(&modelWF.GzlRecord{}).Create(&recordSubmit)
-	var recordId int
-	global.GSD_DB.Model(&modelWF.GzlRecord{}).Select("id").Last(&recordId)
-	// 解析里面的form, 然后逐个添加进 gzl_form_items 里
-	var formItems []WorkFlowReq.FormItem
-	form, _ := json.Marshal(recordSubmit.Form)
-	global.GSD_DB.Where("id = ?", 1).Updates(&modelWF.GzlApp{Form: form})
-	err = json.Unmarshal(form, &formItems)
-	if err != nil {
-		global.GSD_LOG.Error("表单解析错误", zap.Any("err", err))
-		// 遇见解析错误, 回滚
-		global.GSD_DB.Rollback()
-		return
-	}
-	for i := 0; i < len(formItems); i++ {
-		formItems[i].CreateBy = recordSubmit.CreateBy
-		formItems[i].DeptId = recordSubmit.DeptId
-		formItems[i].RecordId = uint(recordId)
-		//formItems[i].Form = recordSubmit.Form
-	}
-	// 批量插入
-	global.GSD_DB.Model(&modelWF.GzlFormItem{}).CreateInBatches(formItems, len(formItems))
-	// 成功, 提交
-	global.GSD_DB.Commit()
+func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
+	// 开启提交表单事务
+	err = global.GSD_DB.Transaction(func(tx *gorm.DB) error {
+		// 插入部门id, 并创建一条新记录
+		tx.Model(&system.SysUser{}).
+			Select("dept_id").
+			Where("id = ?", record.CreateBy).
+			Find(&record.DeptId)
+		// 在gzl_records中添加记录
+		tx.Create(&record)
+		var formItems []modelWF.GzlFormItem
+		var form WorkFlowReq.Form
+		_ = json.Unmarshal(record.Form, &form)
+		for _, item := range form.Fields {
+			var isRequired uint8 = 1
+			if !item.IsRequired {
+				isRequired = 2
+			}
+			gfi := modelWF.GzlFormItem{
+				GSD_MODEL:     global.GSD_MODEL{CreateBy: record.CreateBy},
+				RecordId:      record.ID,
+				Name:          item.Name,
+				DataType:      reflect.TypeOf(item.DefaultValue).String(),
+				ComponentType: item.ComponentType,
+				Content:       item.DefaultValue,
+				IsRequired:    isRequired,
+				Form:          record.Form, // 目前先不存
+				DeptId:        record.DeptId,
+			}
+			formItems = append(formItems, gfi)
+		}
+		// 批量插入
+		tx.Model(&modelWF.GzlFormItem{}).CreateInBatches(formItems, len(formItems))
+		return err
+	})
 	return
 }
 

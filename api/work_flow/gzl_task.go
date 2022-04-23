@@ -38,7 +38,6 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 }
 
 // Dynamic
-// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Task
 // @Summary 流程动态信息
 // @Produce  application/json
@@ -52,7 +51,7 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	tasks, err := taskService.GetDynamic(1, record.RecordId)
+	tasks, err := taskService.GetDynamic(record.RecordId)
 	if err != nil {
 		global.GSD_LOG.Error("获取流程动态错误", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("数据不存在", c)
@@ -104,18 +103,14 @@ func (t *TaskApi) Handle(c *gin.Context) {
 }
 
 // Receive
-// @author: [tanshaokang](https://github.com/worryfreet)
 // @Tags Task
 // @Summary 我收到的
 // @Produce  application/json
-// @Param data query int  true "节点类型"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]
 func (t *TaskApi) Receive(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	userId := utils.GetUserID(c)
 	tasks, err := taskService.GetReceive(userId)
-	// TODO ReceiveVerify && params select
-
 	if err != nil {
 		global.GSD_LOG.Error("获取我收到的信息列表错误", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("数据不存在", c)

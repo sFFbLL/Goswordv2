@@ -1,5 +1,252 @@
 basePath: /
 definitions:
+  config.Autocode:
+    properties:
+      root:
+        type: string
+      server:
+        type: string
+      serverApi:
+        type: string
+      serverInitialize:
+        type: string
+      serverModel:
+        type: string
+      serverRequest:
+        type: string
+      serverRouter:
+        type: string
+      serverService:
+        type: string
+      transferRestart:
+        type: boolean
+      web:
+        type: string
+      webApi:
+        type: string
+      webFlow:
+        type: string
+      webForm:
+        type: string
+      webTable:
+        type: string
+    type: object
+  config.Captcha:
+    properties:
+      imgHeight:
+        description: 验证码高度
+        type: integer
+      imgWidth:
+        description: 验证码宽度
+        type: integer
+      keyLong:
+        description: 验证码长度
+        type: integer
+    type: object
+  config.Casbin:
+    properties:
+      modelPath:
+        description: 存放casbin模型的相对路径
+        type: string
+    type: object
+  config.Email:
+    properties:
+      from:
+        description: 收件人
+        type: string
+      host:
+        description: 服务器地址
+        type: string
+      isSSL:
+        description: 是否SSL
+        type: boolean
+      nickname:
+        description: 昵称
+        type: string
+      port:
+        description: 端口
+        type: integer
+      secret:
+        description: 密钥
+        type: string
+      to:
+        description: 收件人:多个以英文逗号分隔
+        type: string
+    type: object
+  config.Excel:
+    properties:
+      dir:
+        type: string
+    type: object
+  config.JWT:
+    properties:
+      bufferTime:
+        description: 缓冲时间
+        type: integer
+      expiresTime:
+        description: 过期时间
+        type: integer
+      signingKey:
+        description: jwt签名
+        type: string
+    type: object
+  config.Local:
+    properties:
+      path:
+        description: 本地文件路径
+        type: string
+    type: object
+  config.Mysql:
+    properties:
+      config:
+        description: 高级配置
+        type: string
+      dbname:
+        description: 数据库名
+        type: string
+      logMode:
+        description: 是否开启Gorm全局日志
+        type: string
+      logZap:
+        description: 是否通过zap写入日志文件
+        type: boolean
+      maxIdleConns:
+        description: 空闲中的最大连接数
+        type: integer
+      maxOpenConns:
+        description: 打开到数据库的最大连接数
+        type: integer
+      password:
+        description: 数据库密码
+        type: string
+      path:
+        description: 服务器地址:端口
+        type: string
+      username:
+        description: 数据库用户名
+        type: string
+    type: object
+  config.Qiniu:
+    properties:
+      accessKey:
+        description: 秘钥AK
+        type: string
+      bucket:
+        description: 空间名称
+        type: string
+      imgPath:
+        description: CDN加速域名
+        type: string
+      secretKey:
+        description: 秘钥SK
+        type: string
+      useCdnDomains:
+        description: 上传是否使用CDN上传加速
+        type: boolean
+      useHttps:
+        description: 是否使用https
+        type: boolean
+      zone:
+        description: 存储区域
+        type: string
+    type: object
+  config.Redis:
+    properties:
+      addr:
+        description: 服务器地址:端口
+        type: string
+      db:
+        description: redis的哪个数据库
+        type: integer
+      password:
+        description: 密码
+        type: string
+    type: object
+  config.Server:
+    properties:
+      autoCode:
+        $ref: '#/definitions/config.Autocode'
+        description: auto
+      captcha:
+        $ref: '#/definitions/config.Captcha'
+      casbin:
+        $ref: '#/definitions/config.Casbin'
+      email:
+        $ref: '#/definitions/config.Email'
+      excel:
+        $ref: '#/definitions/config.Excel'
+      jwt:
+        $ref: '#/definitions/config.JWT'
+      local:
+        $ref: '#/definitions/config.Local'
+        description: oss
+      mysql:
+        $ref: '#/definitions/config.Mysql'
+        description: gorm
+      qiniu:
+        $ref: '#/definitions/config.Qiniu'
+      redis:
+        $ref: '#/definitions/config.Redis'
+      system:
+        $ref: '#/definitions/config.System'
+      zap:
+        $ref: '#/definitions/config.Zap'
+    type: object
+  config.System:
+    properties:
+      addr:
+        description: 端口值
+        type: integer
+      env:
+        description: 环境值
+        type: string
+      ossType:
+        description: Oss类型
+        type: string
+      useMultipoint:
+        description: 多点登录拦截
+        type: boolean
+    type: object
+  config.Zap:
+    properties:
+      director:
+        description: 日志文件夹
+        type: string
+      encodeLevel:
+        description: 编码级
+        type: string
+      format:
+        description: 输出
+        type: string
+      level:
+        description: 级别
+        type: string
+      linkName:
+        description: 软链接名称
+        type: string
+      logInConsole:
+        description: 输出控制台
+        type: boolean
+      prefix:
+        description: 日志前缀
+        type: string
+      showLine:
+        description: 显示行
+        type: boolean
+      stacktraceKey:
+        description: 栈名
+        type: string
+    type: object
+  request.AddMenuAuthorityInfo:
+    properties:
+      authorityId:
+        description: 角色ID
+        type: integer
+      menus:
+        items:
+          $ref: '#/definitions/system.SysBaseMenu'
+        type: array
+    type: object
   request.CasbinInReceive:
     properties:
       authorityId:
@@ -32,6 +279,12 @@ definitions:
         type: string
     type: object
   request.Empty:
+    type: object
+  request.GetAuthorityId:
+    properties:
+      authorityId:
+        description: 角色ID
+        type: integer
     type: object
   request.GetById:
     properties:
@@ -80,13 +333,6 @@ definitions:
   request.RecordSubmit:
     properties:
       appId:
-        type: integer
-      createBy:
-        description: 创建人
-        type: integer
-      currentNode:
-        type: string
-      deptId:
         type: integer
       form: {}
     type: object
@@ -234,6 +480,11 @@ definitions:
       data: {}
       msg:
         type: string
+    type: object
+  response.SysBaseMenuResponse:
+    properties:
+      menu:
+        $ref: '#/definitions/system.SysBaseMenu'
     type: object
   response.SysBaseMenusResponse:
     properties:
@@ -539,6 +790,11 @@ definitions:
       uuid:
         type: string
     type: object
+  system.System:
+    properties:
+      config:
+        $ref: '#/definitions/config.Server'
+    type: object
 info:
   contact: {}
   description: This is a sample Server pets
@@ -740,10 +996,8 @@ paths:
   /app/empty:
     get:
       parameters:
-      - description: 应用id
-        in: query
+      - in: query
         name: appId
-        required: true
         type: integer
       produces:
       - application/json
@@ -944,6 +1198,34 @@ paths:
       summary: jwt加入黑名单
       tags:
       - Jwt
+  /menu/addMenuAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddMenuAuthorityInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 增加menu和角色关联关系
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 增加menu和角色关联关系
+      tags:
+      - AuthorityMenu
   /menu/addition:
     post:
       parameters:
@@ -990,6 +1272,95 @@ paths:
                   type: string
               type: object
       summary: 菜单管理-删除菜单
+      tags:
+      - Menu
+  /menu/getBaseMenuById:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 菜单id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 根据id获取菜单,返回包括系统菜单列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.SysBaseMenuResponse'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 根据id获取菜单
+      tags:
+      - Menu
+  /menu/getBaseMenuTree:
+    post:
+      parameters:
+      - description: 空
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Empty'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取用户动态路由,返回包括系统菜单列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.SysBaseMenusResponse'
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户动态路由
+      tags:
+      - Menu
+  /menu/getMenuAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色ID
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetAuthorityId'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取指定角色menu
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  additionalProperties: true
+                  type: object
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 获取指定角色menu
       tags:
       - Menu
   /menu/getMenuList:
@@ -1071,10 +1442,8 @@ paths:
   /record/data:
     get:
       parameters:
-      - description: 记录id
-        in: query
+      - in: query
         name: recordId
-        required: true
         type: integer
       produces:
       - application/json
@@ -1085,7 +1454,7 @@ paths:
             type: string
       summary: 返回之前填写过的表单数据
       tags:
-      - RecordById
+      - Record
   /record/initiated:
     get:
       parameters:
@@ -1123,7 +1492,7 @@ paths:
             type: ""
       summary: 提交表单
       tags:
-      - RecordById
+      - Record
   /sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
@@ -1239,6 +1608,69 @@ paths:
       summary: 分页获取SysOperationRecord列表
       tags:
       - SysOperationRecord
+  /system/getServerInfo:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取服务器信息
+      tags:
+      - System
+  /system/getSystemConfig:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取配置文件内容
+      tags:
+      - System
+  /system/reloadSystem:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"重启系统成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 重启系统
+      tags:
+      - System
+  /system/setSystemConfig:
+    post:
+      parameters:
+      - description: 设置配置文件内容
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.System'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"设置成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设置配置文件内容
+      tags:
+      - System
   /task/dynamic:
     get:
       parameters:
@@ -1297,12 +1729,6 @@ paths:
       - Task
   /task/receive:
     get:
-      parameters:
-      - description: 节点类型
-        in: query
-        name: data
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
@@ -1515,6 +1941,29 @@ paths:
           schema:
             type: string
       summary: 用户注册账号
+      tags:
+      - SysUser
+  /user/setSelfInfo:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID, 用户名, 昵称, 头像链接
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysUser'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"设置成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设置当前用户信息
       tags:
       - SysUser
   /user/setUserAuthorities:
