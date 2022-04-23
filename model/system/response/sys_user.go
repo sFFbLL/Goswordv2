@@ -19,3 +19,8 @@ type DeptUser struct {
 	HeaderImg string `json:"url"`
 	NickName  string `json:"nick_name"`
 }
+
+type AuthorityUser struct {
+	Count int64            `json:"count"`
+	Users []system.SysUser `json:"users"`
+}

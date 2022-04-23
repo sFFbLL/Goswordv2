@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "This is a sample Server pets",
-        "title": "GoSword API,../",
+        "title": "GoSword API",
         "contact": {},
         "version": "0.0.1"
     },
@@ -265,6 +265,8 @@
         },
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
         "/app/": {
             "post": {
                 "produces": [
@@ -352,6 +354,7 @@
             }
         },
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/authority/createAuthority": {
             "post": {
                 "security": [
@@ -690,12 +693,12 @@
                 "summary": "删除部门",
                 "parameters": [
                     {
-                        "description": "部门id",
+                        "description": "删除部门",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.GetById"
+                            "$ref": "#/definitions/system.SysDept"
                         }
                     }
                 ],
@@ -853,6 +856,41 @@
                 }
             }
         },
+        "/department/users": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "Department"
+                ],
+                "summary": "获取部门下的用户",
+                "parameters": [
+                    {
+                        "description": "部门id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysDept"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
         "/jwt/jsonInBlacklist": {
             "post": {
                 "security": [
@@ -882,7 +920,52 @@
         },
 <<<<<<< HEAD
         "/menu/addBaseMenu": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "菜单管理-新增菜单",
+                "parameters": [
+                    {
+                        "description": "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysBaseMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "新增菜单",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
 =======
+<<<<<<< HEAD
+        "/menu/addBaseMenu": {
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/addMenuAuthority": {
             "post": {
                 "security": [
@@ -933,6 +1016,8 @@
                 }
             }
         },
+<<<<<<< HEAD
+=======
         "/menu/addition": {
 >>>>>>> develop
             "post": {
@@ -976,6 +1061,7 @@
                 }
             }
         },
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/deleteBaseMenu": {
             "post": {
                 "produces": [
@@ -1019,9 +1105,12 @@
             }
         },
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
         "/menu/getMenu": {
             "post": {
 =======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/getBaseMenuById": {
             "post": {
                 "security": [
@@ -1032,7 +1121,10 @@
                 "consumes": [
                     "application/json"
                 ],
+<<<<<<< HEAD
+=======
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                 "produces": [
                     "application/json"
                 ],
@@ -1040,8 +1132,11 @@
                     "Menu"
                 ],
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
                 "summary": "获取当前用户菜单",
 =======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                 "summary": "根据id获取菜单",
                 "parameters": [
                     {
@@ -1093,7 +1188,10 @@
                     "Menu"
                 ],
                 "summary": "获取用户动态路由",
+<<<<<<< HEAD
+=======
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                 "parameters": [
                     {
                         "description": "空",
@@ -1108,10 +1206,14 @@
                 "responses": {
                     "200": {
 <<<<<<< HEAD
+                        "description": "获取用户动态路由,返回包括系统菜单列表",
+=======
+<<<<<<< HEAD
                         "description": "获取当前用户菜单,返回包括系统菜单列表",
 =======
                         "description": "获取用户动态路由,返回包括系统菜单列表",
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                         "schema": {
                             "allOf": [
                                 {
@@ -1135,7 +1237,55 @@
             }
         },
 <<<<<<< HEAD
+        "/menu/getMenu": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "获取当前用户菜单",
+                "parameters": [
+                    {
+                        "description": "空",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Empty"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取当前用户菜单,返回包括系统菜单列表",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/response.SysBaseMenusResponse"
+                                        },
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
 =======
+<<<<<<< HEAD
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/getMenuAuthority": {
             "post": {
                 "security": [
@@ -1190,7 +1340,10 @@
                 }
             }
         },
+<<<<<<< HEAD
+=======
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/getMenuList": {
             "post": {
                 "produces": [
@@ -1280,6 +1433,8 @@
         },
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
         "/record/data": {
             "get": {
                 "produces": [
@@ -1367,6 +1522,7 @@
             }
         },
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/sysOperationRecord/createSysOperationRecord": {
             "post": {
                 "security": [
@@ -1559,6 +1715,9 @@
         },
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/system/getServerInfo": {
             "post": {
                 "security": [
@@ -1666,6 +1825,8 @@
                 }
             }
         },
+<<<<<<< HEAD
+=======
         "/task/dynamic": {
             "get": {
                 "produces": [
@@ -1793,6 +1954,7 @@
             }
         },
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/user/changePassword": {
             "put": {
                 "security": [
@@ -1932,6 +2094,44 @@
                 "responses": {
                     "200": {
                         "description": ""
+                    }
+                }
+            }
+        },
+        "/user/getUserByAuthority": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "分页获取用户列表",
+                "parameters": [
+                    {
+                        "description": "角色id",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.GetById"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 }
             }
@@ -2737,6 +2937,8 @@
         },
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
         "request.RecordSubmit": {
             "type": "object",
             "properties": {
@@ -2747,6 +2949,7 @@
             }
         },
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "request.Register": {
             "type": "object",
             "properties": {
@@ -3216,6 +3419,12 @@
         "system.SysDept": {
             "type": "object",
             "properties": {
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/system.SysDept"
+                    }
+                },
                 "createBy": {
                     "description": "创建人",
                     "type": "integer"
@@ -3235,7 +3444,7 @@
                     "type": "integer"
                 },
                 "parentID": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "updateBy": {
                     "description": "更新人",

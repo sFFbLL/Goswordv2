@@ -325,6 +325,8 @@ definitions:
     type: object
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
   request.RecordSubmit:
     properties:
       appId:
@@ -332,6 +334,7 @@ definitions:
       form: {}
     type: object
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   request.Register:
     properties:
       authorityIds:
@@ -665,6 +668,10 @@ definitions:
     type: object
   system.SysDept:
     properties:
+      children:
+        items:
+          $ref: '#/definitions/system.SysDept'
+        type: array
       createBy:
         description: 创建人
         type: integer
@@ -679,7 +686,7 @@ definitions:
         description: 主键ID
         type: integer
       parentID:
-        type: integer
+        type: string
       updateBy:
         description: 更新人
         type: integer
@@ -800,7 +807,7 @@ definitions:
 info:
   contact: {}
   description: This is a sample Server pets
-  title: GoSword API,../
+  title: GoSword API
   version: 0.0.1
 paths:
   /api/createApi:
@@ -959,6 +966,8 @@ paths:
       - SysApi
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
   /app/:
     post:
       parameters:
@@ -1014,6 +1023,7 @@ paths:
       tags:
       - App
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /authority/createAuthority:
     post:
       consumes:
@@ -1214,12 +1224,12 @@ paths:
   /department/deleteDept:
     post:
       parameters:
-      - description: 部门id
+      - description: 删除部门
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/request.GetById'
+          $ref: '#/definitions/system.SysDept'
       produces:
       - application/json
       responses:
@@ -1311,6 +1321,27 @@ paths:
       summary: 修改部门
       tags:
       - Department
+  /department/users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 部门id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: 获取部门下的用户
+      tags:
+      - Department
   /jwt/jsonInBlacklist:
     post:
       consumes:
@@ -1329,7 +1360,34 @@ paths:
       - Jwt
 <<<<<<< HEAD
   /menu/addBaseMenu:
+    post:
+      parameters:
+      - description: 路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysBaseMenu'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 新增菜单
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 菜单管理-新增菜单
+      tags:
+      - Menu
 =======
+<<<<<<< HEAD
+  /menu/addBaseMenu:
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /menu/addMenuAuthority:
     post:
       consumes:
@@ -1358,6 +1416,8 @@ paths:
       summary: 增加menu和角色关联关系
       tags:
       - AuthorityMenu
+<<<<<<< HEAD
+=======
   /menu/addition:
 >>>>>>> develop
     post:
@@ -1383,6 +1443,7 @@ paths:
       summary: 菜单管理-新增菜单
       tags:
       - Menu
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /menu/deleteBaseMenu:
     post:
       parameters:
@@ -1408,8 +1469,11 @@ paths:
       tags:
       - Menu
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
   /menu/getMenu:
 =======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /menu/getBaseMenuById:
     post:
       consumes:
@@ -1441,7 +1505,10 @@ paths:
       tags:
       - Menu
   /menu/getBaseMenuTree:
+<<<<<<< HEAD
+=======
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
     post:
       parameters:
       - description: 空
@@ -1455,10 +1522,14 @@ paths:
       responses:
         "200":
 <<<<<<< HEAD
+          description: 获取用户动态路由,返回包括系统菜单列表
+=======
+<<<<<<< HEAD
           description: 获取当前用户菜单,返回包括系统菜单列表
 =======
           description: 获取用户动态路由,返回包括系统菜单列表
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
           schema:
             allOf:
             - $ref: '#/definitions/response.Response'
@@ -1469,11 +1540,40 @@ paths:
                   type: string
               type: object
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
       summary: 获取当前用户菜单
 =======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
       security:
       - ApiKeyAuth: []
       summary: 获取用户动态路由
+      tags:
+      - Menu
+  /menu/getMenu:
+    post:
+      parameters:
+      - description: 空
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Empty'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取当前用户菜单,返回包括系统菜单列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.SysBaseMenusResponse'
+                msg:
+                  type: string
+              type: object
+      summary: 获取当前用户菜单
       tags:
       - Menu
   /menu/getMenuAuthority:
@@ -1505,7 +1605,10 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 获取指定角色menu
+<<<<<<< HEAD
+=======
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
       tags:
       - Menu
   /menu/getMenuList:
@@ -1558,6 +1661,8 @@ paths:
       summary: 菜单管理-更新菜单
       tags:
       - Menu
+<<<<<<< HEAD
+=======
 <<<<<<< HEAD
 =======
   /record/data:
@@ -1615,6 +1720,7 @@ paths:
       tags:
       - Record
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
@@ -1732,6 +1838,9 @@ paths:
       - SysOperationRecord
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /system/getServerInfo:
     post:
       produces:
@@ -1795,6 +1904,8 @@ paths:
       summary: 设置配置文件内容
       tags:
       - System
+<<<<<<< HEAD
+=======
   /task/dynamic:
     get:
       parameters:
@@ -1876,6 +1987,7 @@ paths:
       tags:
       - Task
 >>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
   /user/changePassword:
     put:
       parameters:
@@ -1960,6 +2072,29 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 导出Excel
+      tags:
+      - SysUser
+  /user/getUserByAuthority:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 角色id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取用户列表
       tags:
       - SysUser
   /user/getUserInfo:
