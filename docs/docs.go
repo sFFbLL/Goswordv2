@@ -271,6 +271,98 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+        "/app/": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "创建应用",
+                "parameters": [
+                    {
+                        "description": "创建人",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/create": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "创建表单",
+                "parameters": [
+                    {
+                        "description": "创建人",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/empty": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "返回空表单",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "appId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"null\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/authority/createAuthority": {
             "post": {
                 "security": [
@@ -834,6 +926,7 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
         "/menu/addBaseMenu": {
             "post": {
                 "produces": [
@@ -876,6 +969,11 @@ const docTemplate = `{
                 }
             }
         },
+=======
+<<<<<<< HEAD
+        "/menu/addBaseMenu": {
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/addMenuAuthority": {
             "post": {
                 "security": [
@@ -926,6 +1024,52 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+        "/menu/addition": {
+>>>>>>> develop
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Menu"
+                ],
+                "summary": "菜单管理-新增菜单",
+                "parameters": [
+                    {
+                        "description": "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/system.SysBaseMenu"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "新增菜单",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/response.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "msg": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/deleteBaseMenu": {
             "post": {
                 "produces": [
@@ -968,6 +1112,13 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+        "/menu/getMenu": {
+            "post": {
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/getBaseMenuById": {
             "post": {
                 "security": [
@@ -978,12 +1129,22 @@ const docTemplate = `{
                 "consumes": [
                     "application/json"
                 ],
+<<<<<<< HEAD
+=======
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Menu"
                 ],
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+                "summary": "获取当前用户菜单",
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                 "summary": "根据id获取菜单",
                 "parameters": [
                     {
@@ -1035,6 +1196,10 @@ const docTemplate = `{
                     "Menu"
                 ],
                 "summary": "获取用户动态路由",
+<<<<<<< HEAD
+=======
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                 "parameters": [
                     {
                         "description": "空",
@@ -1048,7 +1213,15 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
+<<<<<<< HEAD
                         "description": "获取用户动态路由,返回包括系统菜单列表",
+=======
+<<<<<<< HEAD
+                        "description": "获取当前用户菜单,返回包括系统菜单列表",
+=======
+                        "description": "获取用户动态路由,返回包括系统菜单列表",
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
                         "schema": {
                             "allOf": [
                                 {
@@ -1071,6 +1244,7 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
         "/menu/getMenu": {
             "post": {
                 "produces": [
@@ -1116,6 +1290,10 @@ const docTemplate = `{
                 }
             }
         },
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/getMenuAuthority": {
             "post": {
                 "security": [
@@ -1170,6 +1348,10 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/menu/getMenuList": {
             "post": {
                 "produces": [
@@ -1257,6 +1439,98 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+        "/record/data": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Record"
+                ],
+                "summary": "返回之前填写过的表单数据",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "recordId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"null\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/record/initiated": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Record"
+                ],
+                "summary": "我发起的",
+                "parameters": [
+                    {
+                        "description": "创建人",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"操作成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/record/submit": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Record"
+                ],
+                "summary": "提交表单",
+                "parameters": [
+                    {
+                        "description": "string",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.RecordSubmit"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"null\"}",
+                        "schema": {
+                            "type": ""
+                        }
+                    }
+                }
+            }
+        },
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/sysOperationRecord/createSysOperationRecord": {
             "post": {
                 "security": [
@@ -1447,6 +1721,11 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/system/getServerInfo": {
             "post": {
                 "security": [
@@ -1554,6 +1833,136 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+        "/task/dynamic": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "流程动态信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "记录id",
+                        "name": "recordId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"ok\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/handle": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "我处理的",
+                "parameters": [
+                    {
+                        "description": "审批人",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/inspect": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "审批（通过||拒绝）",
+                "parameters": [
+                    {
+                        "description": "任务id，状态",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.Inspect"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"审批成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/receive": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "我收到的",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我收到的任务成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/schedule": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Task"
+                ],
+                "summary": "我的待办",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询待办任务成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "/user/changePassword": {
             "put": {
                 "security": [
@@ -2534,6 +2943,21 @@ const docTemplate = `{
                 }
             }
         },
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+        "request.RecordSubmit": {
+            "type": "object",
+            "properties": {
+                "appId": {
+                    "type": "integer"
+                },
+                "form": {}
+            }
+        },
+>>>>>>> develop
+>>>>>>> 57c874b599ae6610378e7d9a2e18cd15b11f9cff
         "request.Register": {
             "type": "object",
             "properties": {

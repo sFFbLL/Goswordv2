@@ -28,6 +28,7 @@ func (d *DeptApi) AddDepartment(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
 	if err, dept := DeptService.AddDepartment(dept); err != nil {
 		global.GSD_LOG.Error("添加部门失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("添加部门失败", c)
@@ -119,6 +120,7 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
 	if err, deptList, total := DeptService.GetDeptListById(Pid.ID); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)

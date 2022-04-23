@@ -68,7 +68,6 @@ func GinLogger() gin.HandlerFunc {
 		var respStruct response
 		_ = json.Unmarshal([]byte(resp), &respStruct)
 		global.GSD_LOG.Info(path,
-			zap.String("requestId", requestId),
 			zap.Int("code", respStruct.Code),
 			zap.String("msg", respStruct.Msg),
 			zap.Any("data", respStruct.Data),
