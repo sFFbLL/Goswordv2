@@ -21,7 +21,7 @@ type TaskService struct {
 // @function: GetDynamic
 // @description: 从mysql中获取流程动态数据
 // @param: WorkFlowReq.RecordById
-// @return: data []WorkFlowReq.Dynamic, err error
+// @return: data WorkFlowRes.DynamicList, err error
 func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, err error) {
 	var tasks []modelWF.GzlTask
 	db := global.GSD_DB.Preload("Record.App").

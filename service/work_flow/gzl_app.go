@@ -14,7 +14,7 @@ type AppService struct {
 // @function: GetAppEmpty
 // @description: 从mysql中获取空表单
 // @param: WorkFlowReq.EmptyApp
-// @return: data utils.JSON, err error
+// @return: data string, err error
 func (a AppService) GetAppEmpty(appId uint) (data string, err error) {
 	db := global.GSD_DB.Model(&modelWF.GzlApp{}).
 		Select("form").

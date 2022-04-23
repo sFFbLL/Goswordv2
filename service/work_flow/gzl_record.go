@@ -20,7 +20,7 @@ type RecordService struct {
 // @function: GetData
 // @description: 从mysql中获取record数据
 // @param: recordId int
-// @return: data utils.JSON, err error
+// @return: data string, err error
 func (r RecordService) GetData(recordId uint) (data string, err error) {
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
