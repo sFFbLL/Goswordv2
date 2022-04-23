@@ -48,8 +48,6 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 	var flow Flow
 	var form Form
 	var tasks []work_flow.GzlTask
-	var isPass bool
-	var currentNode = record.CurrentNode
 	// 流程JSON转换结构体
 	err = json.Unmarshal(record.App.Flow, &flow)
 	if err != nil {
@@ -73,6 +71,7 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 		formMap[field.RenderKey] = field
 	}
 	// 首次当前节点
+	currentNode := record.CurrentNode
 	if currentNode == "" {
 		currentNode = flow.FlowElementList[0].Key
 	} else {
@@ -90,37 +89,24 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 	}
 	// 走节点
 	userService := &system.UserService{}
-	for _, key := range flowMap[currentNode].Outgoing {
-		line := flowMap[key]
-		node := flowMap[line.Outgoing[0]]
-		if conditions(line.Conditions) {
-			if node.Type == 4 {
-				var userIds []uint
-				//	通过部门获取用户
-				err, ids := userService.FindUserByDept(line.Depts)
+outFlow:
+	for true {
+		for i, key := range flowMap[currentNode].Outgoing {
+			line := flowMap[key]
+			node := flowMap[line.Outgoing[0]]
+			if conditions(line.Conditions) {
+				currentNode = node.Key
+			} else if i == len(flowMap[currentNode].Outgoing) && !conditions(line.Conditions) {
+				// 无路可走
+				record.CurrentState = 3
+				record.CurrentNode = ""
+				err = updateRecord(record)
 				if err != nil {
-					return err
+					return
 				}
-				userIds = append(userIds, ids...)
-				//	通过角色获取用户
-				err, ids = userService.FindUserByAuthority(line.Authoritys)
-				if err != nil {
-					return err
-				}
-				userIds = append(userIds, ids...)
-				//  获取用户
-				userIds = append(userIds, node.Users...)
-				//	抄送任务数据整理
-				for _, id := range userIds {
-					tasks = append(tasks, work_flow.GzlTask{RecordId: record.ID, NodeType: node.Type, IsCountersign: node.IsCountersign, NodeKey: node.Key, Inspector: id})
-				}
-				//	下发抄送任务
-				err = issueTask(tasks)
-				if err != nil {
-					return err
-				}
-			} else if !isPass && node.Type == 3 {
-				isPass = true
+				break outFlow
+			}
+			if node.Type == 3 {
 				//	更新记录数据整理
 				record.CurrentNode = node.Key
 				//	更新记录表
@@ -152,6 +138,33 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 				if err != nil {
 					return err
 				}
+				break outFlow
+			} else if node.Type == 4 {
+				var userIds []uint
+				//	通过部门获取用户
+				err, ids := userService.FindUserByDept(line.Depts)
+				if err != nil {
+					return err
+				}
+				userIds = append(userIds, ids...)
+				//	通过角色获取用户
+				err, ids = userService.FindUserByAuthority(line.Authoritys)
+				if err != nil {
+					return err
+				}
+				userIds = append(userIds, ids...)
+				//  获取用户
+				userIds = append(userIds, node.Users...)
+				//	抄送任务数据整理
+				for _, id := range userIds {
+					tasks = append(tasks, work_flow.GzlTask{RecordId: record.ID, NodeType: node.Type, IsCountersign: node.IsCountersign, NodeKey: node.Key, Inspector: id})
+				}
+				//	下发抄送任务
+				err = issueTask(tasks)
+				if err != nil {
+					return err
+				}
+				break
 			} else if node.Type == 5 {
 				//	更新记录表
 				record.CurrentState = 2
@@ -160,16 +173,8 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 				if err != nil {
 					return
 				}
+				break outFlow
 			}
-		}
-	}
-	// 无路可走
-	if !isPass {
-		//	更新记录表
-		record.CurrentState = 3
-		err = updateRecord(record)
-		if err != nil {
-			return
 		}
 	}
 	return

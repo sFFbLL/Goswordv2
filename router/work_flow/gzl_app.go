@@ -15,6 +15,10 @@ func (t *AppRouter) InitAppRouter(Router *gin.RouterGroup) (R gin.IRoutes) {
 		appRouter.GET("/empty", appApi.Empty)
 		appRouter.POST("/create", appApi.Create)
 		appRouter.POST("/", appApi.AddApp)
+		appRouter.POST("/form", appApi.AddForm)
+		appRouter.POST("/flow", appApi.AddFlow)
+		appRouter.POST("/enable", appApi.EnableApp)
+		appRouter.POST("/authority", appApi.AuthorityApp)
 	}
 	return appRouter
 }
