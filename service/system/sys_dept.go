@@ -5,6 +5,7 @@ import (
 	"project/global"
 	"project/model/common/request"
 	"project/model/system"
+	"project/model/system/response"
 
 	"gorm.io/gorm"
 )
@@ -33,6 +34,9 @@ func (departService *DeptService) AddDepartment(dept system.SysDept) (err error,
 func (departService *DeptService) DeleteDepartment(dept *system.SysDept) (err error) {
 	if errors.Is(global.GSD_DB.First(&dept).Error, gorm.ErrRecordNotFound) {
 		return errors.New("该部门不存在")
+	}
+	if !errors.Is(global.GSD_DB.Where("dept_id = ?", dept.ID).First(&system.SysUser{}).Error, gorm.ErrRecordNotFound) {
+		return errors.New("此部门下有用户禁止删除")
 	}
 	err = global.GSD_DB.Where("parent_id = ?", dept.ID).First(&system.SysDept{}).Error
 	if err != nil {
@@ -85,14 +89,10 @@ func (departService *DeptService) GetDeptList(info request.PageInfo, deptId []ui
 //@description: 根据pid查询部门列表
 //@param: id uint
 //@return: error
-func (departService *DeptService) GetDeptListById(id uint, deptId []uint, isAll bool) (err error, list interface{}, total int64) {
+func (departService *DeptService) GetDeptListById(id uint) (err error, list interface{}, total int64) {
 	db := global.GSD_DB.Model(&system.SysDept{})
 	var dept []system.SysDept
-	if isAll {
-		err = db.Where("parent_id = ?", id).Find(&dept).Order("dept_sort").Error
-	} else {
-		err = db.Where("id in (?) AND parent_id = ?", deptId, id).Find(&dept).Order("dept_sort").Error
-	}
+	err = db.Where("parent_id = ?", id).Find(&dept).Order("dept_sort").Error
 	err = db.Where("parent_id = ? ", id).Count(&total).Error
 	return err, dept, total
 }
@@ -110,4 +110,26 @@ func (departService *DeptService) findChildrenDepartment(dept *system.SysDept) (
 		}
 	}
 	return err
+}
+
+//@author: [houruotong](https://github.com/Monkey-Pear)
+//@function: GetUserByDeptId
+//@description: 获取部门下的用户
+//@param: dept system.SysDept
+//@return: err error, user []system.SysDept
+func (departService *DeptService) GetUserByDeptId(dept system.SysDept) (err error, userRes []interface{}) {
+	var userDept response.GetUserByDeptId
+	var user []response.DeptUser
+	var count int64
+	err = global.GSD_DB.Table("sys_depts").Select("id, dept_name").Where("id = ?", dept.ID).Find(&userDept).Error
+	if err != nil {
+		return err, nil
+	}
+	err = global.GSD_DB.Table("sys_users").Select("id, nick_name,header_img").Where("dept_id = ?", dept.ID).Find(&user).Count(&count).Error
+	userDept.Count = int(count)
+	userRes = append(userRes, userDept)
+	for i := 0; i < userDept.Count; i++ {
+		userRes = append(userRes, user[i])
+	}
+	return err, userRes
 }

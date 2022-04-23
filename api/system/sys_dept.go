@@ -119,9 +119,7 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	user := utils.GetUser(c)
-	scope, all := dataScope.GetDataScope(user)
-	if err, deptList, total := DeptService.GetDeptListById(Pid.ID, scope, all); err != nil {
+	if err, deptList, total := DeptService.GetDeptListById(Pid.ID); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -129,5 +127,29 @@ func (d *DeptApi) GetDeptListById(c *gin.Context) {
 			List:  deptList,
 			Total: total,
 		}, "获取成功", c)
+	}
+}
+
+// @Tags Department
+// @Summary 获取部门下的用户
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce  application/octet-stream
+// @Param data body system.SysDept true "部门id"
+// @Success 200
+// @Router /department/users [post]
+func (d *DeptApi) GetDeptUser(c *gin.Context) {
+	var dept system.SysDept
+	_ = c.ShouldBindJSON(&dept)
+	if err := utils.Verify(dept, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err, user := DeptService.GetUserByDeptId(dept); err != nil {
+		global.GSD_LOG.Error("获取部门用户失败", zap.Error(err), utils.GetRequestID(c))
+		response.FailWithMessage("获取部门用户失败", c)
+		return
+	} else {
+		response.OkWithDetailed(gin.H{"userList": user}, "获取部门下用户成功", c)
 	}
 }
