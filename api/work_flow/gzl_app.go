@@ -16,6 +16,8 @@ type AppApi struct {
 // Empty
 // @Tags App
 // @Summary 返回空表单
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param appId query WorkFlowReq.EmptyApp true "应用id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
@@ -32,7 +34,7 @@ func (f *AppApi) Empty(c *gin.Context) {
 		global.GSD_LOG.Error("获取空应用表单失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("该应用不存在", c)
 	} else {
-		global.GSD_LOG.Info("获取空应用表单成功", zap.Any("GetAppEmpty Success", string(data)), utils.GetRequestID(c))
+		global.GSD_LOG.Info("获取空应用表单成功", zap.Any("GetAppEmpty Success", data), utils.GetRequestID(c))
 		response.OkWithData(data, c)
 	}
 }

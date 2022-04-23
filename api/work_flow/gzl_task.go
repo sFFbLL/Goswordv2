@@ -40,6 +40,8 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // Dynamic
 // @Tags Task
 // @Summary 流程动态信息
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param recordId query int true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
@@ -105,6 +107,8 @@ func (t *TaskApi) Handle(c *gin.Context) {
 // Receive
 // @Tags Task
 // @Summary 我收到的
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]

@@ -9,7 +9,6 @@ import (
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
 	WorkFlowRes "project/model/work_flow/response"
-	"project/utils"
 	"reflect"
 )
 
@@ -22,13 +21,13 @@ type RecordService struct {
 // @description: 从mysql中获取record数据
 // @param: recordId int
 // @return: data utils.JSON, err error
-func (r RecordService) GetData(recordId uint) (data utils.JSON, err error) {
+func (r RecordService) GetData(recordId uint) (data string, err error) {
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
 		Where("id = ?", recordId)
 	if err = db.Find(&data).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("数据为空")
+			return "", errors.New("数据为空")
 		}
 	}
 	return

@@ -995,6 +995,8 @@ paths:
       - App
   /app/empty:
     get:
+      consumes:
+      - application/json
       parameters:
       - in: query
         name: appId
@@ -1006,6 +1008,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"null"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 返回空表单
       tags:
       - App
@@ -1441,6 +1445,8 @@ paths:
       - Menu
   /record/data:
     get:
+      consumes:
+      - application/json
       parameters:
       - in: query
         name: recordId
@@ -1452,6 +1458,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"null"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 返回之前填写过的表单数据
       tags:
       - Record
@@ -1476,6 +1484,8 @@ paths:
       - Record
   /record/submit:
     post:
+      consumes:
+      - application/json
       parameters:
       - description: string
         in: body
@@ -1490,6 +1500,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"null"}'
           schema:
             type: ""
+      security:
+      - ApiKeyAuth: []
       summary: 提交表单
       tags:
       - Record
@@ -1673,6 +1685,8 @@ paths:
       - System
   /task/dynamic:
     get:
+      consumes:
+      - application/json
       parameters:
       - description: 记录id
         in: query
@@ -1686,6 +1700,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"ok"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 流程动态信息
       tags:
       - Task
@@ -1729,6 +1745,8 @@ paths:
       - Task
   /task/receive:
     get:
+      consumes:
+      - application/json
       produces:
       - application/json
       responses:
@@ -1736,6 +1754,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"查询我收到的任务成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 我收到的
       tags:
       - Task
