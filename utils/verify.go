@@ -15,7 +15,7 @@ var (
 	SetUserAuthorityVerify = Rules{"AuthorityId": {NotEmpty()}}
 	InspectVerify          = Rules{"TaskId": {NotEmpty()}, "State": {NotEmpty()}}
 	RecordIdVerify         = Rules{"RecordId": {NotEmpty()}}
-	EmptyAppIdVerify       = Rules{"AppId": {NotEmpty()}}
-	RecordSubmitVerify     = Rules{"AppId": {NotEmpty()}, "Form": {NotEmpty()}, "CurrentNode": {NotEmpty()}, "DeptId": {NotEmpty()}}
+	EmptyAppVerify         = Rules{"AppId": {NotEmpty()}}
+	RecordSubmitVerify     = Rules{"AppId": {NotEmpty()}, "Form": {NotEmpty()}}
 	AddApp                 = Rules{"Name": {NotEmpty()}, "Icon": {NotEmpty()}}
 )
