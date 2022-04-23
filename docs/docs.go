@@ -1802,7 +1802,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/request.Handle"
                         }
                     }
                 ],
@@ -2785,6 +2785,30 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "description": "主键ID",
+                    "type": "integer"
+                }
+            }
+        },
+        "request.Handle": {
+            "type": "object",
+            "properties": {
+                "appName": {
+                    "description": "应用名称",
+                    "type": "string"
+                },
+                "applicant": {
+                    "description": "申请人",
+                    "type": "string"
+                },
+                "checkState": {
+                    "description": "审批状态(待审批1默认、审批通过2、审批拒绝3、或签已审核4)",
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "inspector": {
                     "type": "integer"
                 }
             }
