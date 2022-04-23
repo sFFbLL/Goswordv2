@@ -44,9 +44,12 @@ func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
 	// 开启提交表单事务
 	err = global.GSD_DB.Transaction(func(tx *gorm.DB) error {
 		// 插入部门id, 并创建一条新记录
-		tx.Model(&system.SysUser{}).Select("dept_id").Where("id = ?", record.CreateBy).Find(&record.DeptId)
+		tx.Model(&system.SysUser{}).
+			Select("dept_id").
+			Where("id = ?", record.CreateBy).
+			Find(&record.DeptId)
+		// 在gzl_records中添加记录
 		tx.Create(&record)
-
 		var formItems []modelWF.GzlFormItem
 		var form WorkFlowReq.Form
 		_ = json.Unmarshal(record.Form, &form)

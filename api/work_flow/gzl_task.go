@@ -45,14 +45,13 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
 // @Router /task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
-	userId := utils.GetUserID(c)
 	var record WorkFlowReq.RecordById
 	_ = c.ShouldBindQuery(&record)
 	if err := utils.Verify(record, utils.RecordIdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	tasks, err := taskService.GetDynamic(userId, record.RecordId)
+	tasks, err := taskService.GetDynamic(record.RecordId)
 	if err != nil {
 		global.GSD_LOG.Error("获取流程动态错误", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("数据不存在", c)

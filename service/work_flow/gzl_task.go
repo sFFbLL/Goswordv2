@@ -3,7 +3,6 @@ package work_flow
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"gorm.io/gorm"
 	"project/global"
 	"project/model/system"
@@ -11,6 +10,7 @@ import (
 	modelWF "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
 	WorkFlowRes "project/model/work_flow/response"
+	"project/utils"
 )
 
 type TaskService struct {
@@ -22,22 +22,24 @@ type TaskService struct {
 // @description: 从mysql中获取流程动态数据
 // @param: WorkFlowReq.RecordById
 // @return: data []WorkFlowReq.Dynamic, err error
-func (t TaskService) GetDynamic(applicantId, recordId uint) (data []WorkFlowRes.Dynamic, err error) {
-	db := global.GSD_DB.
-		Model(modelWF.GzlTask{}).
-		Joins("JOIN sys_users ON sys_users.id = ?", applicantId).
-		Joins("JOIN gzl_records ON gzl_records.id = ?", recordId).
-		Select("sys_users.nick_name as Applicant", "gzl_tasks.created_at as InspectAt",
-			"gzl_records.created_at as CreatedAt", "check_state as CheckState", "remarks as Remarks").
-		Where("gzl_tasks.record_id = gzl_records.id")
-	if err = db.Find(&data).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, nil
+func (t TaskService) GetDynamic(recordId uint) (data []WorkFlowRes.Dynamic, err error) {
+	var tasks []modelWF.GzlTask
+	global.GSD_DB.Preload("Record.App").
+		Where("recordId = ?", recordId).
+		Find(&tasks)
+	for _, task := range tasks {
+		dynamic := WorkFlowRes.Dynamic{
+			CreatedAt:   task.CreatedAt,
+			InspectAt:   task.UpdatedAt,
+			ConsumeTime: task.UpdatedAt.Unix() - task.CreatedAt.Unix(),
+			Applicant:   t.GetUserNickName(task.Inspector),
+			CheckState:  task.CheckState,
+			Remarks:     task.Remarks,
+			AppName:     task.Record.App.Name,
+			CurrentNode: t.GetNodeName(task.Record.App.Flow, task.NodeKey),
+			Nodes:       t.GetMoreNodesName(task.Record.App.Flow, tasks),
 		}
-	}
-	// 计算耗时
-	for i := 0; i < len(data); i++ {
-		data[i].ConsumeTime = data[i].InspectAt.Unix() - data[i].CreatedAt.Unix()
+		data = append(data, dynamic)
 	}
 	return
 }
@@ -113,45 +115,27 @@ func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err er
 	for i := 0; i < len(recordIds); i++ {
 		var tasks []modelWF.GzlTask
 		global.GSD_DB.
-			Where("record_id = ? AND node_type = ?", recordIds[i], 3).
+			Where("record_id = ? AND node_type = ? AND update_at is NULL", recordIds[i], 3).
 			Preload("Record.App").
 			Find(&tasks)
 		if len(tasks) > 0 {
-			var receive WorkFlowRes.Receive
-			// 记录id
-			receive.RecordId = tasks[0].RecordId
-			// 申请人姓名
-			global.GSD_DB.Model(&system.SysUser{}).
-				Where("id = ?", tasks[0].Record.CreateBy).
-				Select("nick_name as Applicant").
-				Find(&receive.Applicant)
-			// 应用名称
-			receive.AppName = tasks[0].Record.App.Name
-			// 当前状态
-			receive.CurrentState = tasks[0].Record.CurrentState
-			// 获取审批人姓名(可能会有多个, 所以需要遍历)
+			receive := WorkFlowRes.Receive{
+				CreatedAt:    tasks[0].CreatedAt,
+				RecordId:     tasks[0].RecordId,
+				Applicant:    t.GetUserNickName(tasks[0].Record.CreateBy),
+				CurrentState: tasks[0].Record.CurrentState,
+				AppName:      tasks[0].Record.App.Name,
+				CurrentNode:  t.GetNodeName(tasks[0].Record.App.Flow, tasks[0].Record.CurrentNode),
+			}
 			for j := 0; j < len(tasks); j++ {
-				var Inspector string
-				global.GSD_DB.Model(&system.SysUser{}).
-					Where("id = ?", tasks[j].Inspector).
-					Select("nick_name as Inspector").
-					Find(&Inspector)
+				Inspector := t.GetUserNickName(tasks[j].Inspector)
 				if Inspector != "" {
 					receive.Inspectors = append(receive.Inspectors, Inspector)
-				}
-			}
-			// 当前节点名称 (解析Flow)
-			var flow Flow
-			_ = json.Unmarshal(tasks[0].Record.App.Flow, &flow)
-			for _, node := range flow.FlowElementList {
-				if node.Key == tasks[0].Record.CurrentNode {
-					receive.CurrentNode = node.Name
 				}
 			}
 			data = append(data, receive)
 		}
 	}
-	fmt.Println(err)
 	return
 }
 
@@ -159,4 +143,41 @@ func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err er
 func (t TaskService) GetTaskInfo(taskId uint) (task work_flow.GzlTask, err error) {
 	err = global.GSD_DB.Preload("Record.App").First(&task, taskId).Error
 	return task, err
+}
+
+// GetUserNickName 根据用户id获取用户昵称
+func (t TaskService) GetUserNickName(userId uint) (nickName string) {
+	global.GSD_DB.Model(&system.SysUser{}).
+		Where("id = ?", userId).
+		Select("nick_name as nickName").
+		Find(&nickName)
+	return
+}
+
+// GetNodeName 根据流程JSON和key获取当前节点名称
+func (t TaskService) GetNodeName(flowJson utils.JSON, key string) string {
+	var flow Flow
+	_ = json.Unmarshal(flowJson, &flow)
+	for _, node := range flow.FlowElementList {
+		if node.Key == key {
+			return node.Name
+		}
+	}
+	return ""
+}
+
+// GetMoreNodesName 根据流程JSON获取全部节点名称
+func (t TaskService) GetMoreNodesName(flowJson utils.JSON, tasks []modelWF.GzlTask) (nodes []string) {
+	var flow Flow
+	_ = json.Unmarshal(flowJson, &flow)
+	for _, node := range flow.FlowElementList {
+		for _, task := range tasks {
+			// 排除结束节点 5, 且 key 值相等
+			if node.Type <= 4 && task.NodeKey == node.Key {
+				nodeName := node.Properties.Name
+				nodes = append(nodes, nodeName)
+			}
+		}
+	}
+	return
 }

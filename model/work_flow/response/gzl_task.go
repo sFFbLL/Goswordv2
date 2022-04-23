@@ -9,13 +9,17 @@ type Dynamic struct {
 	Applicant   string    `json:"applicant"`   // 申请人
 	CheckState  uint8     `json:"checkState"`  // 审批状态
 	Remarks     string    `json:"remarks"`     // 备注
+	AppName     string    `json:"appName"`     // 应用名称
+	CurrentNode string    `json:"currentNode"` // 当前节点名称
+	Nodes       []string  `json:"nodes"`       // 全部流程节点
 }
 
 type Receive struct {
-	RecordId     uint     `json:"recordId"`
-	Applicant    string   `json:"applicant"`    // 申请人
-	Inspectors   []string `json:"inspector"`    // 审批人
-	CurrentState uint8    `json:"currentState"` // 审批状态
-	AppName      string   `json:"appName"`      // 应用名称
-	CurrentNode  string   `json:"currentNode"`  // 当前节点名称
+	CreatedAt    time.Time `json:"createdAt"`    // 创建时间
+	RecordId     uint      `json:"recordId"`     // 记录id
+	Applicant    string    `json:"applicant"`    // 申请人
+	Inspectors   []string  `json:"inspector"`    // 审批人
+	CurrentState uint8     `json:"currentState"` // 审批状态
+	AppName      string    `json:"appName"`      // 应用名称
+	CurrentNode  string    `json:"currentNode"`  // 当前节点名称
 }
