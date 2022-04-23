@@ -3,7 +3,6 @@ package work_flow
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"gorm.io/gorm"
 	"project/global"
 	"project/model/system"
@@ -54,38 +53,27 @@ func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, er
 // @description: 从mysql中获取待办数据
 // @param: WorkFlowReq.Task
 // @return: data []WorkFlowReq.ScheduleList, err error
-func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.ScheduleList,err error) {
+func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.ScheduleList, err error) {
 	var recordIds []uint
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
 		Where("node_type = ? AND Inspector = ?", 3, 1).
 		Find(&recordIds)
-
 	for i := 0; i < len(recordIds); i++ {
-		var tasks modelWF.GzlTask
-		global.GSD_DB.
-			Where("record_id = ?", recordIds[i]).
+		var task modelWF.GzlTask
+		err = global.GSD_DB.
+			Where("record_id = ? AND updated_at is NULL", recordIds[i]).
 			Preload("Record.App").
-			Find(&tasks)
-		var schedule WorkFlowRes.ScheduleList
-		// 申请人姓名
-		global.GSD_DB.Model(&system.SysUser{}).
-			Where("id = ?", tasks.Record.CreateBy).
-			Select("nick_name as Applicant").
-			Find(&schedule.Applicant)
-		// 应用名称
-		schedule.AppName = tasks.Record.App.Name
-		//审批状态
-		schedule.CheckState = tasks.CheckState
-		// 创建时间
-		schedule.CreatedAt = tasks.Record.CreatedAt
-		// 当前节点名称 (解析Flow)
-		var flow Flow
-		_ = json.Unmarshal(tasks.Record.App.Flow, &flow)
-		for _, node := range flow.FlowElementList {
-			if node.Key == tasks.Record.CurrentNode {
-				schedule.CurrentNode = node.Name
-				break
-			}
+			Find(&task).Error
+		if err != nil {
+			return
+		}
+		schedule := WorkFlowRes.ScheduleList{
+			CreatedAt:   task.CreatedAt,
+			RecordId:    task.RecordId,
+			Applicant:   t.GetUserNickName(task.Record.CreateBy),
+			CurrentNode: t.GetNodeName(task.Record.App.Flow, task.Record.CurrentNode),
+			AppName:     task.Record.App.Name,
+			CheckState:  task.CheckState,
 		}
 		scheduleData = append(scheduleData, schedule)
 	}
@@ -101,49 +89,35 @@ func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.Sc
 func (t TaskService) GetHandleList(userId uint) (handleData []WorkFlowRes.HandleList, err error) {
 	var recordIds []uint
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
-		Where("node_type = ? AND Inspector = ?", 3, 1).
+		Where("node_type = ? AND inspector = ?", 3, userId).
 		Find(&recordIds)
-
 	for i := 0; i < len(recordIds); i++ {
 		var tasks []modelWF.GzlTask
-		global.GSD_DB.
-			Where("record_id = ? AND node_type = ?", recordIds[i], 3).
+		err = global.GSD_DB.
+			Where("record_id = ? AND node_type = ? AND updated_at is NULL", recordIds[i], 3).
 			Preload("Record.App").
-			Find(&tasks)
+			Find(&tasks).Error
+		if err != nil {
+			return
+		}
 		if len(tasks) > 0 {
-			var handle WorkFlowRes.HandleList
-			// 申请人姓名
-			global.GSD_DB.Model(&system.SysUser{}).
-				Where("id = ?", tasks[0].Record.CreateBy).
-				Select("nick_name as Applicant").
-				Find(&handle.Applicant)
-			// 应用名称
-			handle.AppName = tasks[0].Record.App.Name
-			// 当前状态
-			handle.CurrentState = tasks[0].Record.CurrentState
-			// 获取审批人姓名(可能会有多个, 所以需要遍历)
+			handle := WorkFlowRes.HandleList{
+				CreatedAt:    tasks[0].CreatedAt,
+				RecordId:     tasks[0].RecordId,
+				Applicant:    t.GetUserNickName(tasks[0].Record.CreateBy),
+				CurrentState: tasks[0].Record.CurrentState,
+				AppName:      tasks[0].Record.App.Name,
+				CurrentNode:  t.GetNodeName(tasks[0].Record.App.Flow, tasks[0].Record.CurrentNode),
+			}
 			for j := 0; j < len(tasks); j++ {
-				var Inspector string
-				global.GSD_DB.Model(&system.SysUser{}).
-					Where("id = ?", tasks[j].Inspector).
-					Select("nick_name as Inspector").
-					Find(&Inspector)
+				Inspector := t.GetUserNickName(tasks[j].Inspector)
 				if Inspector != "" {
 					handle.Inspectors = append(handle.Inspectors, Inspector)
-				}
-			}
-			// 当前节点名称 (解析Flow)
-			var flow Flow
-			_ = json.Unmarshal(tasks[0].Record.App.Flow, &flow)
-			for _, node := range flow.FlowElementList {
-				if node.Key == tasks[0].Record.CurrentNode {
-					handle.CurrentNode = node.Name
 				}
 			}
 			handleData = append(handleData, handle)
 		}
 	}
-	fmt.Println(err)
 	return
 }
 

@@ -37,6 +37,7 @@ type ScheduleList struct {
 }
 type HandleList struct {
 	RecordId     uint      `json:"recordId"`     // 记录id
+	CreatedAt    time.Time `json:"createdAt"`    // 创建时间
 	Applicant    string   `json:"applicant"`    // 申请人
 	AppName      string   `json:"name"`         //应用名称
 	CurrentState uint8    `json:"currentState"` //当前状态(进行中1默认、已完成2、已结束3)
