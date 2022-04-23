@@ -1,7 +1,9 @@
 package work_flow
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"gorm.io/gorm"
 	"project/global"
 	"project/model/system"
@@ -53,19 +55,40 @@ func (t TaskService) GetDynamic(applicantId, recordId int) (data []WorkFlowRes.D
 // @description: 从mysql中获取待办数据
 // @param: WorkFlowReq.Task
 // @return: data []WorkFlowReq.ScheduleList, err error
-func (t TaskService) GetScheduleList(userId uint) (schedules WorkFlowRes.ScheduleList,err error) {
+func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.ScheduleList,err error) {
+	var recordIds []uint
+	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
+		Where("node_type = ? AND Inspector = ?", 3, 1).
+		Find(&recordIds)
 
-	if err=global.GSD_DB.Select("check_state").Model(&modelWF.GzlTask{}).Find(&schedules,"inspector = ?",userId).Error;err!=nil{
-		return
-	}
-	if err=global.GSD_DB.Select("created_at").Model(&modelWF.GzlRecord{}).Find(&schedules).Error;err!=nil{
-		return
-	}
-	//if err=global.GSD_DB.Select("nick_name").Model(&modelSys.SysUser{}).Find(&schedules).Error;err!=nil{
-	//	return
-	//}
-	if err=global.GSD_DB.Select("name").Model(&modelWF.GzlApp{}).Find(&schedules).Error;err!=nil {
-		return
+	for i := 0; i < len(recordIds); i++ {
+		var tasks modelWF.GzlTask
+		global.GSD_DB.
+			Where("record_id = ?", recordIds[i]).
+			Preload("Record.App").
+			Find(&tasks)
+		var schedule WorkFlowRes.ScheduleList
+		// 申请人姓名
+		global.GSD_DB.Model(&system.SysUser{}).
+			Where("id = ?", tasks.Record.CreateBy).
+			Select("nick_name as Applicant").
+			Find(&schedule.Applicant)
+		// 应用名称
+		schedule.AppName = tasks.Record.App.Name
+		//审批状态
+		schedule.CheckState = tasks.CheckState
+		// 创建时间
+		schedule.CreatedAt = tasks.Record.CreatedAt
+		// 当前节点名称 (解析Flow)
+		var flow Flow
+		_ = json.Unmarshal(tasks.Record.App.Flow, &flow)
+		for _, node := range flow.FlowElementList {
+			if node.Key == tasks.Record.CurrentNode {
+				schedule.CurrentNode = node.Name
+				break
+			}
+		}
+		scheduleData = append(scheduleData, schedule)
 	}
 	return
 }
@@ -76,24 +99,52 @@ func (t TaskService) GetScheduleList(userId uint) (schedules WorkFlowRes.Schedul
 // @description: 从mysql中获取我处理的数据
 // @param: WorkFlowReq.Task
 // @return: data []WorkFlowReq.HandleList, err error
-func (t TaskService) GetHandleList(userId uint) (handles WorkFlowRes.HandleList,err error) {
-	var userIds []uint
-	if err = global.GSD_DB.Select("current_state,current_node").Model(&modelWF.GzlRecord{}).Find(&handles, "create_by = ?", userId).Error; err != nil {
-		return
-	}
-	if err =global.GSD_DB.Select("inspector").Model(&modelWF.GzlTask{}).Find(&userIds,"node_key=?",handles.CurrentNode).Error;err!=nil{
-		return
-	}
-	if err = global.GSD_DB.Select("nick_name").Model(&system.SysUser{}).Find(&handles.InspectorName,"id in ?", userIds).Error; err != nil {
-		return
-	}
-	if err=global.GSD_DB.Select("created_at").Model(&modelWF.GzlRecord{}).Find(&handles.CreatedAt).Error;err!=nil{
-		return
-	}
-	if err=global.GSD_DB.Select("name").Model(&modelWF.GzlApp{}).Find(&handles.Name).Error;err!=nil {
-		return
-	}
+func (t TaskService) GetHandleList(userId uint) (handleData []WorkFlowRes.HandleList, err error) {
+	var recordIds []uint
+	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
+		Where("node_type = ? AND Inspector = ?", 3, 1).
+		Find(&recordIds)
 
+	for i := 0; i < len(recordIds); i++ {
+		var tasks []modelWF.GzlTask
+		global.GSD_DB.
+			Where("record_id = ? AND node_type = ?", recordIds[i], 3).
+			Preload("Record.App").
+			Find(&tasks)
+		if len(tasks) > 0 {
+			var handle WorkFlowRes.HandleList
+			// 申请人姓名
+			global.GSD_DB.Model(&system.SysUser{}).
+				Where("id = ?", tasks[0].Record.CreateBy).
+				Select("nick_name as Applicant").
+				Find(&handle.Applicant)
+			// 应用名称
+			handle.AppName = tasks[0].Record.App.Name
+			// 当前状态
+			handle.CurrentState = tasks[0].Record.CurrentState
+			// 获取审批人姓名(可能会有多个, 所以需要遍历)
+			for j := 0; j < len(tasks); j++ {
+				var Inspector string
+				global.GSD_DB.Model(&system.SysUser{}).
+					Where("id = ?", tasks[j].Inspector).
+					Select("nick_name as Inspector").
+					Find(&Inspector)
+				if Inspector != "" {
+					handle.Inspectors = append(handle.Inspectors, Inspector)
+				}
+			}
+			// 当前节点名称 (解析Flow)
+			var flow Flow
+			_ = json.Unmarshal(tasks[0].Record.App.Flow, &flow)
+			for _, node := range flow.FlowElementList {
+				if node.Key == tasks[0].Record.CurrentNode {
+					handle.CurrentNode = node.Name
+				}
+			}
+			handleData = append(handleData, handle)
+		}
+	}
+	fmt.Println(err)
 	return
 }
 

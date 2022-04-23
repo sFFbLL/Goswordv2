@@ -72,10 +72,10 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 
 	schedule,err := taskService.GetScheduleList(1)
 	 if err != nil {
-		global.GSD_LOG.ZapLog.Error("获取我的待办信息失败", zap.Any("err",err))
+		global.GSD_LOG.Error("获取我的待办信息失败", zap.Any("err",err))
 		response.FailWithMessage("获取我的待办信息失败", c)
 	} else {
-		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", schedule))      //打印日志
+		global.GSD_LOG.Info("获取成功", zap.Any("success", schedule))      //打印日志
 		response.OkWithData(schedule,c) //给前端返回信息
 
 	}
@@ -92,11 +92,11 @@ func (t *TaskApi) Handle(c *gin.Context) {
 	userId:= utils.GetUserID(c)
 	handle ,err:= taskService.GetHandleList(userId)
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("获取我处理的信息失败", zap.Any("err",err))
+		global.GSD_LOG.Error("获取我处理的信息失败", zap.Any("err",err))
 		response.FailWithMessage("获取我处理的信息失败", c)
 		return
 	} else {
-		global.GSD_LOG.ZapLog.Info("获取成功", zap.Any("success", handle))    //打印日志
+		global.GSD_LOG.Info("获取成功", zap.Any("success", handle))    //打印日志
 		response.OkWithData(handle, c) //给前端返回信息
 	}
 }
