@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 	"project/global"
 	"project/model/common/response"
 	modelMF "project/model/work_flow"
@@ -17,22 +18,22 @@ type RecordApi struct {
 // Submit
 // @Tags Record
 // @Summary 提交表单
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param data body WorkFlowReq.RecordSubmit true "string"
 // @Success 200 {} json "{"success":true,"data":{},"msg":"null"}"
 // @Router /record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
 	var recordSubmit WorkFlowReq.RecordSubmit
-	err := c.ShouldBindJSON(&recordSubmit)
-	if err != nil {
-		global.GSD_LOG.Error("json解析失败", zap.Any("err", err), utils.GetRequestID(c))
-	}
-	if err = utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
+	_ = c.ShouldBindJSON(&recordSubmit)
+	if err := utils.Verify(recordSubmit, utils.RecordSubmitVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	form, err := json.Marshal(recordSubmit.Form)
 	if err != nil {
+		global.GSD_LOG.Error("表单序列化失败", zap.Any("err", err), utils.GetRequestID(c))
 		return
 	}
 	// 定义record结构体, 将入参的值赋进去
@@ -42,7 +43,7 @@ func (r *RecordApi) Submit(c *gin.Context) {
 	record.GSD_MODEL.CreateBy = utils.GetUserID(c)
 	if err = recordService.Submit(record); err != nil {
 		global.GSD_LOG.Error("记录提交失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("提交失败", c)
+		response.FailWithMessage(err.Error(), c)
 	} else {
 		response.Ok(c)
 	}
@@ -51,6 +52,8 @@ func (r *RecordApi) Submit(c *gin.Context) {
 // Data
 // @Tags Record
 // @Summary 返回之前填写过的表单数据
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param recordId query WorkFlowReq.RecordById true "记录id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
@@ -63,11 +66,11 @@ func (r *RecordApi) Data(c *gin.Context) {
 		return
 	}
 	data, err := recordService.GetData(record.RecordId)
-	if err != nil {
+	if err != nil && err != gorm.ErrRecordNotFound {
 		global.GSD_LOG.Error("表单数据获取失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("该记录不存在", c)
+		response.FailWithMessage(err.Error(), c)
 	} else {
-		global.GSD_LOG.Info("表单数据获取成功", zap.Any("RecordById Form Data([]byte -> string)", string(data)), utils.GetRequestID(c))
+		global.GSD_LOG.Info("表单数据获取成功", zap.Any("Form Data: ", data), utils.GetRequestID(c))
 		response.OkWithData(data, c)
 	}
 }

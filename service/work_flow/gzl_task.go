@@ -2,6 +2,7 @@ package work_flow
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"gorm.io/gorm"
 	"project/global"
@@ -20,25 +21,29 @@ type TaskService struct {
 // @function: GetDynamic
 // @description: 从mysql中获取流程动态数据
 // @param: WorkFlowReq.RecordById
-// @return: data []WorkFlowReq.Dynamic, err error
-func (t TaskService) GetDynamic(recordId uint) (data []WorkFlowRes.Dynamic, err error) {
+// @return: data WorkFlowRes.DynamicList, err error
+func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, err error) {
 	var tasks []modelWF.GzlTask
-	global.GSD_DB.Preload("Record.App").
-		Where("recordId = ?", recordId).
-		Find(&tasks)
-	for _, task := range tasks {
-		dynamic := WorkFlowRes.Dynamic{
-			CreatedAt:   task.CreatedAt,
-			InspectAt:   task.UpdatedAt,
-			ConsumeTime: task.UpdatedAt.Unix() - task.CreatedAt.Unix(),
-			Applicant:   t.GetUserNickName(task.Inspector),
-			CheckState:  task.CheckState,
-			Remarks:     task.Remarks,
-			AppName:     task.Record.App.Name,
-			CurrentNode: t.GetNodeName(task.Record.App.Flow, task.NodeKey),
-			Nodes:       t.GetMoreNodesName(task.Record.App.Flow, tasks),
+	db := global.GSD_DB.Preload("Record.App").
+		Where("record_id = ?", recordId)
+	if err = db.First(&tasks).Error; err != nil {
+		return WorkFlowRes.DynamicList{}, errors.New("该数据不存在")
+	}
+	if len(tasks) > 0 {
+		data.Nodes = t.GetMoreNodesName(tasks[0].Record.App.Flow, tasks)
+		for _, task := range tasks {
+			dynamic := WorkFlowRes.Dynamic{
+				CreatedAt:   task.CreatedAt,
+				InspectAt:   task.UpdatedAt,
+				ConsumeTime: task.UpdatedAt.Unix() - task.CreatedAt.Unix(),
+				Applicant:   t.GetUserNickName(task.Inspector),
+				CheckState:  task.CheckState,
+				Remarks:     task.Remarks,
+				AppName:     task.Record.App.Name,
+				CurrentNode: t.GetNodeName(task.Record.App.Flow, task.NodeKey),
+			}
+			data.Dynamics = append(data.Dynamics, dynamic)
 		}
-		data = append(data, dynamic)
 	}
 	return
 }
@@ -167,15 +172,17 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err error) {
 	var recordIds []uint
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
-		Where("node_type = ? AND Inspector = ?", 4, userId).
+		Where("node_type = ? AND inspector = ?", 4, userId).
 		Find(&recordIds)
-
 	for i := 0; i < len(recordIds); i++ {
 		var tasks []modelWF.GzlTask
-		global.GSD_DB.
-			Where("record_id = ? AND node_type = ? AND update_at is NULL", recordIds[i], 3).
+		err = global.GSD_DB.
+			Where("record_id = ? AND node_type = ? AND updated_at is NULL", recordIds[i], 3).
 			Preload("Record.App").
-			Find(&tasks)
+			Find(&tasks).Error
+		if err != nil {
+			return
+		}
 		if len(tasks) > 0 {
 			receive := WorkFlowRes.Receive{
 				CreatedAt:    tasks[0].CreatedAt,

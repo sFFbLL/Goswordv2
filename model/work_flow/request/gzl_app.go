@@ -1,7 +1,7 @@
 package request
 
 type EmptyApp struct {
-	AppId int `form:"appId"`
+	AppId uint `form:"appId"`
 }
 
 type AddApp struct {

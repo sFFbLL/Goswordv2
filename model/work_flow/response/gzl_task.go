@@ -2,6 +2,11 @@ package response
 
 import "time"
 
+type DynamicList struct {
+	Dynamics []Dynamic `json:"dynamics"`
+	Nodes    []string  `json:"nodes"` // 全部流程节点
+}
+
 type Dynamic struct {
 	CreatedAt   time.Time `json:"createdAt"`   // 创建时间
 	InspectAt   time.Time `json:"inspectAt"`   // 审批时间
@@ -11,7 +16,6 @@ type Dynamic struct {
 	Remarks     string    `json:"remarks"`     // 备注
 	AppName     string    `json:"appName"`     // 应用名称
 	CurrentNode string    `json:"currentNode"` // 当前节点名称
-	Nodes       []string  `json:"nodes"`       // 全部流程节点
 }
 
 type Receive struct {
