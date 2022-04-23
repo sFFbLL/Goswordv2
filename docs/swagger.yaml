@@ -663,6 +663,10 @@ definitions:
     type: object
   system.SysDept:
     properties:
+      children:
+        items:
+          $ref: '#/definitions/system.SysDept'
+        type: array
       createBy:
         description: 创建人
         type: integer
@@ -677,7 +681,7 @@ definitions:
         description: 主键ID
         type: integer
       parentID:
-        type: integer
+        type: string
       updateBy:
         description: 更新人
         type: integer
@@ -1186,6 +1190,151 @@ paths:
       summary: 获取权限列表
       tags:
       - Casbin
+  /department/addDept:
+    post:
+      parameters:
+      - description: 部门名称, 是否父子级
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 新增部门
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 新增部门
+      tags:
+      - Department
+  /department/deleteDept:
+    post:
+      parameters:
+      - description: 删除部门
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除部门
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 删除部门
+      tags:
+      - Department
+  /department/id:
+    post:
+      parameters:
+      - description: 部门pid
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.GetById'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分页获取部门列表,返回包括列表,总数,页码,每页数量
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.PageResult'
+                msg:
+                  type: string
+              type: object
+      summary: 根据pid查询部门列表
+      tags:
+      - Department
+  /department/lists:
+    post:
+      parameters:
+      - description: 页码, 每页大小
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分页获取部门列表,返回包括列表,总数,页码,每页数量
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/response.PageResult'
+                msg:
+                  type: string
+              type: object
+      summary: 查询部门列表
+      tags:
+      - Department
+  /department/updateDept:
+    post:
+      parameters:
+      - description: 部门名称, 是否父子级
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 修改部门
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                msg:
+                  type: string
+              type: object
+      summary: 修改部门
+      tags:
+      - Department
+  /department/users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 部门id
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysDept'
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: ""
+      security:
+      - ApiKeyAuth: []
+      summary: 获取部门下的用户
+      tags:
+      - Department
   /jwt/jsonInBlacklist:
     post:
       consumes:

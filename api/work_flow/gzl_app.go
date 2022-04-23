@@ -32,7 +32,7 @@ func (f *AppApi) Empty(c *gin.Context) {
 	data, err := appService.GetAppEmpty(app.AppId)
 	if err != nil {
 		global.GSD_LOG.Error("获取空应用表单失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("该应用不存在", c)
+		response.FailWithMessage(err.Error(), c)
 	} else {
 		global.GSD_LOG.Info("获取空应用表单成功", zap.Any("GetAppEmpty Success", data), utils.GetRequestID(c))
 		response.OkWithData(data, c)

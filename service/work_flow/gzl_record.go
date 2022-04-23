@@ -25,10 +25,8 @@ func (r RecordService) GetData(recordId uint) (data string, err error) {
 	db := global.GSD_DB.Model(&modelWF.GzlRecord{}).
 		Select("form").
 		Where("id = ?", recordId)
-	if err = db.Find(&data).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return "", errors.New("数据为空")
-		}
+	if err = db.First(&data).Error; err != nil {
+		return "", errors.New("该数据不存在")
 	}
 	return
 }
@@ -40,6 +38,10 @@ func (r RecordService) GetData(recordId uint) (data string, err error) {
 // @param: WorkFlowReq.RecordSubmit
 // @return: err error
 func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
+	// 判断appId在数据库中是否存在
+	if err = global.GSD_DB.Where("id = ?", record.AppId).First(&modelWF.GzlApp{}).Error; err != nil {
+		return errors.New("该数据不存在")
+	}
 	// 开启提交表单事务
 	err = global.GSD_DB.Transaction(func(tx *gorm.DB) error {
 		// 插入部门id, 并创建一条新记录

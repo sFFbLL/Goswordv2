@@ -24,11 +24,10 @@ type TaskService struct {
 // @return: data []WorkFlowReq.Dynamic, err error
 func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, err error) {
 	var tasks []modelWF.GzlTask
-	err = global.GSD_DB.Preload("Record.App").
-		Where("record_id = ?", recordId).
-		Find(&tasks).Error
-	if err != nil {
-		return
+	db := global.GSD_DB.Preload("Record.App").
+		Where("record_id = ?", recordId)
+	if err = db.First(&tasks).Error; err != nil {
+		return WorkFlowRes.DynamicList{}, errors.New("该数据不存在")
 	}
 	if len(tasks) > 0 {
 		data.Nodes = t.GetMoreNodesName(tasks[0].Record.App.Flow, tasks)
@@ -55,7 +54,7 @@ func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, er
 // @description: 从mysql中获取待办数据
 // @param: WorkFlowReq.Task
 // @return: data []WorkFlowReq.Schedule, err error
-func (t *TaskService) GetScheduleList(userId, appid int) (err error, tasks []WorkFlowReq.Function) {
+func (t *TaskService) GetScheduleList(userId, appid uint) (err error, tasks []WorkFlowReq.Function) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", userId).
 		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
@@ -72,7 +71,7 @@ func (t *TaskService) GetScheduleList(userId, appid int) (err error, tasks []Wor
 	return
 }
 
-func (t *TaskService) GetHandleList(userId int, appid int) (err error, tasks []WorkFlowReq.Function) {
+func (t *TaskService) GetHandleList(userId int, appid uint) (err error, tasks []WorkFlowReq.Function) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", userId).
 		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
@@ -113,12 +112,9 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 // @return: data []WorkFlowRes.Receive, err error
 func (t TaskService) GetReceive(userId uint) (data []WorkFlowRes.Receive, err error) {
 	var recordIds []uint
-	err = global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
+	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
 		Where("node_type = ? AND inspector = ?", 4, userId).
-		Find(&recordIds).Error
-	if err != nil {
-		return
-	}
+		Find(&recordIds)
 	for i := 0; i < len(recordIds); i++ {
 		var tasks []modelWF.GzlTask
 		err = global.GSD_DB.
