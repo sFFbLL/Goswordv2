@@ -16,4 +16,4 @@ COPY --from=builder /go/src/go-sword ./
 
 EXPOSE 8888
 
-ENTRYPOINT ./server -c config.docdeker.yaml
+ENTRYPOINT ./server -c config.docker.yaml
