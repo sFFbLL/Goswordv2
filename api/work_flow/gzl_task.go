@@ -40,6 +40,8 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // Dynamic
 // @Tags Task
 // @Summary 流程动态信息
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param recordId query int true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
@@ -54,7 +56,7 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 	tasks, err := taskService.GetDynamic(record.RecordId)
 	if err != nil {
 		global.GSD_LOG.Error("获取流程动态错误", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("数据不存在", c)
+		response.FailWithMessage(err.Error(), c)
 	} else {
 		global.GSD_LOG.Info("流程动态信息成功返回", zap.Any("success", tasks), utils.GetRequestID(c))
 		response.OkWithData(tasks, c)
@@ -68,7 +70,7 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	userId := utils.GetUserID(c)
 	var app WorkFlowReq.EmptyApp
 	_ = c.ShouldBindJSON(&app)
 	if err, schedule := taskService.GetScheduleList(userId, app.AppId); err != nil {
@@ -105,6 +107,8 @@ func (t *TaskApi) Handle(c *gin.Context) {
 // Receive
 // @Tags Task
 // @Summary 我收到的
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
 // @Router /task/receive [get]

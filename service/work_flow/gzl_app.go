@@ -2,10 +2,8 @@ package work_flow
 
 import (
 	"errors"
-	"gorm.io/gorm"
 	"project/global"
 	modelWF "project/model/work_flow"
-	"project/utils"
 )
 
 type AppService struct {
@@ -16,15 +14,13 @@ type AppService struct {
 // @function: GetAppEmpty
 // @description: 从mysql中获取空表单
 // @param: WorkFlowReq.EmptyApp
-// @return: data utils.JSON, err error
-func (a AppService) GetAppEmpty(appId int) (data utils.JSON, err error) {
+// @return: data string, err error
+func (a AppService) GetAppEmpty(appId uint) (data string, err error) {
 	db := global.GSD_DB.Model(&modelWF.GzlApp{}).
 		Select("form").
 		Where("id = ?", appId)
-	if err = db.Find(&data).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, errors.New("数据为空")
-		}
+	if err = db.First(&data).Error; err != nil {
+		return "", errors.New("数据不存在")
 	}
 	return
 }
