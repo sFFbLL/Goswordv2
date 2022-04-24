@@ -17,7 +17,10 @@ type TaskApi struct {
 // @Tags Task
 // @Summary 审批（通过||拒绝）
 // @Security ApiKeyAuth
+<<<<<<< HEAD
 // @accept application/json
+====== =
+>>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
@@ -73,16 +76,14 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
-	userId := utils.GetUserID(c)
-	var app WorkFlowReq.EmptyApp
-	_ = c.ShouldBindJSON(&app)
-	if err, schedule := taskService.GetScheduleList(userId, app.AppId); err != nil {
-		global.GSD_LOG.Error("获取我的待办信息失败", zap.Error(err), utils.GetRequestID(c))
+	schedule, err := taskService.GetScheduleList(utils.GetUserID(c))
+	if err != nil {
+		global.GSD_LOG.Error("获取我的待办信息失败", zap.Any("err", err))
+
 		response.FailWithMessage("获取我的待办信息失败", c)
-		return
 	} else {
-		global.GSD_LOG.Info("获取成功", zap.Any("success", schedule), utils.GetRequestID(c)) //打印日志
-		response.OkWithDetailed(gin.H{"schedule": schedule}, "获取我的待办信息成功", c)            //给前端返回信息
+		global.GSD_LOG.Info("获取成功", zap.Any("success", schedule)) //打印日志
+		response.OkWithData(schedule, c)                          //给前端返回信息
 	}
 }
 
@@ -92,20 +93,22 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce  application/json
-// @Param data query WorkFlowReq.EmptyApp true "审批人"
+<<<<<<< HEAD
+
+====== =
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
 	userId := utils.GetUserID(c)
-	var app WorkFlowReq.EmptyApp
-	_ = c.ShouldBindJSON(&app)
-	if err, handle := taskService.GetHandleList(userId, app.AppId); err != nil {
-		global.GSD_LOG.Error("获取我处理的信息失败", zap.Error(err), utils.GetRequestID(c))
+	handle, err := taskService.GetHandleList(userId)
+	if err != nil {
+		global.GSD_LOG.Error("获取我处理的信息失败", zap.Any("err", err))
+		>>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
 		response.FailWithMessage("获取我处理的信息失败", c)
 		return
 	} else {
-		global.GSD_LOG.Info("获取成功", zap.Any("success", handle), utils.GetRequestID(c)) //打印日志
-		response.OkWithDetailed(gin.H{"handle": handle}, "获取我处理的信息成功", c)              //给前端返回信息
+		global.GSD_LOG.Info("获取成功", zap.Any("success", handle)) //打印日志
+		response.OkWithData(handle, c)                          //给前端返回信息
 	}
 }
 

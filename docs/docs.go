@@ -1923,6 +1923,7 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "我处理的",
+<<<<<<< HEAD
                 "parameters": [
                     {
                         "type": "integer",
@@ -1930,6 +1931,8 @@ const docTemplate = `{
                         "in": "query"
                     }
                 ],
+=======
+>>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
@@ -1947,9 +1950,12 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
+<<<<<<< HEAD
                 "consumes": [
                     "application/json"
                 ],
+=======
+>>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
                 "produces": [
                     "application/json"
                 ],

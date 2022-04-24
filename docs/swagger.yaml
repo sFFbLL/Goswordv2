@@ -1971,10 +1971,13 @@ paths:
     get:
       consumes:
       - application/json
+<<<<<<< HEAD
       parameters:
       - in: query
         name: appId
         type: integer
+=======
+>>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
       produces:
       - application/json
       responses:

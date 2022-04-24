@@ -41,6 +41,7 @@ func (f *AppApi) Empty(c *gin.Context) {
 	}
 }
 
+
 // Create
 // @Tags App
 // @Summary 创建表单
