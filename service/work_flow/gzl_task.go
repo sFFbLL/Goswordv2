@@ -56,7 +56,7 @@ func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, er
 func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.ScheduleList, err error) {
 	var recordIds []uint
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
-		Where("node_type = ? AND Inspector = ?", 3, 1).
+		Where("node_type = ? AND Inspector = ?", 3,userId).
 		Find(&recordIds)
 	for i := 0; i < len(recordIds); i++ {
 		var task modelWF.GzlTask
