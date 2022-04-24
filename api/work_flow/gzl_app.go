@@ -41,10 +41,10 @@ func (f *AppApi) Empty(c *gin.Context) {
 	}
 }
 
-
 // Create
 // @Tags App
 // @Summary 创建表单
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body uint true "创建人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
@@ -56,9 +56,10 @@ func (f *AppApi) Create(c *gin.Context) {
 // AddApp
 // @Tags App
 // @Summary 创建应用
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body WorkFlowReq.AddApp true "应用名称，应用图标"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建应用成功"}"
 // @Router /app/ [post]
 func (f *AppApi) AddApp(c *gin.Context) {
 	var addApp WorkFlowReq.AddApp
@@ -69,19 +70,20 @@ func (f *AppApi) AddApp(c *gin.Context) {
 	}
 	err := appService.AddApp(modelWF.GzlApp{GSD_MODEL: global.GSD_MODEL{CreateBy: utils.GetUserID(c)}, Name: addApp.Name, Icon: addApp.Icon})
 	if err != nil {
-		global.GSD_LOG.Error("添加应用失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("操作失败", c)
+		global.GSD_LOG.Error("创建应用失败", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("创建应用失败", c)
 	} else {
-		response.OkWithMessage("添加应用成功", c)
+		response.OkWithMessage("创建应用成功", c)
 	}
 }
 
 // AddForm
 // @Tags App
 // @Summary 添加应用表单
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body WorkFlowReq.AddFlow true "应用id，表单"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"表单提交成功"}"
 // @Router /app/form [post]
 func (f *AppApi) AddForm(c *gin.Context) {
 	var addForm WorkFlowReq.AddForm
@@ -108,9 +110,10 @@ func (f *AppApi) AddForm(c *gin.Context) {
 // AddFlow
 // @Tags App
 // @Summary 添加应用流程
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body WorkFlowReq.AddFlow true "应用id,流程"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"流程提交成功"}"
 // @Router /app/flow [post]
 func (f *AppApi) AddFlow(c *gin.Context) {
 	var addFlow WorkFlowReq.AddFlow
@@ -136,9 +139,10 @@ func (f *AppApi) AddFlow(c *gin.Context) {
 // EnableApp
 // @Tags App
 // @Summary 启用应用
+// @Security ApiKeyAuth
 // @Produce  application/json
-// @Param data body WorkFlowReq.EnableApp true "应用id,是否启用(1不启用默认，2启用)"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
+// @Param data body WorkFlowReq.StartApp true "应用id,是否启用(1不启用默认，2启用)"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"应用启用成功"}"
 // @Router /app/enable [post]
 func (f *AppApi) EnableApp(c *gin.Context) {
 	var enableApp WorkFlowReq.EnableApp
@@ -148,19 +152,20 @@ func (f *AppApi) EnableApp(c *gin.Context) {
 		return
 	}
 	if err := appService.EnableApp(modelWF.GzlApp{GSD_MODEL: global.GSD_MODEL{ID: enableApp.AppId}, IsEnable: enableApp.IsEnable}); err != nil {
-		global.GSD_LOG.Error("添加应用流程失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("添加应用流程失败", c)
+		global.GSD_LOG.Error("应用启用失败", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("应用启用失败", c)
 	} else {
-		response.OkWithMessage("流程提交成功", c)
+		response.OkWithMessage("应用启用成功", c)
 	}
 }
 
 // AuthorityApp
 // @Tags App
 // @Summary 应用权限分配
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body WorkFlowReq.AuthorityApp true "应用id,部门s，角色s，用户s"
-// @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
+// @Success 200 {string} json "{"success":true,"data":{},"msg":"应用权限分配成功"}"
 // @Router /app/authority [post]
 func (f *AppApi) AuthorityApp(c *gin.Context) {
 	var authorityApp WorkFlowReq.AuthorityApp
@@ -182,9 +187,9 @@ func (f *AppApi) AuthorityApp(c *gin.Context) {
 		users = append(users, system.SysUser{GSD_MODEL: global.GSD_MODEL{ID: userId}})
 	}
 	if err := appService.AuthorityApp(modelWF.GzlApp{GSD_MODEL: global.GSD_MODEL{ID: authorityApp.AppId}}, depts, authoritys, users); err != nil {
-		global.GSD_LOG.Error("添加应用流程失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("添加应用流程失败", c)
+		global.GSD_LOG.Error("应用权限分配失败", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("应用权限分配失败", c)
 	} else {
-		response.OkWithMessage("流程提交成功", c)
+		response.OkWithMessage("应用权限分配成功", c)
 	}
 }

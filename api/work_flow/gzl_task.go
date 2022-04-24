@@ -24,7 +24,7 @@ type TaskApi struct {
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
-// @Router /task/inspect [put]
+// @Router /task/inspect [post]
 func (t *TaskApi) Inspect(c *gin.Context) {
 	var inspect WorkFlowReq.Inspect
 	_ = c.ShouldBindJSON(&inspect)
@@ -33,8 +33,8 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 		return
 	}
 	if err := taskService.Inspect(WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}); err != nil {
-		global.GSD_LOG.Error("审批错误", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("审批错误", c)
+		global.GSD_LOG.Error("审批失败", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("审批失败", c)
 		return
 	} else {
 		response.OkWithMessage("审批成功", c)

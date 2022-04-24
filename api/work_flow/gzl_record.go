@@ -79,6 +79,7 @@ func (r *RecordApi) Data(c *gin.Context) {
 // @author: [chenpipi]
 // @Tags Record
 // @Summary 我发起的
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body uint true "创建人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"操作成功"}"
