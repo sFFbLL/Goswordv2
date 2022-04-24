@@ -54,26 +54,26 @@ func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, er
 // @param: WorkFlowReq.Task
 // @return: data []WorkFlowReq.ScheduleList, err error
 func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.ScheduleList, err error) {
-	var recordIds []uint
+	var recordIds []uint8
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
-		Where("node_type = ? AND Inspector = ?", 3, 1).
+		Where("node_type = ? AND inspector = ?", 3, userId).
 		Find(&recordIds)
 	for i := 0; i < len(recordIds); i++ {
 		var task modelWF.GzlTask
 		err = global.GSD_DB.
-			Where("record_id = ? AND updated_at is NULL", recordIds[i]).
+			Where("record_id AND updated_at is NUll", recordIds[i]).
 			Preload("Record.App").
 			Find(&task).Error
 		if err != nil {
 			return
 		}
 		schedule := WorkFlowRes.ScheduleList{
-			CreatedAt:   task.CreatedAt,
-			RecordId:    task.RecordId,
-			Applicant:   t.GetUserNickName(task.Record.CreateBy),
-			CurrentNode: t.GetNodeName(task.Record.App.Flow, task.Record.CurrentNode),
-			AppName:     task.Record.App.Name,
-			CheckState:  task.CheckState,
+			RecordId:   task.RecordId,
+			CheckState: task.CheckState,
+			AppName:    task.Record.App.Name,
+			CreatedAt:  task.Record.CreatedAt,
+			Applicant:  t.GetUserNickName(task.Record.CreateBy),
+			CurrentNode: t.GetNodeName(task.Record.App.Flow,task.Record.CurrentNode),
 		}
 		scheduleData = append(scheduleData, schedule)
 	}
