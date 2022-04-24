@@ -24,7 +24,7 @@ type RedisStore struct {
 func (rs *RedisStore) Set(id string, value string) error {
 	err := global.GSD_REDIS.Set(context.Background(), rs.PreKey+id, value, rs.Expiration).Err()
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("RedisStoreSetError!", zap.Error(err))
+		global.GSD_LOG.Error("RedisStoreSetError!", zap.Error(err))
 	}
 	return err
 }
@@ -32,13 +32,13 @@ func (rs *RedisStore) Set(id string, value string) error {
 func (rs *RedisStore) Get(key string, clear bool) string {
 	val, err := global.GSD_REDIS.Get(context.Background(), key).Result()
 	if err != nil {
-		global.GSD_LOG.ZapLog.Error("RedisStoreGetError!", zap.Error(err))
+		global.GSD_LOG.Error("RedisStoreGetError!", zap.Error(err))
 		return ""
 	}
 	if clear {
 		err := global.GSD_REDIS.Del(context.Background(), key).Err()
 		if err != nil {
-			global.GSD_LOG.ZapLog.Error("RedisStoreClearError!", zap.Error(err))
+			global.GSD_LOG.Error("RedisStoreClearError!", zap.Error(err))
 			return ""
 		}
 	}

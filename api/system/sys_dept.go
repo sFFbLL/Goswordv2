@@ -17,6 +17,7 @@ type DeptApi struct {
 
 // @Tags Department
 // @Summary 新增部门
+// @Security ApiKeyAuth
 // @Produce application/json
 // @Param data body system.SysDept true "部门名称, 是否父子级"
 // @Success 200 {object} response.Response{msg=string} "新增部门"
@@ -39,6 +40,7 @@ func (d *DeptApi) AddDepartment(c *gin.Context) {
 
 // @Tags Department
 // @Summary 删除部门
+// @Security ApiKeyAuth
 // @Produce application/json
 // @Param data body system.SysDept true "删除部门"
 // @Success 200 {object} response.Response{msg=string} "删除部门"
@@ -60,6 +62,7 @@ func (d *DeptApi) DeleteDepartment(c *gin.Context) {
 
 // @Tags Department
 // @Summary 修改部门
+// @Security ApiKeyAuth
 // @Produce application/json
 // @Param data body system.SysDept true "部门名称, 是否父子级"
 // @Success 200 {object} response.Response{msg=string} "修改部门"
@@ -81,6 +84,7 @@ func (d *DeptApi) UpdateDepartment(c *gin.Context) {
 
 // @Tags Department
 // @Summary 查询部门列表
+// @Security ApiKeyAuth
 // @Produce application/json
 // @Param data body request.PageInfo true "页码, 每页大小"
 // @Success 200 {object} response.Response{data=response.PageResult,msg=string} "分页获取部门列表,返回包括列表,总数,页码,每页数量"
@@ -109,6 +113,7 @@ func (d *DeptApi) GetDeptList(c *gin.Context) {
 
 // @Tags Department
 // @Summary 根据pid查询部门列表
+// @Security ApiKeyAuth
 // @Produce application/json
 // @Param data body request.GetById true "部门pid"
 // @Success 200 {object} response.Response{data=response.PageResult,msg=string} "分页获取部门列表,返回包括列表,总数,页码,每页数量"
