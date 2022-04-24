@@ -8,7 +8,6 @@ import (
 	WorkFlow "project/model/work_flow"
 	WorkFlowReq "project/model/work_flow/request"
 	"project/utils"
-	"strconv"
 )
 
 type TaskApi struct {
@@ -17,6 +16,8 @@ type TaskApi struct {
 // Inspect
 // @Tags Task
 // @Summary 审批（通过||拒绝）
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
@@ -66,6 +67,8 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // Schedule
 // @Tags Task
 // @Summary 我的待办
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
@@ -86,12 +89,14 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // Handle
 // @Tags Task
 // @Summary 我处理的
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
-// @Param data body int true "审批人"
+// @Param data query WorkFlowReq.EmptyApp true "审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	userId := utils.GetUserID(c)
 	var app WorkFlowReq.EmptyApp
 	_ = c.ShouldBindJSON(&app)
 	if err, handle := taskService.GetHandleList(userId, app.AppId); err != nil {

@@ -2,6 +2,7 @@ package work_flow
 
 import (
 	"encoding/json"
+	"fmt"
 	"project/global"
 	"project/model/work_flow"
 	"project/service/system"
@@ -39,7 +40,7 @@ type FormItem struct {
 }
 
 type Config struct {
-	RenderKey    string `json:"renderKey"`
+	RenderKey    uint   `json:"renderKey"`
 	DefaultValue string `json:"defaultValue"`
 }
 
@@ -52,12 +53,14 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 	err = json.Unmarshal(record.App.Flow, &flow)
 	if err != nil {
 		//	TODO 错误
+		fmt.Println("Flow 解析错误")
 		return
 	}
 	// 表单JSON转换结构体
 	err = json.Unmarshal(record.App.Form, &form)
 	if err != nil {
 		//	TODO 错误
+		fmt.Println("Form 解析错误")
 		return
 	}
 	// 构造 flow map
@@ -66,7 +69,7 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 		flowMap[flowElement.Key] = flowElement
 	}
 	// 构造 form map
-	formMap := make(map[string]FormItem)
+	formMap := make(map[uint]FormItem)
 	for _, field := range form.Fields {
 		formMap[field.RenderKey] = field
 	}

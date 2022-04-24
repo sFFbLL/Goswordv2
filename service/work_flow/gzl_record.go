@@ -50,7 +50,11 @@ func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
 			Where("id = ?", record.CreateBy).
 			Find(&record.DeptId)
 		// 在gzl_records中添加记录
-		tx.Create(&record)
+		err = tx.Create(&record).Error
+		if err != nil {
+			return err
+		}
+		global.GSD_DB.Preload("App").Find(&record)
 		var formItems []modelWF.GzlFormItem
 		var form WorkFlowReq.Form
 		_ = json.Unmarshal(record.Form, &form)
@@ -74,7 +78,8 @@ func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
 		}
 		// 批量插入
 		tx.Model(&modelWF.GzlFormItem{}).CreateInBatches(formItems, len(formItems))
-		return err
+		//return err
+		return ProcessFlow(record)
 	})
 	return
 }

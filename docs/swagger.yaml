@@ -237,6 +237,19 @@ definitions:
         description: 栈名
         type: string
     type: object
+  request.AddApp:
+    properties:
+      icon:
+        type: string
+      name:
+        type: string
+    type: object
+  request.AddFlow:
+    properties:
+      appId:
+        type: integer
+      flow: {}
+    type: object
   request.AddMenuAuthorityInfo:
     properties:
       authorityId:
@@ -245,6 +258,23 @@ definitions:
       menus:
         items:
           $ref: '#/definitions/system.SysBaseMenu'
+        type: array
+    type: object
+  request.AuthorityApp:
+    properties:
+      appId:
+        type: integer
+      authoritys:
+        items:
+          type: integer
+        type: array
+      depts:
+        items:
+          type: integer
+        type: array
+      users:
+        items:
+          type: integer
         type: array
     type: object
   request.CasbinInReceive:
@@ -279,6 +309,13 @@ definitions:
         type: string
     type: object
   request.Empty:
+    type: object
+  request.EnableApp:
+    properties:
+      appId:
+        type: integer
+      isEnable:
+        type: integer
     type: object
   request.GetAuthorityId:
     properties:
@@ -962,12 +999,12 @@ paths:
   /app/:
     post:
       parameters:
-      - description: 创建人
+      - description: 应用名称，应用图标
         in: body
         name: data
         required: true
         schema:
-          type: integer
+          $ref: '#/definitions/request.AddApp'
       produces:
       - application/json
       responses:
@@ -976,6 +1013,25 @@ paths:
           schema:
             type: string
       summary: 创建应用
+      tags:
+      - App
+  /app/authority:
+    post:
+      parameters:
+      - description: 应用id,部门s，角色s，用户s
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AuthorityApp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 应用权限分配
       tags:
       - App
   /app/create:
@@ -1015,6 +1071,63 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 返回空表单
+      tags:
+      - App
+  /app/enable:
+    post:
+      parameters:
+      - description: 应用id,是否启用(1不启用默认，2启用)
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.EnableApp'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 启用应用
+      tags:
+      - App
+  /app/flow:
+    post:
+      parameters:
+      - description: 应用id,流程
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddFlow'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 添加应用流程
+      tags:
+      - App
+  /app/form:
+    post:
+      parameters:
+      - description: 应用id，表单
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AddFlow'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          schema:
+            type: string
+      summary: 添加应用表单
       tags:
       - App
   /authority/createAuthority:
@@ -1856,13 +1969,12 @@ paths:
       - Task
   /task/handle:
     get:
+      consumes:
+      - application/json
       parameters:
-      - description: 审批人
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
+      - in: query
+        name: appId
+        type: integer
       produces:
       - application/json
       responses:
@@ -1870,11 +1982,15 @@ paths:
           description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 我处理的
       tags:
       - Task
   /task/inspect:
     put:
+      consumes:
+      - application/json
       parameters:
       - description: 任务id，状态
         in: body
@@ -1889,6 +2005,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"审批成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 审批（通过||拒绝）
       tags:
       - Task
@@ -1910,6 +2028,8 @@ paths:
       - Task
   /task/schedule:
     get:
+      consumes:
+      - application/json
       produces:
       - application/json
       responses:
@@ -1917,6 +2037,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"查询待办任务成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 我的待办
       tags:
       - Task

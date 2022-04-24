@@ -71,7 +71,7 @@ func (t *TaskService) GetScheduleList(userId, appid uint) (err error, tasks []Wo
 	return
 }
 
-func (t *TaskService) GetHandleList(userId int, appid uint) (err error, tasks []WorkFlowReq.Function) {
+func (t *TaskService) GetHandleList(userId, appid uint) (err error, tasks []WorkFlowReq.Function) {
 	db := global.GSD_DB.Model(&work_flow.GzlTask{}).
 		Joins("JOIN sys_users ON sys_users.id = ?", userId).
 		Joins("JOIN gzl_apps ON gzl_apps.id = ?", appid). //连表查询
@@ -173,7 +173,7 @@ func (t TaskService) GetNodeName(flowJson utils.JSON, key string) string {
 }
 
 // GetMoreNodesName 根据流程JSON获取全部节点名称
-func (t TaskService) GetMoreNodesName(flowJson utils.JSON, tasks []modelWF.GzlTask) (nodes []string) {
+func (t TaskService) GetMoreNodesName(flowJson utils.JSON, tasks []modelWF.GzlTask, userId ...uint) (nodes []string) {
 	var flow Flow
 	_ = json.Unmarshal(flowJson, &flow)
 	for _, node := range flow.FlowElementList {
