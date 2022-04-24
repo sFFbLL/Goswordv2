@@ -85,16 +85,38 @@ func (r RecordService) Submit(record modelWF.GzlRecord) (err error) {
 // @description: 从mysql中获取record数据
 // @param: record WorkFlowRes.MyInitiated
 // @return: data utils.JSON, err error
-func (r RecordService) MyInitiated(id uint) (myInitiated WorkFlowRes.MyInitiated, err error) {
-	var ids []uint
-	if err = global.GSD_DB.Select("current_state,current_node").Model(&modelWF.GzlRecord{}).Find(&myInitiated, "create_by = ?", id).Error; err != nil {
+func (r RecordService) MyInitiated(userid uint) (myInitiated []WorkFlowRes.MyInitiated, err error) {
+	var records []modelWF.GzlRecord
+	if err = global.GSD_DB.Preload("App").Find(&records, userid).Error; err != nil {
 		return
 	}
-	if err = global.GSD_DB.Select("inspector").Model(&modelWF.GzlTask{}).Find(&ids, "node_key = ?", myInitiated.CurrentNode).Error; err != nil {
-		return
+	for _, record := range records {
+		var tasks []modelWF.GzlTask
+		var names []string
+		var flow Flow
+		err = json.Unmarshal(record.App.Flow, &flow)
+		if err != nil {
+			//	TODO 错误
+			return
+		}
+		// 构造 flow map
+		flowMap := make(map[string]Node)
+		for _, flowElement := range flow.FlowElementList {
+			flowMap[flowElement.Key] = flowElement
+		}
+		err = global.GSD_DB.Preload("User").Find(&tasks, "node_key = ?", record.CurrentNode).Error
+		if err != nil {
+			return
+		}
+		for _, task := range tasks {
+			names = append(names, task.User.NickName)
+		}
+		myInitiated = append(myInitiated, WorkFlowRes.MyInitiated{
+			AppName:      record.App.Name,
+			CurrentState: record.CurrentState,
+			CurrentNode:  flowMap[record.CurrentNode].Name,
+			Inspector:    names,
+		})
 	}
-	if err = global.GSD_DB.Select("nick_name").Model(&system.SysUser{}).Find(&myInitiated.InspectorName, "id in ?", ids).Error; err != nil {
-		return
-	}
-	return
+	return myInitiated, nil
 }

@@ -40,7 +40,7 @@ type FormItem struct {
 }
 
 type Config struct {
-	RenderKey    string `json:"renderKey"`
+	RenderKey    uint   `json:"renderKey"`
 	DefaultValue string `json:"defaultValue"`
 }
 
@@ -67,7 +67,7 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 		flowMap[flowElement.Key] = flowElement
 	}
 	// 构造 form map
-	formMap := make(map[string]FormItem)
+	formMap := make(map[uint]FormItem)
 	for _, field := range form.Fields {
 		formMap[field.RenderKey] = field
 	}
@@ -92,6 +92,9 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 	userService := &system.UserService{}
 outFlow:
 	for true {
+		if err != nil {
+			break
+		}
 		for i, key := range flowMap[currentNode].Outgoing {
 			line := flowMap[key]
 			node := flowMap[line.Outgoing[0]]
@@ -116,42 +119,54 @@ outFlow:
 					return
 				}
 				var userIds []uint
+				var ids []uint
 				//	通过部门获取用户
-				err, ids := userService.FindUserByDept(line.Depts)
-				if err != nil {
-					return err
+				if len(line.Depts) != 0 {
+					err, ids = userService.FindUserByDept(line.Depts)
+					if err != nil {
+						return
+					}
 				}
 				userIds = append(userIds, ids...)
 				//	通过角色获取用户
-				err, ids = userService.FindUserByAuthority(line.Authoritys)
-				if err != nil {
-					return err
+				if len(line.Authoritys) != 0 {
+					err, ids = userService.FindUserByAuthority(line.Authoritys)
+					if err != nil {
+						return
+					}
 				}
 				userIds = append(userIds, ids...)
 				//  获取用户
 				userIds = append(userIds, node.Users...)
 				//	审批任务数据整理
 				for _, id := range userIds {
-					tasks = append(tasks, work_flow.GzlTask{RecordId: record.ID, NodeType: node.Type, IsCountersign: node.IsCountersign, NodeKey: node.Key, Inspector: id, IsCopyFor: 2})
+					tasks = append(tasks, work_flow.GzlTask{RecordId: record.ID, NodeType: node.Type, IsCountersign: node.IsCountersign, NodeKey: node.Key, Inspector: id})
+				}
+				if len(tasks) != 0 {
+					err = issueTask(tasks)
+					if err != nil {
+						return
+					}
 				}
 				//	下发审批任务
-				err = issueTask(tasks)
-				if err != nil {
-					return err
-				}
 				break outFlow
 			} else if node.Type == 4 {
 				var userIds []uint
+				var ids []uint
 				//	通过部门获取用户
-				err, ids := userService.FindUserByDept(line.Depts)
-				if err != nil {
-					return err
+				if len(line.Depts) != 0 {
+					err, ids = userService.FindUserByDept(line.Depts)
+					if err != nil {
+						return
+					}
 				}
 				userIds = append(userIds, ids...)
 				//	通过角色获取用户
-				err, ids = userService.FindUserByAuthority(line.Authoritys)
-				if err != nil {
-					return err
+				if len(line.Authoritys) != 0 {
+					err, ids = userService.FindUserByAuthority(line.Authoritys)
+					if err != nil {
+						return
+					}
 				}
 				userIds = append(userIds, ids...)
 				//  获取用户
@@ -161,9 +176,11 @@ outFlow:
 					tasks = append(tasks, work_flow.GzlTask{RecordId: record.ID, NodeType: node.Type, IsCountersign: node.IsCountersign, NodeKey: node.Key, Inspector: id})
 				}
 				//	下发抄送任务
-				err = issueTask(tasks)
-				if err != nil {
-					return err
+				if len(tasks) != 0 {
+					err = issueTask(tasks)
+					if err != nil {
+						return
+					}
 				}
 				break
 			} else if node.Type == 5 {
