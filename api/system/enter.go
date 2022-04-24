@@ -15,6 +15,7 @@ type ApiGroup struct {
 	OperationRecordApi
 	CasbinApi
 	SystemApi
+	SysFileUploadAndDownloadApi
 }
 
 var dataScope = utils.DataScope{}
@@ -28,3 +29,4 @@ var operationRecordService = service.ServiceGroupApp.SystemServiceGroup.Operatio
 var casbinService = service.ServiceGroupApp.SystemServiceGroup.CasbinService
 var DeptService = service.ServiceGroupApp.SystemServiceGroup.DeptService
 var systemConfigService = service.ServiceGroupApp.SystemServiceGroup.SystemConfigService
+var fileUploadAndDownloadService = service.ServiceGroupApp.SystemServiceGroup.FileUploadAndDownloadService

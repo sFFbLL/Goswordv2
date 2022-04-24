@@ -11,4 +11,5 @@ type RouterGroup struct {
 	OperationRecordRouter
 	CasbinRouter
 	SysRouter
+	FileRouter
 }

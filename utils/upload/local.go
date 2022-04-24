@@ -40,19 +40,18 @@ func (*Local) UploadFile(file *multipart.FileHeader) (string, string, error) {
 	p := global.GSD_CONFIG.Local.Path + "/" + filename
 
 	f, openError := file.Open() // 读取文件
+	defer f.Close()             // 创建文件 defer 关闭
 	if openError != nil {
 		global.GSD_LOG.Error("function file.Open() Filed", zap.Any("err", openError.Error()))
 		return "", "", errors.New("function file.Open() Filed, err:" + openError.Error())
 	}
-	defer f.Close() // 创建文件 defer 关闭
 
 	out, createErr := os.Create(p)
+	defer out.Close() // 创建文件 defer 关闭
 	if createErr != nil {
 		global.GSD_LOG.Error("function os.Create() Filed", zap.Any("err", createErr.Error()))
-
 		return "", "", errors.New("function os.Create() Filed, err:" + createErr.Error())
 	}
-	defer out.Close() // 创建文件 defer 关闭
 
 	_, copyErr := io.Copy(out, f) // 传输（拷贝）文件
 	if copyErr != nil {

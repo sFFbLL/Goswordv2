@@ -10,4 +10,5 @@ type SysGroup struct {
 	ApiService
 	DeptService
 	SystemConfigService
+	FileUploadAndDownloadService
 }
