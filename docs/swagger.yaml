@@ -1009,9 +1009,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          description: '{"success":true,"data":{},"msg":"创建应用成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 创建应用
       tags:
       - App
@@ -1028,9 +1030,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          description: '{"success":true,"data":{},"msg":"应用权限分配成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 应用权限分配
       tags:
       - App
@@ -1050,6 +1054,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"创建表单成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 创建表单
       tags:
       - App
@@ -1086,9 +1092,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          description: '{"success":true,"data":{},"msg":"应用启用成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 启用应用
       tags:
       - App
@@ -1105,9 +1113,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          description: '{"success":true,"data":{},"msg":"流程提交成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 添加应用流程
       tags:
       - App
@@ -1124,9 +1134,11 @@ paths:
       - application/json
       responses:
         "200":
-          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
+          description: '{"success":true,"data":{},"msg":"表单提交成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 添加应用表单
       tags:
       - App
@@ -1741,6 +1753,8 @@ paths:
           description: '{"success":true,"data":{},"msg":"操作成功"}'
           schema:
             type: string
+      security:
+      - ApiKeyAuth: []
       summary: 我发起的
       tags:
       - Record
@@ -1971,13 +1985,6 @@ paths:
     get:
       consumes:
       - application/json
-<<<<<<< HEAD
-      parameters:
-      - in: query
-        name: appId
-        type: integer
-=======
->>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
       produces:
       - application/json
       responses:

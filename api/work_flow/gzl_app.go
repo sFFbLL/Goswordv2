@@ -141,7 +141,7 @@ func (f *AppApi) AddFlow(c *gin.Context) {
 // @Summary 启用应用
 // @Security ApiKeyAuth
 // @Produce  application/json
-// @Param data body WorkFlowReq.StartApp true "应用id,是否启用(1不启用默认，2启用)"
+// @Param data body WorkFlowReq.EnableApp true "应用id,是否启用(1不启用默认，2启用)"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"应用启用成功"}"
 // @Router /app/enable [post]
 func (f *AppApi) EnableApp(c *gin.Context) {

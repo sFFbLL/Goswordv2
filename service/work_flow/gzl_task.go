@@ -133,7 +133,7 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 			return err
 		}
 		//流程流转
-		return ProcessFlow(taskInfo.Record)
+		return ProcessFlow(taskInfo.Record, tx)
 	})
 }
 

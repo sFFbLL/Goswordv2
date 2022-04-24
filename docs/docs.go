@@ -273,6 +273,11 @@ const docTemplate = `{
         },
         "/app/": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -293,7 +298,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建应用成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -303,6 +308,11 @@ const docTemplate = `{
         },
         "/app/authority": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -323,7 +333,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"应用权限分配成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -333,6 +343,11 @@ const docTemplate = `{
         },
         "/app/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -397,6 +412,11 @@ const docTemplate = `{
         },
         "/app/enable": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -417,7 +437,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"应用启用成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -427,6 +447,11 @@ const docTemplate = `{
         },
         "/app/flow": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -447,7 +472,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"流程提交成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -457,6 +482,11 @@ const docTemplate = `{
         },
         "/app/form": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -477,7 +507,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"表单提交成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -1507,6 +1537,11 @@ const docTemplate = `{
         },
         "/record/initiated": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1923,16 +1958,6 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "我处理的",
-<<<<<<< HEAD
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "name": "appId",
-                        "in": "query"
-                    }
-                ],
-=======
->>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
@@ -1950,12 +1975,9 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-<<<<<<< HEAD
                 "consumes": [
                     "application/json"
                 ],
-=======
->>>>>>> d9cf6224347b7ffc64815ba289e6ffecc1ba83e6
                 "produces": [
                     "application/json"
                 ],
