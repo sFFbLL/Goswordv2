@@ -51,6 +51,7 @@ func JWTAuth() gin.HandlerFunc {
 			_ = jwtService.JoinInBlacklist(system.JwtBlacklist{Jwt: token})
 			response.FailWithDetailed(gin.H{"reload": true}, err.Error(), c)
 			c.Abort()
+			return
 		}
 		//token续期
 		if claims.ExpiresAt-time.Now().Unix() < claims.BufferTime {
@@ -77,6 +78,7 @@ func JWTAuth() gin.HandlerFunc {
 			c.Abort()
 		} else {
 			c.Set("claims", &userInfo)
+			c.Set("tokenClaims", claims)
 			c.Next()
 		}
 	}

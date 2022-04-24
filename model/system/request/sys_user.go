@@ -28,7 +28,7 @@ type ChangePasswordStruct struct {
 
 // Modify  user's auth structure
 type SetUserAuth struct {
-	AuthorityId string `json:"authorityId"` // 角色ID
+	AuthorityId uint `json:"authorityId"` // 角色ID
 }
 
 // Modify  user's auth structure

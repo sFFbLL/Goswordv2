@@ -87,6 +87,21 @@ func (userService *UserService) UpdatePassword(u *system.SysUser, newPassword st
 	return err, u
 }
 
+//@author: [piexlmax](https://github.com/piexlmax)
+//@function: SetUserAuthority
+//@description: 设置一个用户的权限
+//@param: uuid uuid.UUID, authorityId string
+//@return: err error
+
+func (userService *UserService) SetUserAuthority(id uint, uuid string, authorityId uint) (err error) {
+	assignErr := global.GSD_DB.Where("sys_user_id = ? AND sys_authority_authority_id = ?", id, authorityId).First(&system.SysUseAuthority{}).Error
+	if errors.Is(assignErr, gorm.ErrRecordNotFound) {
+		return errors.New("该用户无此角色")
+	}
+	err = global.GSD_DB.Where("uuid = ?", uuid).First(&system.SysUser{}).Update("authority_id", authorityId).Error
+	return err
+}
+
 // SetUserAuthorities @author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetUserAuthorities
 //@description: 设置一个用户的权限
@@ -143,7 +158,6 @@ func (userService *UserService) DeleteUser(id uint) (err error) {
 //@description: 修改用户信息
 //@param: reqUser model.SysUser
 //@return: err error, user model.SysUser
-
 func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, user system.SysUser) {
 	tx := global.GSD_DB.Begin()
 	err = tx.Updates(&reqUser).Error
@@ -177,7 +191,6 @@ func (userService *UserService) SetSelfInfo(reqUser system.SysUser) (err error, 
 //@description: 获取用户信息
 //@param: uuid uuid.UUID
 //@return: err error, user system.SysUser
-
 func (userService *UserService) GetUserInfo(uuid string) (err error, user system.SysUser) {
 	var reqUser system.SysUser
 	err = global.GSD_DB.Preload("Authorities").Preload("Dept").First(&reqUser, "uuid = ?", uuid).Error
