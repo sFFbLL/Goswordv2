@@ -18,8 +18,8 @@ type SysUser struct {
 	SideMode    string         `json:"sideMode" gorm:"default:dark;comment:用户角色ID"`       // 用户侧边主题
 	ActiveColor string         `json:"activeColor" gorm:"default:#1890ff;comment:用户角色ID"` // 活跃颜色
 	BaseColor   string         `json:"baseColor" gorm:"default:#fff;comment:用户角色ID"`      // 基础颜色
+	AuthorityId uint           `json:"authorityId" gorm:"default:1;comment:用户角色ID"`       // 用户角色ID
 	DeptId      uint           `json:"deptId" gorm:"comment:用户所属部门"`
-	AuthorityId uint           `json:"authorityId" gorm:"default:2;comment:用户角色ID"` // 用户角色ID
 	Dept        SysDept        `json:"dept" gorm:"foreignKey:DeptId;references:ID;"`
 	Authority   SysAuthority   `json:"authority" gorm:"foreignKey:AuthorityId;references:AuthorityId;comment:用户角色"`
 	Authorities []SysAuthority `json:"authorities" gorm:"many2many:sys_user_authority;"`

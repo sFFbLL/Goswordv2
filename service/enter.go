@@ -2,12 +2,10 @@ package service
 
 import (
 	"project/service/system"
-	"project/service/work_flow"
 )
 
 type ServiceGroup struct {
-	SystemServiceGroup   system.SysGroup
-	WorkFlowServiceGroup work_flow.GzlGroup
+	SystemServiceGroup system.SysGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)
