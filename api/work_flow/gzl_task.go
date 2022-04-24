@@ -17,10 +17,11 @@ type TaskApi struct {
 // @Tags Task
 // @Summary 审批（通过||拒绝）
 // @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
-// @Router /task/inspect [post]
+// @Router /task/inspect [put]
 func (t *TaskApi) Inspect(c *gin.Context) {
 	var inspect WorkFlowReq.Inspect
 	_ = c.ShouldBindJSON(&inspect)
@@ -29,8 +30,8 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 		return
 	}
 	if err := taskService.Inspect(WorkFlow.GzlTask{GSD_MODEL: global.GSD_MODEL{ID: inspect.TaskId, UpdateBy: utils.GetUserID(c)}, CheckState: inspect.State}); err != nil {
-		global.GSD_LOG.Error("审批失败", zap.Any("err", err), utils.GetRequestID(c))
-		response.FailWithMessage("审批失败", c)
+		global.GSD_LOG.Error("审批错误", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("审批错误", c)
 		return
 	} else {
 		response.OkWithMessage("审批成功", c)
@@ -72,14 +73,14 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
-	schedule,err := taskService.GetScheduleList(utils.GetUserID(c))
-	 if err != nil {
-		global.GSD_LOG.Error("获取我的待办信息失败", zap.Any("err",err))
+	schedule, err := taskService.GetScheduleList(utils.GetUserID(c))
+	if err != nil {
+		global.GSD_LOG.Error("获取我的待办信息失败", zap.Any("err", err))
 
 		response.FailWithMessage("获取我的待办信息失败", c)
 	} else {
-		global.GSD_LOG.Info("获取成功", zap.Any("success", schedule))      //打印日志
-		response.OkWithData(schedule,c) //给前端返回信息
+		global.GSD_LOG.Info("获取成功", zap.Any("success", schedule)) //打印日志
+		response.OkWithData(schedule, c)                          //给前端返回信息
 	}
 }
 
@@ -92,15 +93,15 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
-	userId:= utils.GetUserID(c)
-	handle ,err:= taskService.GetHandleList(userId)
+	userId := utils.GetUserID(c)
+	handle, err := taskService.GetHandleList(userId)
 	if err != nil {
-		global.GSD_LOG.Error("获取我处理的信息失败", zap.Any("err",err))
+		global.GSD_LOG.Error("获取我处理的信息失败", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("获取我处理的信息失败", c)
 		return
 	} else {
-		global.GSD_LOG.Info("获取成功", zap.Any("success", handle))    //打印日志
-		response.OkWithData(handle, c) //给前端返回信息
+		global.GSD_LOG.Info("获取成功", zap.Any("success", handle)) //打印日志
+		response.OkWithData(handle, c)                          //给前端返回信息
 	}
 }
 

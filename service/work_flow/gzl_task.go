@@ -56,7 +56,7 @@ func (t TaskService) GetDynamic(recordId uint) (data WorkFlowRes.DynamicList, er
 func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.ScheduleList, err error) {
 	var recordIds []uint
 	global.GSD_DB.Model(&modelWF.GzlTask{}).Select("record_id").
-		Where("node_type = ? AND Inspector = ?", 3,userId).
+		Where("node_type = ? AND Inspector = ?", 3, userId).
 		Find(&recordIds)
 	for i := 0; i < len(recordIds); i++ {
 		var task modelWF.GzlTask
@@ -133,7 +133,7 @@ func (t *TaskService) Inspect(task work_flow.GzlTask) error {
 			return err
 		}
 		//流程流转
-		return ProcessFlow(taskInfo.Record)
+		return ProcessFlow(taskInfo.Record, tx)
 	})
 }
 
@@ -206,7 +206,7 @@ func (t TaskService) GetNodeName(flowJson utils.JSON, key string) string {
 }
 
 // GetMoreNodesName 根据流程JSON获取全部节点名称
-func (t TaskService) GetMoreNodesName(flowJson utils.JSON, tasks []modelWF.GzlTask) (nodes []string) {
+func (t TaskService) GetMoreNodesName(flowJson utils.JSON, tasks []modelWF.GzlTask, userId ...uint) (nodes []string) {
 	var flow Flow
 	_ = json.Unmarshal(flowJson, &flow)
 	for _, node := range flow.FlowElementList {

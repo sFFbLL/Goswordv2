@@ -265,6 +265,11 @@
         },
         "/app/": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -285,7 +290,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建应用成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -295,6 +300,11 @@
         },
         "/app/authority": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -315,7 +325,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"应用权限分配成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -325,6 +335,11 @@
         },
         "/app/create": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -389,6 +404,11 @@
         },
         "/app/enable": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -409,7 +429,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"应用启用成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -419,6 +439,11 @@
         },
         "/app/flow": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -439,7 +464,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"流程提交成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -449,6 +474,11 @@
         },
         "/app/form": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -469,7 +499,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"表单提交成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -1499,6 +1529,11 @@
         },
         "/record/initiated": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1931,6 +1966,9 @@
                     {
                         "ApiKeyAuth": []
                     }
+                ],
+                "consumes": [
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"

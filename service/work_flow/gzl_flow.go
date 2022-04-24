@@ -2,6 +2,8 @@ package work_flow
 
 import (
 	"encoding/json"
+	"fmt"
+	"gorm.io/gorm"
 	"project/global"
 	"project/model/work_flow"
 	"project/service/system"
@@ -45,7 +47,7 @@ type Config struct {
 }
 
 //ProcessFlow 流程流转
-func ProcessFlow(record work_flow.GzlRecord) (err error) {
+func ProcessFlow(record work_flow.GzlRecord, tx *gorm.DB) (err error) {
 	var flow Flow
 	var form Form
 	var tasks []work_flow.GzlTask
@@ -53,12 +55,14 @@ func ProcessFlow(record work_flow.GzlRecord) (err error) {
 	err = json.Unmarshal(record.App.Flow, &flow)
 	if err != nil {
 		//	TODO 错误
+		fmt.Println("Flow 解析错误")
 		return
 	}
 	// 表单JSON转换结构体
 	err = json.Unmarshal(record.App.Form, &form)
 	if err != nil {
 		//	TODO 错误
+		fmt.Println("Form 解析错误")
 		return
 	}
 	// 构造 flow map
@@ -104,7 +108,7 @@ outFlow:
 				// 无路可走
 				record.CurrentState = 3
 				record.CurrentNode = ""
-				err = updateRecord(record)
+				err = updateRecord(record, tx)
 				if err != nil {
 					return
 				}
@@ -114,7 +118,7 @@ outFlow:
 				//	更新记录数据整理
 				record.CurrentNode = node.Key
 				//	更新记录表
-				err = updateRecord(record)
+				err = updateRecord(record, tx)
 				if err != nil {
 					return
 				}
@@ -143,7 +147,7 @@ outFlow:
 					tasks = append(tasks, work_flow.GzlTask{RecordId: record.ID, NodeType: node.Type, IsCountersign: node.IsCountersign, NodeKey: node.Key, Inspector: id})
 				}
 				if len(tasks) != 0 {
-					err = issueTask(tasks)
+					err = issueTask(tasks, tx)
 					if err != nil {
 						return
 					}
@@ -177,7 +181,7 @@ outFlow:
 				}
 				//	下发抄送任务
 				if len(tasks) != 0 {
-					err = issueTask(tasks)
+					err = issueTask(tasks, tx)
 					if err != nil {
 						return
 					}
@@ -187,7 +191,7 @@ outFlow:
 				//	更新记录表
 				record.CurrentState = 2
 				record.CurrentNode = ""
-				err = updateRecord(record)
+				err = updateRecord(record, tx)
 				if err != nil {
 					return
 				}
@@ -205,11 +209,11 @@ func conditions(str []string) bool {
 }
 
 // 下发任务
-func issueTask(tasks []work_flow.GzlTask) error {
-	return global.GSD_DB.Create(&tasks).Error
+func issueTask(tasks []work_flow.GzlTask, tx *gorm.DB) error {
+	return tx.Create(&tasks).Error
 }
 
 // 更新记录
-func updateRecord(record work_flow.GzlRecord) error {
-	return global.GSD_DB.Updates(&record).Error
+func updateRecord(record work_flow.GzlRecord, tx *gorm.DB) error {
+	return tx.Updates(&record).Error
 }
