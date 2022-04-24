@@ -16,6 +16,7 @@ type TaskApi struct {
 // Inspect
 // @Tags Task
 // @Summary 审批（通过||拒绝）
+// @Security ApiKeyAuth
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
@@ -65,12 +66,13 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // Schedule
 // @Tags Task
 // @Summary 我的待办
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
 // @Router /task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
-
-	schedule,err := taskService.GetScheduleList(1)
+	schedule,err := taskService.GetScheduleList(utils.GetUserID(c))
 	 if err != nil {
 		global.GSD_LOG.Error("获取我的待办信息失败", zap.Any("err",err))
 
@@ -78,15 +80,15 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 	} else {
 		global.GSD_LOG.Info("获取成功", zap.Any("success", schedule))      //打印日志
 		response.OkWithData(schedule,c) //给前端返回信息
-
 	}
 }
 
 // Handle
 // @Tags Task
 // @Summary 我处理的
+// @Security ApiKeyAuth
+// @accept application/json
 // @Produce  application/json
-// @Param data body WorkFlowReq.HandleList true "审批人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
 // @Router /task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {

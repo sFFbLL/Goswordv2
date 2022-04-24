@@ -282,12 +282,42 @@ const docTemplate = `{
                 "summary": "创建应用",
                 "parameters": [
                     {
-                        "description": "创建人",
+                        "description": "应用名称，应用图标",
                         "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "$ref": "#/definitions/request.AddApp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/authority": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "应用权限分配",
+                "parameters": [
+                    {
+                        "description": "应用id,部门s，角色s，用户s",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AuthorityApp"
                         }
                     }
                 ],
@@ -358,6 +388,96 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"null\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/enable": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "启用应用",
+                "parameters": [
+                    {
+                        "description": "应用id,是否启用(1不启用默认，2启用)",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.EnableApp"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/flow": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "添加应用流程",
+                "parameters": [
+                    {
+                        "description": "应用id,流程",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AddFlow"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/app/form": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "App"
+                ],
+                "summary": "添加应用表单",
+                "parameters": [
+                    {
+                        "description": "应用id，表单",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AddFlow"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建表单成功\"}",
                         "schema": {
                             "type": "string"
                         }
@@ -1788,6 +1908,14 @@ const docTemplate = `{
         },
         "/task/handle": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1795,17 +1923,6 @@ const docTemplate = `{
                     "Task"
                 ],
                 "summary": "我处理的",
-                "parameters": [
-                    {
-                        "description": "审批人",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.Handle"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"查询我处理的任务成功\"}",
@@ -1818,6 +1935,11 @@ const docTemplate = `{
         },
         "/task/inspect": {
             "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1875,6 +1997,14 @@ const docTemplate = `{
         },
         "/task/schedule": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -2708,6 +2838,26 @@ const docTemplate = `{
                 }
             }
         },
+        "request.AddApp": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "request.AddFlow": {
+            "type": "object",
+            "properties": {
+                "appId": {
+                    "type": "integer"
+                },
+                "flow": {}
+            }
+        },
         "request.AddMenuAuthorityInfo": {
             "type": "object",
             "properties": {
@@ -2719,6 +2869,32 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/system.SysBaseMenu"
+                    }
+                }
+            }
+        },
+        "request.AuthorityApp": {
+            "type": "object",
+            "properties": {
+                "appId": {
+                    "type": "integer"
+                },
+                "authoritys": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "depts": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
                     }
                 }
             }
@@ -2771,6 +2947,17 @@ const docTemplate = `{
         "request.Empty": {
             "type": "object"
         },
+        "request.EnableApp": {
+            "type": "object",
+            "properties": {
+                "appId": {
+                    "type": "integer"
+                },
+                "isEnable": {
+                    "type": "integer"
+                }
+            }
+        },
         "request.GetAuthorityId": {
             "type": "object",
             "properties": {
@@ -2785,30 +2972,6 @@ const docTemplate = `{
             "properties": {
                 "id": {
                     "description": "主键ID",
-                    "type": "integer"
-                }
-            }
-        },
-        "request.Handle": {
-            "type": "object",
-            "properties": {
-                "appName": {
-                    "description": "应用名称",
-                    "type": "string"
-                },
-                "applicant": {
-                    "description": "申请人",
-                    "type": "string"
-                },
-                "checkState": {
-                    "description": "审批状态(待审批1默认、审批通过2、审批拒绝3、或签已审核4)",
-                    "type": "integer"
-                },
-                "createdAt": {
-                    "description": "创建时间",
-                    "type": "string"
-                },
-                "inspector": {
                     "type": "integer"
                 }
             }
