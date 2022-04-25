@@ -21,4 +21,8 @@ var (
 	DeleteAuthorityVerify  = Rules{"AuthorityId": {NotEmpty(), Gt("3")}}
 	DeleteUserVerify       = Rules{"ID": {NotEmpty(), Gt("2")}}
 	DeleteDeptVerify       = Rules{"ID": {NotEmpty(), Gt("2")}}
+	AddForm                = Rules{"AppId": {NotEmpty()}, "Form": {NotEmpty()}}
+	AddFlow                = Rules{"AppId": {NotEmpty()}, "Flow": {NotEmpty()}}
+	StartApp               = Rules{"AppId": {NotEmpty()}}
+	AuthorityApp           = Rules{"AppId": {NotEmpty()}, "Depts": {NotEmpty()}, "Authoritys": {NotEmpty()}, "Users": {NotEmpty()}}
 )

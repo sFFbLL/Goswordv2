@@ -121,7 +121,7 @@ func (t TaskService) GetHandleList(userId uint) (handleData []WorkFlowRes.Handle
 	return
 }
 
-func (t *TaskService) Inspect(task work_flow.GzlTask) error {
+func (t TaskService) Inspect(task work_flow.GzlTask) error {
 	//获取任务详细信息
 	return global.GSD_DB.Transaction(func(tx *gorm.DB) error {
 		taskInfo, err := t.GetTaskInfo(task.ID)

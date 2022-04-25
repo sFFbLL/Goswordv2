@@ -28,6 +28,7 @@ func Routers() *gin.Engine {
 
 	//获取路由组实例
 	systemRouter := router.RouterGroupApp.System
+	workFlowRouter := router.RouterGroupApp.WorkFlow
 	PublicGroup := Router.Group("")
 	{
 		systemRouter.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
@@ -51,9 +52,9 @@ func Routers() *gin.Engine {
 		systemRouter.InitFileRouter(PrivateGroup) //文件操作
 
 		//work_flow 路由
-		//workFlow.InitTaskRouter(PrivateGroup)   //任务路由
-		//workFlow.InitAppRouter(PrivateGroup)    //应用路由
-		//workFlow.InitRecordRouter(PrivateGroup) //记录路由
+		workFlowRouter.InitTaskRouter(PrivateGroup)   //任务路由
+		workFlowRouter.InitAppRouter(PrivateGroup)    //应用路由
+		workFlowRouter.InitRecordRouter(PrivateGroup) //记录路由
 	}
 	global.GSD_LOG.Info("router register success")
 	return Router
