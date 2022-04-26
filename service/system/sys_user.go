@@ -193,7 +193,7 @@ func (userService *UserService) SetSelfInfo(reqUser system.SysUser) (err error, 
 //@return: err error, user system.SysUser
 func (userService *UserService) GetUserInfo(uuid string) (err error, user system.SysUser) {
 	var reqUser system.SysUser
-	err = global.GSD_DB.Preload("Authorities").Preload("Dept").First(&reqUser, "uuid = ?", uuid).Error
+	err = global.GSD_DB.Preload("Authorities").Preload("Authority").Preload("Dept").First(&reqUser, "uuid = ?", uuid).Error
 	return err, reqUser
 }
 
