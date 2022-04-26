@@ -17,12 +17,12 @@ import (
 func Routers() *gin.Engine {
 	var Router = gin.New()
 	Router.Use(middleware.GinLogger(), middleware.GinRecovery(true))
-	Router.StaticFS(global.GSD_CONFIG.Local.Path, http.Dir(global.GSD_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
+	Router.StaticFS("/api"+global.GSD_CONFIG.Local.Path, http.Dir(global.GSD_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
 	global.GSD_LOG.Info("use middleware logger")
 	// 跨域
 	Router.Use(middleware.Cors()) // 如需跨域可以打开
 	global.GSD_LOG.Info("use middleware cors")
-	Router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	Router.GET("/api/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	global.GSD_LOG.Info("register swagger handler")
 	// 方便统一添加路由组前缀 多服务器上线使用
 
