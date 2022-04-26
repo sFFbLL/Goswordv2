@@ -29,11 +29,11 @@ func Routers() *gin.Engine {
 	//获取路由组实例
 	systemRouter := router.RouterGroupApp.System
 	workFlowRouter := router.RouterGroupApp.WorkFlow
-	PublicGroup := Router.Group("")
+	PublicGroup := Router.Group("api")
 	{
 		systemRouter.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
 	}
-	PrivateGroup := Router.Group("")
+	PrivateGroup := Router.Group("api")
 	PrivateGroup.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())
 	{
 		systemRouter.InitApiRouter(PrivateGroup)  // 注册功能api路由

@@ -21,7 +21,7 @@ type TaskApi struct {
 // @Produce  application/json
 // @Param data body WorkFlowReq.Inspect true "任务id，状态"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"审批成功"}"
-// @Router /task/inspect [put]
+// @Router /api/task/inspect [put]
 func (t *TaskApi) Inspect(c *gin.Context) {
 	var inspect WorkFlowReq.Inspect
 	_ = c.ShouldBindJSON(&inspect)
@@ -46,7 +46,7 @@ func (t *TaskApi) Inspect(c *gin.Context) {
 // @Produce  application/json
 // @Param recordId query int true "记录id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"ok"}"
-// @Router /task/dynamic [get]
+// @Router /api/task/dynamic [get]
 func (t *TaskApi) Dynamic(c *gin.Context) {
 	var record WorkFlowReq.RecordById
 	_ = c.ShouldBindQuery(&record)
@@ -71,7 +71,7 @@ func (t *TaskApi) Dynamic(c *gin.Context) {
 // @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询待办任务成功"}"
-// @Router /task/schedule [get]
+// @Router /api/task/schedule [get]
 func (t *TaskApi) Schedule(c *gin.Context) {
 	schedule, err := taskService.GetScheduleList(utils.GetUserID(c))
 	if err != nil {
@@ -91,7 +91,7 @@ func (t *TaskApi) Schedule(c *gin.Context) {
 // @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我处理的任务成功"}"
-// @Router /task/handle [get]
+// @Router /api/task/handle [get]
 func (t *TaskApi) Handle(c *gin.Context) {
 	userId := utils.GetUserID(c)
 	handle, err := taskService.GetHandleList(userId)
@@ -112,7 +112,7 @@ func (t *TaskApi) Handle(c *gin.Context) {
 // @accept application/json
 // @Produce  application/json
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"查询我收到的任务成功"}"
-// @Router /task/receive [get]
+// @Router /api/task/receive [get]
 func (t *TaskApi) Receive(c *gin.Context) {
 	userId := utils.GetUserID(c)
 	tasks, err := taskService.GetReceive(userId)

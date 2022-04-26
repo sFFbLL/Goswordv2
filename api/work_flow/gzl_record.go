@@ -23,7 +23,7 @@ type RecordApi struct {
 // @Produce  application/json
 // @Param data body WorkFlowReq.RecordSubmit true "string"
 // @Success 200 {} json "{"success":true,"data":{},"msg":"null"}"
-// @Router /record/submit [post]
+// @Router /api/record/submit [post]
 func (r *RecordApi) Submit(c *gin.Context) {
 	var recordSubmit WorkFlowReq.RecordSubmit
 	_ = c.ShouldBindJSON(&recordSubmit)
@@ -57,7 +57,7 @@ func (r *RecordApi) Submit(c *gin.Context) {
 // @Produce  application/json
 // @Param recordId query WorkFlowReq.RecordById true "记录id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
-// @Router /record/data [get]
+// @Router /api/record/data [get]
 func (r *RecordApi) Data(c *gin.Context) {
 	var record WorkFlowReq.RecordById
 	_ = c.ShouldBindQuery(&record)
@@ -83,7 +83,7 @@ func (r *RecordApi) Data(c *gin.Context) {
 // @Produce  application/json
 // @Param data body uint true "创建人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"操作成功"}"
-// @Router /record/initiated [get]
+// @Router /api/record/initiated [get]
 func (r *RecordApi) MyInitiated(c *gin.Context) {
 	myInitiated, err := recordService.MyInitiated(utils.GetUserID(c))
 	if err != nil {

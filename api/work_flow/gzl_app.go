@@ -23,7 +23,7 @@ type AppApi struct {
 // @Produce  application/json
 // @Param appId query WorkFlowReq.EmptyApp true "应用id"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"null"}"
-// @Router /app/empty [get]
+// @Router /api/app/empty [get]
 func (f *AppApi) Empty(c *gin.Context) {
 	var app WorkFlowReq.EmptyApp
 	_ = c.ShouldBindQuery(&app)
@@ -48,7 +48,7 @@ func (f *AppApi) Empty(c *gin.Context) {
 // @Produce  application/json
 // @Param data body uint true "创建人"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"创建表单成功"}"
-// @Router /app/create [post]
+// @Router /api/app/create [post]
 func (f *AppApi) Create(c *gin.Context) {
 
 }
@@ -60,7 +60,7 @@ func (f *AppApi) Create(c *gin.Context) {
 // @Produce  application/json
 // @Param data body WorkFlowReq.AddApp true "应用名称，应用图标"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"创建应用成功"}"
-// @Router /app/ [post]
+// @Router /api/app/ [post]
 func (f *AppApi) AddApp(c *gin.Context) {
 	var addApp WorkFlowReq.AddApp
 	_ = c.ShouldBindJSON(&addApp)
@@ -84,7 +84,7 @@ func (f *AppApi) AddApp(c *gin.Context) {
 // @Produce  application/json
 // @Param data body WorkFlowReq.AddFlow true "应用id，表单"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"表单提交成功"}"
-// @Router /app/form [post]
+// @Router /api/app/form [post]
 func (f *AppApi) AddForm(c *gin.Context) {
 	var addForm WorkFlowReq.AddForm
 	_ = c.ShouldBindJSON(&addForm)
@@ -114,7 +114,7 @@ func (f *AppApi) AddForm(c *gin.Context) {
 // @Produce  application/json
 // @Param data body WorkFlowReq.AddFlow true "应用id,流程"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"流程提交成功"}"
-// @Router /app/flow [post]
+// @Router /api/app/flow [post]
 func (f *AppApi) AddFlow(c *gin.Context) {
 	var addFlow WorkFlowReq.AddFlow
 	_ = c.ShouldBindJSON(&addFlow)
@@ -143,7 +143,7 @@ func (f *AppApi) AddFlow(c *gin.Context) {
 // @Produce  application/json
 // @Param data body WorkFlowReq.EnableApp true "应用id,是否启用(1不启用默认，2启用)"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"应用启用成功"}"
-// @Router /app/enable [post]
+// @Router /api/app/enable [post]
 func (f *AppApi) EnableApp(c *gin.Context) {
 	var enableApp WorkFlowReq.EnableApp
 	_ = c.ShouldBindJSON(&enableApp)
@@ -166,7 +166,7 @@ func (f *AppApi) EnableApp(c *gin.Context) {
 // @Produce  application/json
 // @Param data body WorkFlowReq.AuthorityApp true "应用id,部门s，角色s，用户s"
 // @Success 200 {string} json "{"success":true,"data":{},"msg":"应用权限分配成功"}"
-// @Router /app/authority [post]
+// @Router /api/app/authority [post]
 func (f *AppApi) AuthorityApp(c *gin.Context) {
 	var authorityApp WorkFlowReq.AuthorityApp
 	_ = c.ShouldBindJSON(&authorityApp)

@@ -20,7 +20,7 @@ type SysFileUploadAndDownloadApi struct {
 // @Produce  application/json
 // @Param file formData file true "上传文件"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"上传成功"}"
-// @Router /file/upload [post]
+// @Router /api/file/upload [post]
 func (u *SysFileUploadAndDownloadApi) UploadFile(c *gin.Context) {
 	var file system.SysFileUploadAndDownload
 	noSave := c.DefaultQuery("noSave", "0")
