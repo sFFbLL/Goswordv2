@@ -24,7 +24,7 @@ type BaseApi struct {
 // @accept    application/json
 // @Produce   application/json
 // @Success   200  {string}  string  "{"success":true,"data":{},"msg":"验证码获取成功"}"
-// @Router    /base/captcha [post]
+// @Router    /api/base/captcha [post]
 func (b *BaseApi) Captcha(c *gin.Context) {
 	// 字符,公式,验证码配置
 	// 生成默认数字的driver

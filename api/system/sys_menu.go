@@ -22,7 +22,7 @@ type AuthorityMenuApi struct {
 // @Produce application/json
 // @Param data body request.PageInfo true "页码, 每页大小"
 // @Success 200 {object} response.Response{data=response.PageResult,msg=string} "分页获取基础menu列表,返回包括列表,总数,页码,每页数量"
-// @Router /menu/getMenuList [post]
+// @Router /api/menu/getMenuList [post]
 func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
@@ -49,7 +49,7 @@ func (a *AuthorityMenuApi) GetMenuList(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success 200 {object} response.Response{msg=string} "新增菜单"
-// @Router /menu/addBaseMenu [post]
+// @Router /api/menu/addBaseMenu [post]
 func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
 	var menu system.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
@@ -75,7 +75,7 @@ func (a *AuthorityMenuApi) AddMenu(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "菜单id"
 // @Success 200 {object} response.Response{msg=string} "删除菜单"
-// @Router /menu/deleteBaseMenu [post]
+// @Router /api/menu/deleteBaseMenu [post]
 func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
 	var menu request.GetById
 	_ = c.ShouldBindJSON(&menu)
@@ -98,7 +98,7 @@ func (a *AuthorityMenuApi) DeleteMenu(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysBaseMenu true "路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记"
 // @Success 200 {object} response.Response{msg=string} "更新菜单"
-// @Router /menu/updateBaseMenu [post]
+// @Router /api/menu/updateBaseMenu [post]
 func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 	var menu system.SysBaseMenu
 	_ = c.ShouldBindJSON(&menu)
@@ -124,7 +124,7 @@ func (a *AuthorityMenuApi) UpdateMenu(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.Empty true "空"
 // @Success 200 {object} response.Response{data=systemRes.SysBaseMenusResponse,msg=string} "获取当前用户菜单,返回包括系统菜单列表"
-// @Router /menu/getMenu [post]
+// @Router /api/menu/getMenu [post]
 func (a *AuthorityMenuApi) GetUserMenuTree(c *gin.Context) {
 	if err, menus := menuService.GetUserMenu(utils.GetUserAuthority(c)); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
@@ -143,7 +143,7 @@ func (a *AuthorityMenuApi) GetUserMenuTree(c *gin.Context) {
 // @Produce  application/json
 // @Param data body request.Empty true "空"
 // @Success 200 {object} response.Response{data=systemRes.SysBaseMenusResponse,msg=string} "获取用户动态路由,返回包括系统菜单列表"
-// @Router /menu/getBaseMenuTree [post]
+// @Router /api/menu/getBaseMenuTree [post]
 func (a *AuthorityMenuApi) GetBaseMenuTree(c *gin.Context) {
 	if err, menus := menuService.GetBaseMenuTree(); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
@@ -160,7 +160,7 @@ func (a *AuthorityMenuApi) GetBaseMenuTree(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetAuthorityId true "角色ID"
 // @Success 200 {object} response.Response{data=map[string]interface{},msg=string} "获取指定角色menu"
-// @Router /menu/getMenuAuthority [post]
+// @Router /api/menu/getMenuAuthority [post]
 func (a *AuthorityMenuApi) GetMenuAuthority(c *gin.Context) {
 	var param request.GetAuthorityId
 	_ = c.ShouldBindJSON(&param)
@@ -183,7 +183,7 @@ func (a *AuthorityMenuApi) GetMenuAuthority(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "菜单id"
 // @Success 200 {object} response.Response{data=systemRes.SysBaseMenuResponse,msg=string} "根据id获取菜单,返回包括系统菜单列表"
-// @Router /menu/getBaseMenuById [post]
+// @Router /api/menu/getBaseMenuById [post]
 func (a *AuthorityMenuApi) GetBaseMenuById(c *gin.Context) {
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
@@ -206,7 +206,7 @@ func (a *AuthorityMenuApi) GetBaseMenuById(c *gin.Context) {
 // @Produce application/json
 // @Param data body systemReq.AddMenuAuthorityInfo true "角色ID"
 // @Success 200 {object} response.Response{msg=string} "增加menu和角色关联关系"
-// @Router /menu/addMenuAuthority [post]
+// @Router /api/menu/addMenuAuthority [post]
 func (a *AuthorityMenuApi) AddMenuAuthority(c *gin.Context) {
 	var authorityMenu systemReq.AddMenuAuthorityInfo
 	_ = c.ShouldBindJSON(&authorityMenu)

@@ -848,7 +848,7 @@ info:
   title: Work-Flow API
   version: 0.0.1
 paths:
-  /api/createApi:
+  /api/api/createApi:
     post:
       consumes:
       - application/json
@@ -871,7 +871,7 @@ paths:
       summary: 创建基础api
       tags:
       - SysApi
-  /api/deleteApi:
+  /api/api/deleteApi:
     post:
       consumes:
       - application/json
@@ -894,7 +894,7 @@ paths:
       summary: 删除api
       tags:
       - SysApi
-  /api/deleteApisByIds:
+  /api/api/deleteApisByIds:
     delete:
       consumes:
       - application/json
@@ -917,7 +917,7 @@ paths:
       summary: 删除选中Api
       tags:
       - SysApi
-  /api/getAllApis:
+  /api/api/getAllApis:
     post:
       consumes:
       - application/json
@@ -933,7 +933,7 @@ paths:
       summary: 获取所有的Api 不分页
       tags:
       - SysApi
-  /api/getApiById:
+  /api/api/getApiById:
     post:
       consumes:
       - application/json
@@ -956,7 +956,7 @@ paths:
       summary: 根据id获取api
       tags:
       - SysApi
-  /api/getApiList:
+  /api/api/getApiList:
     post:
       consumes:
       - application/json
@@ -979,7 +979,7 @@ paths:
       summary: 分页获取API列表
       tags:
       - SysApi
-  /api/updateApi:
+  /api/api/updateApi:
     post:
       consumes:
       - application/json
@@ -1002,7 +1002,7 @@ paths:
       summary: 创建基础api
       tags:
       - SysApi
-  /app/:
+  /api/app/:
     post:
       parameters:
       - description: 应用名称，应用图标
@@ -1023,7 +1023,7 @@ paths:
       summary: 创建应用
       tags:
       - App
-  /app/authority:
+  /api/app/authority:
     post:
       parameters:
       - description: 应用id,部门s，角色s，用户s
@@ -1044,7 +1044,7 @@ paths:
       summary: 应用权限分配
       tags:
       - App
-  /app/create:
+  /api/app/create:
     post:
       parameters:
       - description: 创建人
@@ -1065,7 +1065,7 @@ paths:
       summary: 创建表单
       tags:
       - App
-  /app/empty:
+  /api/app/empty:
     get:
       consumes:
       - application/json
@@ -1085,7 +1085,7 @@ paths:
       summary: 返回空表单
       tags:
       - App
-  /app/enable:
+  /api/app/enable:
     post:
       parameters:
       - description: 应用id,是否启用(1不启用默认，2启用)
@@ -1106,7 +1106,7 @@ paths:
       summary: 启用应用
       tags:
       - App
-  /app/flow:
+  /api/app/flow:
     post:
       parameters:
       - description: 应用id,流程
@@ -1127,7 +1127,7 @@ paths:
       summary: 添加应用流程
       tags:
       - App
-  /app/form:
+  /api/app/form:
     post:
       parameters:
       - description: 应用id，表单
@@ -1148,7 +1148,7 @@ paths:
       summary: 添加应用表单
       tags:
       - App
-  /authority/createAuthority:
+  /api/authority/createAuthority:
     post:
       consumes:
       - application/json
@@ -1171,7 +1171,7 @@ paths:
       summary: 创建角色
       tags:
       - Authority
-  /authority/deleteAuthority:
+  /api/authority/deleteAuthority:
     post:
       consumes:
       - application/json
@@ -1194,7 +1194,7 @@ paths:
       summary: 删除角色
       tags:
       - Authority
-  /authority/getAuthorityList:
+  /api/authority/getAuthorityList:
     post:
       consumes:
       - application/json
@@ -1217,7 +1217,7 @@ paths:
       summary: 分页获取角色列表
       tags:
       - Authority
-  /authority/updateAuthority:
+  /api/authority/updateAuthority:
     post:
       consumes:
       - application/json
@@ -1240,7 +1240,7 @@ paths:
       summary: 更新角色信息
       tags:
       - Authority
-  /base/captcha:
+  /api/base/captcha:
     post:
       consumes:
       - application/json
@@ -1256,7 +1256,7 @@ paths:
       summary: 生成验证码
       tags:
       - Base
-  /base/login:
+  /api/base/login:
     post:
       parameters:
       - description: 用户名, 密码, 验证码
@@ -1275,7 +1275,7 @@ paths:
       summary: 用户登录
       tags:
       - Base
-  /casbin/UpdateCasbin:
+  /api/casbin/UpdateCasbin:
     post:
       consumes:
       - application/json
@@ -1298,7 +1298,7 @@ paths:
       summary: 更新角色api权限
       tags:
       - Casbin
-  /casbin/getPolicyPathByAuthorityId:
+  /api/casbin/getPolicyPathByAuthorityId:
     post:
       consumes:
       - application/json
@@ -1321,7 +1321,7 @@ paths:
       summary: 获取权限列表
       tags:
       - Casbin
-  /department/addDept:
+  /api/department/addDept:
     post:
       parameters:
       - description: 部门名称, 是否父子级
@@ -1347,7 +1347,7 @@ paths:
       summary: 新增部门
       tags:
       - Department
-  /department/deleteDept:
+  /api/department/deleteDept:
     post:
       parameters:
       - description: 删除部门
@@ -1373,7 +1373,7 @@ paths:
       summary: 删除部门
       tags:
       - Department
-  /department/id:
+  /api/department/id:
     post:
       parameters:
       - description: 部门pid
@@ -1401,7 +1401,7 @@ paths:
       summary: 根据pid查询部门列表
       tags:
       - Department
-  /department/lists:
+  /api/department/lists:
     post:
       parameters:
       - description: 页码, 每页大小
@@ -1429,7 +1429,7 @@ paths:
       summary: 查询部门列表
       tags:
       - Department
-  /department/updateDept:
+  /api/department/updateDept:
     post:
       parameters:
       - description: 部门名称, 是否父子级
@@ -1455,7 +1455,7 @@ paths:
       summary: 修改部门
       tags:
       - Department
-  /department/users:
+  /api/department/users:
     post:
       consumes:
       - application/json
@@ -1476,7 +1476,7 @@ paths:
       summary: 获取部门下的用户
       tags:
       - Department
-  /file/upload:
+  /api/file/upload:
     post:
       consumes:
       - multipart/form-data
@@ -1498,7 +1498,7 @@ paths:
       summary: 上传文件
       tags:
       - ExaFileUploadAndDownload
-  /jwt/jsonInBlacklist:
+  /api/jwt/jsonInBlacklist:
     post:
       consumes:
       - application/json
@@ -1514,7 +1514,7 @@ paths:
       summary: jwt加入黑名单
       tags:
       - Jwt
-  /menu/addBaseMenu:
+  /api/menu/addBaseMenu:
     post:
       parameters:
       - description: 路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记
@@ -1540,7 +1540,7 @@ paths:
       summary: 菜单管理-新增菜单
       tags:
       - Menu
-  /menu/addMenuAuthority:
+  /api/menu/addMenuAuthority:
     post:
       consumes:
       - application/json
@@ -1568,7 +1568,7 @@ paths:
       summary: 增加menu和角色关联关系
       tags:
       - AuthorityMenu
-  /menu/deleteBaseMenu:
+  /api/menu/deleteBaseMenu:
     post:
       parameters:
       - description: 菜单id
@@ -1594,7 +1594,7 @@ paths:
       summary: 菜单管理-删除菜单
       tags:
       - Menu
-  /menu/getBaseMenuById:
+  /api/menu/getBaseMenuById:
     post:
       consumes:
       - application/json
@@ -1624,7 +1624,7 @@ paths:
       summary: 根据id获取菜单
       tags:
       - Menu
-  /menu/getBaseMenuTree:
+  /api/menu/getBaseMenuTree:
     post:
       parameters:
       - description: 空
@@ -1652,7 +1652,7 @@ paths:
       summary: 获取用户动态路由
       tags:
       - Menu
-  /menu/getMenu:
+  /api/menu/getMenu:
     post:
       parameters:
       - description: 空
@@ -1680,7 +1680,7 @@ paths:
       summary: 获取当前用户菜单
       tags:
       - Menu
-  /menu/getMenuAuthority:
+  /api/menu/getMenuAuthority:
     post:
       consumes:
       - application/json
@@ -1711,7 +1711,7 @@ paths:
       summary: 获取指定角色menu
       tags:
       - Menu
-  /menu/getMenuList:
+  /api/menu/getMenuList:
     post:
       parameters:
       - description: 页码, 每页大小
@@ -1739,7 +1739,7 @@ paths:
       summary: 分页获取基础menu列表
       tags:
       - Menu
-  /menu/updateBaseMenu:
+  /api/menu/updateBaseMenu:
     post:
       parameters:
       - description: 路由path, 父菜单ID, 路由name, 对应前端文件路径, 排序标记
@@ -1765,7 +1765,7 @@ paths:
       summary: 菜单管理-更新菜单
       tags:
       - Menu
-  /record/data:
+  /api/record/data:
     get:
       consumes:
       - application/json
@@ -1785,7 +1785,7 @@ paths:
       summary: 返回之前填写过的表单数据
       tags:
       - Record
-  /record/initiated:
+  /api/record/initiated:
     get:
       parameters:
       - description: 创建人
@@ -1806,7 +1806,7 @@ paths:
       summary: 我发起的
       tags:
       - Record
-  /record/submit:
+  /api/record/submit:
     post:
       consumes:
       - application/json
@@ -1829,7 +1829,7 @@ paths:
       summary: 提交表单
       tags:
       - Record
-  /sysOperationRecord/createSysOperationRecord:
+  /api/sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
       - application/json
@@ -1852,7 +1852,7 @@ paths:
       summary: 创建SysOperationRecord
       tags:
       - SysOperationRecord
-  /sysOperationRecord/deleteSysOperationRecord:
+  /api/sysOperationRecord/deleteSysOperationRecord:
     delete:
       consumes:
       - application/json
@@ -1875,7 +1875,7 @@ paths:
       summary: 删除SysOperationRecord
       tags:
       - SysOperationRecord
-  /sysOperationRecord/deleteSysOperationRecordByIds:
+  /api/sysOperationRecord/deleteSysOperationRecordByIds:
     delete:
       consumes:
       - application/json
@@ -1898,7 +1898,7 @@ paths:
       summary: 批量删除SysOperationRecord
       tags:
       - SysOperationRecord
-  /sysOperationRecord/findSysOperationRecord:
+  /api/sysOperationRecord/findSysOperationRecord:
     get:
       consumes:
       - application/json
@@ -1921,7 +1921,7 @@ paths:
       summary: 用id查询SysOperationRecord
       tags:
       - SysOperationRecord
-  /sysOperationRecord/getSysOperationRecordList:
+  /api/sysOperationRecord/getSysOperationRecordList:
     get:
       consumes:
       - application/json
@@ -1944,7 +1944,7 @@ paths:
       summary: 分页获取SysOperationRecord列表
       tags:
       - SysOperationRecord
-  /system/getServerInfo:
+  /api/system/getServerInfo:
     post:
       produces:
       - application/json
@@ -1958,7 +1958,7 @@ paths:
       summary: 获取服务器信息
       tags:
       - System
-  /system/getSystemConfig:
+  /api/system/getSystemConfig:
     post:
       produces:
       - application/json
@@ -1972,7 +1972,7 @@ paths:
       summary: 获取配置文件内容
       tags:
       - System
-  /system/reloadSystem:
+  /api/system/reloadSystem:
     post:
       produces:
       - application/json
@@ -1986,7 +1986,7 @@ paths:
       summary: 重启系统
       tags:
       - System
-  /system/setSystemConfig:
+  /api/system/setSystemConfig:
     post:
       parameters:
       - description: 设置配置文件内容
@@ -2007,7 +2007,7 @@ paths:
       summary: 设置配置文件内容
       tags:
       - System
-  /task/dynamic:
+  /api/task/dynamic:
     get:
       consumes:
       - application/json
@@ -2029,7 +2029,7 @@ paths:
       summary: 流程动态信息
       tags:
       - Task
-  /task/handle:
+  /api/task/handle:
     get:
       consumes:
       - application/json
@@ -2045,7 +2045,7 @@ paths:
       summary: 我处理的
       tags:
       - Task
-  /task/inspect:
+  /api/task/inspect:
     put:
       consumes:
       - application/json
@@ -2068,7 +2068,7 @@ paths:
       summary: 审批（通过||拒绝）
       tags:
       - Task
-  /task/receive:
+  /api/task/receive:
     get:
       consumes:
       - application/json
@@ -2084,7 +2084,7 @@ paths:
       summary: 我收到的
       tags:
       - Task
-  /task/schedule:
+  /api/task/schedule:
     get:
       consumes:
       - application/json
@@ -2100,7 +2100,7 @@ paths:
       summary: 我的待办
       tags:
       - Task
-  /user/changePassword:
+  /api/user/changePassword:
     put:
       parameters:
       - description: 用户名, 原密码, 新密码
@@ -2121,7 +2121,7 @@ paths:
       summary: 用户修改密码
       tags:
       - SysUser
-  /user/deleteUser:
+  /api/user/deleteUser:
     delete:
       consumes:
       - application/json
@@ -2144,7 +2144,7 @@ paths:
       summary: 删除用户
       tags:
       - SysUser
-  /user/downloadTemplate:
+  /api/user/downloadTemplate:
     post:
       consumes:
       - application/json
@@ -2165,7 +2165,7 @@ paths:
       summary: 下载模板
       tags:
       - SysUser
-  /user/exportExcel:
+  /api/user/exportExcel:
     post:
       consumes:
       - application/json
@@ -2186,7 +2186,7 @@ paths:
       summary: 导出Excel
       tags:
       - SysUser
-  /user/getUserByAuthority:
+  /api/user/getUserByAuthority:
     post:
       consumes:
       - application/json
@@ -2209,7 +2209,7 @@ paths:
       summary: 分页获取用户列表
       tags:
       - SysUser
-  /user/getUserInfo:
+  /api/user/getUserInfo:
     get:
       consumes:
       - application/json
@@ -2225,30 +2225,7 @@ paths:
       summary: 获取用户信息
       tags:
       - SysUser
-  /user/getUserList:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: 页码, 每页大小
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.PageInfo'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"获取成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 分页获取用户列表
-      tags:
-      - SysUser
-  /user/importExcel:
+  /api/user/importExcel:
     post:
       consumes:
       - multipart/form-data
@@ -2275,7 +2252,7 @@ paths:
       summary: 导入用户Excel文件
       tags:
       - SysUser
-  /user/loadExcel:
+  /api/user/loadExcel:
     get:
       produces:
       - application/json
@@ -2296,7 +2273,7 @@ paths:
       summary: 加载Excel数据
       tags:
       - SysUser
-  /user/register:
+  /api/user/register:
     post:
       parameters:
       - description: 用户名, 昵称, 密码, 角色ID
@@ -2315,7 +2292,7 @@ paths:
       summary: 用户注册账号
       tags:
       - SysUser
-  /user/setSelfInfo:
+  /api/user/setSelfInfo:
     put:
       consumes:
       - application/json
@@ -2338,7 +2315,7 @@ paths:
       summary: 设置当前用户信息
       tags:
       - SysUser
-  /user/setUserAuthorities:
+  /api/user/setUserAuthorities:
     post:
       consumes:
       - application/json
@@ -2361,7 +2338,7 @@ paths:
       summary: 设置用户角色
       tags:
       - SysUser
-  /user/setUserAuthority:
+  /api/user/setUserAuthority:
     post:
       consumes:
       - application/json
@@ -2384,7 +2361,7 @@ paths:
       summary: 更改用户权限
       tags:
       - SysUser
-  /user/setUserInfo:
+  /api/user/setUserInfo:
     put:
       consumes:
       - application/json
@@ -2405,6 +2382,29 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 设置用户信息
+      tags:
+      - SysUser
+  /apiuser/getUserList:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 页码, 每页大小
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取用户列表
       tags:
       - SysUser
 securityDefinitions:
