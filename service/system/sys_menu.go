@@ -178,7 +178,21 @@ func (menuService *MenuService) getMenuTree(authorities []system.SysAuthority) (
 	if err != nil {
 		return
 	}
-	for _, v := range allMenus {
+	//list去重
+	deduplicationList := make([]system.SysMenu, 0)
+	for _, menu := range allMenus {
+		flag := false
+		for _, sysMenu := range deduplicationList {
+			if menu.ID == sysMenu.ID {
+				flag = true
+				break
+			}
+		}
+		if !flag {
+			deduplicationList = append(deduplicationList, menu)
+		}
+	}
+	for _, v := range deduplicationList {
 		treeMap[v.ParentId] = append(treeMap[v.ParentId], v)
 	}
 	return err, treeMap
