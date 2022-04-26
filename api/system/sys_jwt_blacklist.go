@@ -19,7 +19,7 @@ type JwtApi struct {
 // @accept application/json
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"拉黑成功"}"
-// @Router /jwt/jsonInBlacklist [post]
+// @Router /api/jwt/jsonInBlacklist [post]
 func (j *JwtApi) JsonInBlacklist(c *gin.Context) {
 	token := c.Request.Header.Get("x-token")
 	jwt := system.JwtBlacklist{Jwt: token}

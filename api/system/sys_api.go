@@ -23,7 +23,7 @@ type SystemApiApi struct {
 // @Produce application/json
 // @Param data body system.SysApi true "api路径, api中文描述, api组, 方法"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /api/createApi [post]
+// @Router /api/api/createApi [post]
 func (s *SystemApiApi) CreateApi(c *gin.Context) {
 	var api system.SysApi
 	_ = c.ShouldBindJSON(&api)
@@ -46,7 +46,7 @@ func (s *SystemApiApi) CreateApi(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysApi true "ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /api/deleteApi [post]
+// @Router /api/api/deleteApi [post]
 func (s *SystemApiApi) DeleteApi(c *gin.Context) {
 	var api system.SysApi
 	_ = c.ShouldBindJSON(&api)
@@ -69,7 +69,7 @@ func (s *SystemApiApi) DeleteApi(c *gin.Context) {
 // @Produce application/json
 // @Param data body systemReq.SearchApiParams true "分页获取API列表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /api/getApiList [post]
+// @Router /api/api/getApiList [post]
 func (s *SystemApiApi) GetApiList(c *gin.Context) {
 	var pageInfo systemReq.SearchApiParams
 	_ = c.ShouldBindJSON(&pageInfo)
@@ -97,7 +97,7 @@ func (s *SystemApiApi) GetApiList(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "根据id获取api"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /api/getApiById [post]
+// @Router /api/api/getApiById [post]
 func (s *SystemApiApi) GetApiById(c *gin.Context) {
 	var idInfo request.GetById
 	_ = c.ShouldBindJSON(&idInfo)
@@ -121,7 +121,7 @@ func (s *SystemApiApi) GetApiById(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysApi true "api路径, api中文描述, api组, 方法"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
-// @Router /api/updateApi [post]
+// @Router /api/api/updateApi [post]
 func (s *SystemApiApi) UpdateApi(c *gin.Context) {
 	var api system.SysApi
 	_ = c.ShouldBindJSON(&api)
@@ -143,7 +143,7 @@ func (s *SystemApiApi) UpdateApi(c *gin.Context) {
 // @accept application/json
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /api/getAllApis [post]
+// @Router /api/api/getAllApis [post]
 func (s *SystemApiApi) GetAllApis(c *gin.Context) {
 	if err, apis := apiService.GetAllApis(); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Any("err", err), utils.GetRequestID(c))
@@ -160,7 +160,7 @@ func (s *SystemApiApi) GetAllApis(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.IdsReq true "ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /api/deleteApisByIds [delete]
+// @Router /api/api/deleteApisByIds [delete]
 func (s *SystemApiApi) DeleteApisByIds(c *gin.Context) {
 	var ids request.IdsReq
 	_ = c.ShouldBindJSON(&ids)
