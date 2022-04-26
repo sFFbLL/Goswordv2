@@ -23,7 +23,7 @@ import (
 // @Produce  application/json
 // @Param data body systemReq.Login true "用户名, 密码, 验证码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"登陆成功"}"
-// @Router /base/login [post]
+// @Router /api/base/login [post]
 func (b *BaseApi) Login(c *gin.Context) {
 	var l systemReq.Login
 	_ = c.ShouldBindJSON(&l)
@@ -125,7 +125,7 @@ func (b *BaseApi) tokenNext(c *gin.Context, user system.SysUser) {
 // @Produce  application/json
 // @Param data body systemReq.Register true "用户名, 昵称, 密码, 角色ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"注册成功"}"
-// @Router /user/register [post]
+// @Router /api/user/register [post]
 func (b *BaseApi) Register(c *gin.Context) {
 	var r systemReq.Register
 	_ = c.ShouldBindJSON(&r)
@@ -169,7 +169,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "用户ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /user/deleteUser [delete]
+// @Router /api/user/deleteUser [delete]
 func (b *BaseApi) DeleteUser(c *gin.Context) {
 	var reqId request.GetById
 	_ = c.ShouldBindJSON(&reqId)
@@ -215,7 +215,7 @@ func (b *BaseApi) DeleteUser(c *gin.Context) {
 // @Produce application/json
 // @Param data body systemReq.SetUserAuth true "用户UUID, 角色ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
-// @Router /user/setUserAuthority [post]
+// @Router /api/user/setUserAuthority [post]
 func (b *BaseApi) SetUserAuthority(c *gin.Context) {
 	var sua systemReq.SetUserAuth
 	_ = c.ShouldBindJSON(&sua)
@@ -250,7 +250,7 @@ func (b *BaseApi) SetUserAuthority(c *gin.Context) {
 // @Produce application/json
 // @Param data body systemReq.SetUserAuthorities true "用户UUID, 角色ID"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
-// @Router /user/setUserAuthorities [post]
+// @Router /api/user/setUserAuthorities [post]
 func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 	var sua systemReq.SetUserAuthorities
 	_ = c.ShouldBindJSON(&sua)
@@ -303,7 +303,7 @@ func (b *BaseApi) SetUserAuthorities(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.PageInfo true "页码, 每页大小"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /user/getUserList [post]
+// @Router /apiuser/getUserList [post]
 func (b *BaseApi) GetUserList(c *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)
@@ -333,7 +333,7 @@ func (b *BaseApi) GetUserList(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.GetById true "角色id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /user/getUserByAuthority [post]
+// @Router /api/user/getUserByAuthority [post]
 func (b *BaseApi) GetUserByAuthority(c *gin.Context) {
 	var reqId request.GetById
 	_ = c.ShouldBindJSON(&reqId)
@@ -358,7 +358,7 @@ func (b *BaseApi) GetUserByAuthority(c *gin.Context) {
 // @Produce  application/json
 // @Param data body systemReq.ChangePasswordStruct true "用户名, 原密码, 新密码"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
-// @Router /user/changePassword [put]
+// @Router /api/user/changePassword [put]
 func (b *BaseApi) UpdatePassword(c *gin.Context) {
 	var user systemReq.ChangePasswordStruct
 	_ = c.ShouldBindJSON(&user)
@@ -384,7 +384,7 @@ func (b *BaseApi) UpdatePassword(c *gin.Context) {
 // @accept application/json
 // @Produce application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /user/getUserInfo [get]
+// @Router /api/user/getUserInfo [get]
 func (b *BaseApi) GetUserInfo(c *gin.Context) {
 	uuid := utils.GetUserUuid(c)
 	if err, userInfo := userService.GetUserInfo(uuid); err != nil {
@@ -403,7 +403,7 @@ func (b *BaseApi) GetUserInfo(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysUser true "ID, 用户名, 昵称, 头像链接"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
-// @Router /user/setUserInfo [put]
+// @Router /api/user/setUserInfo [put]
 func (b *BaseApi) SetUserInfo(c *gin.Context) {
 	var user system.SysUser
 	_ = c.ShouldBindJSON(&user)
@@ -430,7 +430,7 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysUser true "ID, 用户名, 昵称, 头像链接"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
-// @Router /user/setSelfInfo [put]
+// @Router /api/user/setSelfInfo [put]
 func (b *BaseApi) SetSelfInfo(c *gin.Context) {
 	var user system.SysUser
 	_ = c.ShouldBindJSON(&user)
@@ -458,7 +458,7 @@ func (b *BaseApi) SetSelfInfo(c *gin.Context) {
 // @Produce  application/json
 // @Param file formData file true "导入Excel文件"
 // @Success 200 {object} response.Response{msg=string} "导入Excel文件"
-// @Router /user/importExcel [post]
+// @Router /api/user/importExcel [post]
 func (b *BaseApi) ImportExcel(c *gin.Context) {
 	_, header, err := c.Request.FormFile("file")
 	if err != nil {
@@ -475,7 +475,7 @@ func (b *BaseApi) ImportExcel(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Produce  application/json
 // @Success 200 {object} response.Response{data=response.PageResult,msg=string} "加载Excel数据,返回包括列表,总数,页码,每页数量"
-// @Router /user/loadExcel [get]
+// @Router /api/user/loadExcel [get]
 func (b *BaseApi) LoadExcel(c *gin.Context) {
 	list, err := userService.ParseExcelToDataList()
 	if err != nil {
@@ -498,7 +498,7 @@ func (b *BaseApi) LoadExcel(c *gin.Context) {
 // @Produce  application/octet-stream
 // @Param data body system.ExcelInfo true "导出Excel文件信息"
 // @Success 200
-// @Router /user/exportExcel [post]
+// @Router /api/user/exportExcel [post]
 func (b *BaseApi) ExportExcel(c *gin.Context) {
 	var excelInfo system.ExcelInfo
 	_ = c.ShouldBindJSON(&excelInfo)
@@ -519,7 +519,7 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 // @Produce  application/octet-stream
 // @Param data body system.ExcelInfo true "下载模板信息"
 // @Success 200
-// @Router /user/downloadTemplate [post]
+// @Router /api/user/downloadTemplate [post]
 func (b *BaseApi) DownloadTemplate(c *gin.Context) {
 	name := c.Query("fileName")
 	filePath := global.GSD_CONFIG.Excel.Dir + name

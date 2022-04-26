@@ -19,7 +19,7 @@ type SystemApi struct {
 // @Security ApiKeyAuth
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /system/getSystemConfig [post]
+// @Router /api/system/getSystemConfig [post]
 func (s *SystemApi) GetSystemConfig(c *gin.Context) {
 	if err, config := systemConfigService.GetSystemConfig(); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Any("err", err), utils.GetRequestID(c))
@@ -35,7 +35,7 @@ func (s *SystemApi) GetSystemConfig(c *gin.Context) {
 // @Produce  application/json
 // @Param data body system.System true "设置配置文件内容"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
-// @Router /system/setSystemConfig [post]
+// @Router /api/system/setSystemConfig [post]
 func (s *SystemApi) SetSystemConfig(c *gin.Context) {
 	var sys system.System
 	_ = c.ShouldBindJSON(&sys)
@@ -52,7 +52,7 @@ func (s *SystemApi) SetSystemConfig(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Produce  application/json
 // @Success 200 {string} string "{"code":0,"data":{},"msg":"重启系统成功"}"
-// @Router /system/reloadSystem [post]
+// @Router /api/system/reloadSystem [post]
 func (s *SystemApi) ReloadSystem(c *gin.Context) {
 	err := utils.Reload()
 	if err != nil {
@@ -68,7 +68,7 @@ func (s *SystemApi) ReloadSystem(c *gin.Context) {
 // @Security ApiKeyAuth
 // @Produce  application/json
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /system/getServerInfo [post]
+// @Router /api/system/getServerInfo [post]
 func (s *SystemApi) GetServerInfo(c *gin.Context) {
 	if server, err := systemConfigService.GetServerInfo(); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Any("err", err), utils.GetRequestID(c))

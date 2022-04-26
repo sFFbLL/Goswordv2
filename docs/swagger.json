@@ -8,7 +8,7 @@
     },
     "basePath": "/",
     "paths": {
-        "/api/createApi": {
+        "/api/api/createApi": {
             "post": {
                 "security": [
                     {
@@ -46,7 +46,7 @@
                 }
             }
         },
-        "/api/deleteApi": {
+        "/api/api/deleteApi": {
             "post": {
                 "security": [
                     {
@@ -84,7 +84,7 @@
                 }
             }
         },
-        "/api/deleteApisByIds": {
+        "/api/api/deleteApisByIds": {
             "delete": {
                 "security": [
                     {
@@ -122,7 +122,7 @@
                 }
             }
         },
-        "/api/getAllApis": {
+        "/api/api/getAllApis": {
             "post": {
                 "security": [
                     {
@@ -149,7 +149,7 @@
                 }
             }
         },
-        "/api/getApiById": {
+        "/api/api/getApiById": {
             "post": {
                 "security": [
                     {
@@ -187,7 +187,7 @@
                 }
             }
         },
-        "/api/getApiList": {
+        "/api/api/getApiList": {
             "post": {
                 "security": [
                     {
@@ -225,7 +225,7 @@
                 }
             }
         },
-        "/api/updateApi": {
+        "/api/api/updateApi": {
             "post": {
                 "security": [
                     {
@@ -263,7 +263,7 @@
                 }
             }
         },
-        "/authority/createAuthority": {
+        "/api/authority/createAuthority": {
             "post": {
                 "security": [
                     {
@@ -301,7 +301,7 @@
                 }
             }
         },
-        "/authority/deleteAuthority": {
+        "/api/authority/deleteAuthority": {
             "post": {
                 "security": [
                     {
@@ -339,7 +339,7 @@
                 }
             }
         },
-        "/authority/getAuthorityList": {
+        "/api/authority/getAuthorityList": {
             "post": {
                 "security": [
                     {
@@ -377,7 +377,7 @@
                 }
             }
         },
-        "/authority/updateAuthority": {
+        "/api/authority/updateAuthority": {
             "post": {
                 "security": [
                     {
@@ -415,7 +415,7 @@
                 }
             }
         },
-        "/base/captcha": {
+        "/api/base/captcha": {
             "post": {
                 "security": [
                     {
@@ -442,7 +442,7 @@
                 }
             }
         },
-        "/base/login": {
+        "/api/base/login": {
             "post": {
                 "produces": [
                     "application/json"
@@ -472,7 +472,7 @@
                 }
             }
         },
-        "/casbin/UpdateCasbin": {
+        "/api/casbin/UpdateCasbin": {
             "post": {
                 "security": [
                     {
@@ -510,7 +510,7 @@
                 }
             }
         },
-        "/casbin/getPolicyPathByAuthorityId": {
+        "/api/casbin/getPolicyPathByAuthorityId": {
             "post": {
                 "security": [
                     {
@@ -548,7 +548,7 @@
                 }
             }
         },
-        "/department/addDept": {
+        "/api/department/addDept": {
             "post": {
                 "security": [
                     {
@@ -595,7 +595,7 @@
                 }
             }
         },
-        "/department/deleteDept": {
+        "/api/department/deleteDept": {
             "post": {
                 "security": [
                     {
@@ -642,7 +642,7 @@
                 }
             }
         },
-        "/department/id": {
+        "/api/department/id": {
             "post": {
                 "security": [
                     {
@@ -692,7 +692,7 @@
                 }
             }
         },
-        "/department/lists": {
+        "/api/department/lists": {
             "post": {
                 "security": [
                     {
@@ -742,7 +742,7 @@
                 }
             }
         },
-        "/department/updateDept": {
+        "/api/department/updateDept": {
             "post": {
                 "security": [
                     {
@@ -789,7 +789,7 @@
                 }
             }
         },
-        "/department/users": {
+        "/api/department/users": {
             "post": {
                 "security": [
                     {
@@ -824,7 +824,7 @@
                 }
             }
         },
-        "/file/upload": {
+        "/api/file/upload": {
             "post": {
                 "security": [
                     {
@@ -860,7 +860,7 @@
                 }
             }
         },
-        "/jwt/jsonInBlacklist": {
+        "/api/jwt/jsonInBlacklist": {
             "post": {
                 "security": [
                     {
@@ -887,7 +887,7 @@
                 }
             }
         },
-        "/menu/addBaseMenu": {
+        "/api/menu/addBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -934,7 +934,7 @@
                 }
             }
         },
-        "/menu/addMenuAuthority": {
+        "/api/menu/addMenuAuthority": {
             "post": {
                 "security": [
                     {
@@ -984,7 +984,7 @@
                 }
             }
         },
-        "/menu/deleteBaseMenu": {
+        "/api/menu/deleteBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -1031,7 +1031,7 @@
                 }
             }
         },
-        "/menu/getBaseMenuById": {
+        "/api/menu/getBaseMenuById": {
             "post": {
                 "security": [
                     {
@@ -1084,7 +1084,7 @@
                 }
             }
         },
-        "/menu/getBaseMenuTree": {
+        "/api/menu/getBaseMenuTree": {
             "post": {
                 "security": [
                     {
@@ -1134,7 +1134,7 @@
                 }
             }
         },
-        "/menu/getMenu": {
+        "/api/menu/getMenu": {
             "post": {
                 "security": [
                     {
@@ -1184,7 +1184,7 @@
                 }
             }
         },
-        "/menu/getMenuAuthority": {
+        "/api/menu/getMenuAuthority": {
             "post": {
                 "security": [
                     {
@@ -1238,7 +1238,7 @@
                 }
             }
         },
-        "/menu/getMenuList": {
+        "/api/menu/getMenuList": {
             "post": {
                 "security": [
                     {
@@ -1288,7 +1288,7 @@
                 }
             }
         },
-        "/menu/updateBaseMenu": {
+        "/api/menu/updateBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -1335,7 +1335,7 @@
                 }
             }
         },
-        "/sysOperationRecord/createSysOperationRecord": {
+        "/api/sysOperationRecord/createSysOperationRecord": {
             "post": {
                 "security": [
                     {
@@ -1373,7 +1373,7 @@
                 }
             }
         },
-        "/sysOperationRecord/deleteSysOperationRecord": {
+        "/api/sysOperationRecord/deleteSysOperationRecord": {
             "delete": {
                 "security": [
                     {
@@ -1411,7 +1411,7 @@
                 }
             }
         },
-        "/sysOperationRecord/deleteSysOperationRecordByIds": {
+        "/api/sysOperationRecord/deleteSysOperationRecordByIds": {
             "delete": {
                 "security": [
                     {
@@ -1449,7 +1449,7 @@
                 }
             }
         },
-        "/sysOperationRecord/findSysOperationRecord": {
+        "/api/sysOperationRecord/findSysOperationRecord": {
             "get": {
                 "security": [
                     {
@@ -1487,7 +1487,7 @@
                 }
             }
         },
-        "/sysOperationRecord/getSysOperationRecordList": {
+        "/api/sysOperationRecord/getSysOperationRecordList": {
             "get": {
                 "security": [
                     {
@@ -1525,7 +1525,7 @@
                 }
             }
         },
-        "/system/getServerInfo": {
+        "/api/system/getServerInfo": {
             "post": {
                 "security": [
                     {
@@ -1549,7 +1549,7 @@
                 }
             }
         },
-        "/system/getSystemConfig": {
+        "/api/system/getSystemConfig": {
             "post": {
                 "security": [
                     {
@@ -1573,7 +1573,7 @@
                 }
             }
         },
-        "/system/reloadSystem": {
+        "/api/system/reloadSystem": {
             "post": {
                 "security": [
                     {
@@ -1597,7 +1597,7 @@
                 }
             }
         },
-        "/system/setSystemConfig": {
+        "/api/system/setSystemConfig": {
             "post": {
                 "security": [
                     {
@@ -1632,7 +1632,7 @@
                 }
             }
         },
-        "/user/changePassword": {
+        "/api/user/changePassword": {
             "put": {
                 "security": [
                     {
@@ -1667,7 +1667,7 @@
                 }
             }
         },
-        "/user/deleteUser": {
+        "/api/user/deleteUser": {
             "delete": {
                 "security": [
                     {
@@ -1705,7 +1705,7 @@
                 }
             }
         },
-        "/user/downloadTemplate": {
+        "/api/user/downloadTemplate": {
             "post": {
                 "security": [
                     {
@@ -1740,7 +1740,7 @@
                 }
             }
         },
-        "/user/exportExcel": {
+        "/api/user/exportExcel": {
             "post": {
                 "security": [
                     {
@@ -1775,7 +1775,7 @@
                 }
             }
         },
-        "/user/getUserByAuthority": {
+        "/api/user/getUserByAuthority": {
             "post": {
                 "security": [
                     {
@@ -1813,7 +1813,7 @@
                 }
             }
         },
-        "/user/getUserInfo": {
+        "/api/user/getUserInfo": {
             "get": {
                 "security": [
                     {
@@ -1840,45 +1840,7 @@
                 }
             }
         },
-        "/user/getUserList": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "SysUser"
-                ],
-                "summary": "分页获取用户列表",
-                "parameters": [
-                    {
-                        "description": "页码, 每页大小",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.PageInfo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/importExcel": {
+        "/api/user/importExcel": {
             "post": {
                 "security": [
                     {
@@ -1926,7 +1888,7 @@
                 }
             }
         },
-        "/user/loadExcel": {
+        "/api/user/loadExcel": {
             "get": {
                 "security": [
                     {
@@ -1965,7 +1927,7 @@
                 }
             }
         },
-        "/user/register": {
+        "/api/user/register": {
             "post": {
                 "produces": [
                     "application/json"
@@ -1995,7 +1957,7 @@
                 }
             }
         },
-        "/user/setSelfInfo": {
+        "/api/user/setSelfInfo": {
             "put": {
                 "security": [
                     {
@@ -2033,7 +1995,7 @@
                 }
             }
         },
-        "/user/setUserAuthorities": {
+        "/api/user/setUserAuthorities": {
             "post": {
                 "security": [
                     {
@@ -2071,7 +2033,7 @@
                 }
             }
         },
-        "/user/setUserAuthority": {
+        "/api/user/setUserAuthority": {
             "post": {
                 "security": [
                     {
@@ -2109,7 +2071,7 @@
                 }
             }
         },
-        "/user/setUserInfo": {
+        "/api/user/setUserInfo": {
             "put": {
                 "security": [
                     {
@@ -2140,6 +2102,44 @@
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"设置成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/apiuser/getUserList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "分页获取用户列表",
+                "parameters": [
+                    {
+                        "description": "页码, 每页大小",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PageInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
                         "schema": {
                             "type": "string"
                         }

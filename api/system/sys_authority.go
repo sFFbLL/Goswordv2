@@ -23,7 +23,7 @@ type AuthorityApi struct {
 // @Produce application/json
 // @Param data body system.SysAuthority true "权限id, 权限名, 父角色id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /authority/createAuthority [post]
+// @Router /api/authority/createAuthority [post]
 func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
 	var r systemReq.SysAuthorityCreateRequest
 	_ = c.ShouldBindJSON(&r)
@@ -62,7 +62,7 @@ func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysAuthority true "删除角色"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"删除成功"}"
-// @Router /authority/deleteAuthority [post]
+// @Router /api/authority/deleteAuthority [post]
 func (a *AuthorityApi) DeleteAuthority(c *gin.Context) {
 	var authority system.SysAuthority
 	_ = c.ShouldBindJSON(&authority)
@@ -99,7 +99,7 @@ func (a *AuthorityApi) DeleteAuthority(c *gin.Context) {
 // @Produce application/json
 // @Param data body system.SysAuthority true "权限id, 权限名, 父角色id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
-// @Router /authority/updateAuthority [post]
+// @Router /api/authority/updateAuthority [post]
 func (a *AuthorityApi) UpdateAuthority(c *gin.Context) {
 	var r systemReq.SysAuthorityUpdateRequest
 	_ = c.ShouldBindJSON(&r)
@@ -140,7 +140,7 @@ func (a *AuthorityApi) UpdateAuthority(c *gin.Context) {
 // @Produce application/json
 // @Param data body request.PageInfo true "页码, 每页大小"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"获取成功"}"
-// @Router /authority/getAuthorityList [post]
+// @Router /api/authority/getAuthorityList [post]
 func (a *AuthorityApi) GetAuthorityList(c *gin.Context) {
 	var pageInfo request.PageInfo
 	_ = c.ShouldBindJSON(&pageInfo)

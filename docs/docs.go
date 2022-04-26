@@ -16,7 +16,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/createApi": {
+        "/api/api/createApi": {
             "post": {
                 "security": [
                     {
@@ -54,7 +54,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/deleteApi": {
+        "/api/api/deleteApi": {
             "post": {
                 "security": [
                     {
@@ -92,7 +92,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/deleteApisByIds": {
+        "/api/api/deleteApisByIds": {
             "delete": {
                 "security": [
                     {
@@ -130,7 +130,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/getAllApis": {
+        "/api/api/getAllApis": {
             "post": {
                 "security": [
                     {
@@ -157,7 +157,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/getApiById": {
+        "/api/api/getApiById": {
             "post": {
                 "security": [
                     {
@@ -195,7 +195,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/getApiList": {
+        "/api/api/getApiList": {
             "post": {
                 "security": [
                     {
@@ -233,7 +233,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/updateApi": {
+        "/api/api/updateApi": {
             "post": {
                 "security": [
                     {
@@ -271,7 +271,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/authority/createAuthority": {
+        "/api/authority/createAuthority": {
             "post": {
                 "security": [
                     {
@@ -309,7 +309,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/authority/deleteAuthority": {
+        "/api/authority/deleteAuthority": {
             "post": {
                 "security": [
                     {
@@ -347,7 +347,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/authority/getAuthorityList": {
+        "/api/authority/getAuthorityList": {
             "post": {
                 "security": [
                     {
@@ -385,7 +385,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/authority/updateAuthority": {
+        "/api/authority/updateAuthority": {
             "post": {
                 "security": [
                     {
@@ -423,7 +423,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/base/captcha": {
+        "/api/base/captcha": {
             "post": {
                 "security": [
                     {
@@ -450,7 +450,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/base/login": {
+        "/api/base/login": {
             "post": {
                 "produces": [
                     "application/json"
@@ -480,7 +480,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/casbin/UpdateCasbin": {
+        "/api/casbin/UpdateCasbin": {
             "post": {
                 "security": [
                     {
@@ -518,7 +518,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/casbin/getPolicyPathByAuthorityId": {
+        "/api/casbin/getPolicyPathByAuthorityId": {
             "post": {
                 "security": [
                     {
@@ -556,7 +556,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/addDept": {
+        "/api/department/addDept": {
             "post": {
                 "security": [
                     {
@@ -603,7 +603,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/deleteDept": {
+        "/api/department/deleteDept": {
             "post": {
                 "security": [
                     {
@@ -650,7 +650,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/id": {
+        "/api/department/id": {
             "post": {
                 "security": [
                     {
@@ -700,7 +700,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/lists": {
+        "/api/department/lists": {
             "post": {
                 "security": [
                     {
@@ -750,7 +750,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/updateDept": {
+        "/api/department/updateDept": {
             "post": {
                 "security": [
                     {
@@ -797,7 +797,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/department/users": {
+        "/api/department/users": {
             "post": {
                 "security": [
                     {
@@ -832,7 +832,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/file/upload": {
+        "/api/file/upload": {
             "post": {
                 "security": [
                     {
@@ -868,7 +868,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/jwt/jsonInBlacklist": {
+        "/api/jwt/jsonInBlacklist": {
             "post": {
                 "security": [
                     {
@@ -895,7 +895,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/addBaseMenu": {
+        "/api/menu/addBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -942,7 +942,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/addMenuAuthority": {
+        "/api/menu/addMenuAuthority": {
             "post": {
                 "security": [
                     {
@@ -992,7 +992,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/deleteBaseMenu": {
+        "/api/menu/deleteBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -1039,7 +1039,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/getBaseMenuById": {
+        "/api/menu/getBaseMenuById": {
             "post": {
                 "security": [
                     {
@@ -1092,7 +1092,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/getBaseMenuTree": {
+        "/api/menu/getBaseMenuTree": {
             "post": {
                 "security": [
                     {
@@ -1142,7 +1142,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/getMenu": {
+        "/api/menu/getMenu": {
             "post": {
                 "security": [
                     {
@@ -1192,7 +1192,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/getMenuAuthority": {
+        "/api/menu/getMenuAuthority": {
             "post": {
                 "security": [
                     {
@@ -1246,7 +1246,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/getMenuList": {
+        "/api/menu/getMenuList": {
             "post": {
                 "security": [
                     {
@@ -1296,7 +1296,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/menu/updateBaseMenu": {
+        "/api/menu/updateBaseMenu": {
             "post": {
                 "security": [
                     {
@@ -1343,7 +1343,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sysOperationRecord/createSysOperationRecord": {
+        "/api/sysOperationRecord/createSysOperationRecord": {
             "post": {
                 "security": [
                     {
@@ -1381,7 +1381,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sysOperationRecord/deleteSysOperationRecord": {
+        "/api/sysOperationRecord/deleteSysOperationRecord": {
             "delete": {
                 "security": [
                     {
@@ -1419,7 +1419,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sysOperationRecord/deleteSysOperationRecordByIds": {
+        "/api/sysOperationRecord/deleteSysOperationRecordByIds": {
             "delete": {
                 "security": [
                     {
@@ -1457,7 +1457,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sysOperationRecord/findSysOperationRecord": {
+        "/api/sysOperationRecord/findSysOperationRecord": {
             "get": {
                 "security": [
                     {
@@ -1495,7 +1495,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/sysOperationRecord/getSysOperationRecordList": {
+        "/api/sysOperationRecord/getSysOperationRecordList": {
             "get": {
                 "security": [
                     {
@@ -1533,7 +1533,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/system/getServerInfo": {
+        "/api/system/getServerInfo": {
             "post": {
                 "security": [
                     {
@@ -1557,7 +1557,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/system/getSystemConfig": {
+        "/api/system/getSystemConfig": {
             "post": {
                 "security": [
                     {
@@ -1581,7 +1581,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/system/reloadSystem": {
+        "/api/system/reloadSystem": {
             "post": {
                 "security": [
                     {
@@ -1605,7 +1605,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/system/setSystemConfig": {
+        "/api/system/setSystemConfig": {
             "post": {
                 "security": [
                     {
@@ -1640,7 +1640,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/changePassword": {
+        "/api/user/changePassword": {
             "put": {
                 "security": [
                     {
@@ -1675,7 +1675,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/deleteUser": {
+        "/api/user/deleteUser": {
             "delete": {
                 "security": [
                     {
@@ -1713,7 +1713,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/downloadTemplate": {
+        "/api/user/downloadTemplate": {
             "post": {
                 "security": [
                     {
@@ -1748,7 +1748,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/exportExcel": {
+        "/api/user/exportExcel": {
             "post": {
                 "security": [
                     {
@@ -1783,7 +1783,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/getUserByAuthority": {
+        "/api/user/getUserByAuthority": {
             "post": {
                 "security": [
                     {
@@ -1821,7 +1821,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/getUserInfo": {
+        "/api/user/getUserInfo": {
             "get": {
                 "security": [
                     {
@@ -1848,45 +1848,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/getUserList": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "SysUser"
-                ],
-                "summary": "分页获取用户列表",
-                "parameters": [
-                    {
-                        "description": "页码, 每页大小",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.PageInfo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
-        "/user/importExcel": {
+        "/api/user/importExcel": {
             "post": {
                 "security": [
                     {
@@ -1934,7 +1896,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/loadExcel": {
+        "/api/user/loadExcel": {
             "get": {
                 "security": [
                     {
@@ -1973,7 +1935,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/register": {
+        "/api/user/register": {
             "post": {
                 "produces": [
                     "application/json"
@@ -2003,7 +1965,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/setSelfInfo": {
+        "/api/user/setSelfInfo": {
             "put": {
                 "security": [
                     {
@@ -2041,7 +2003,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/setUserAuthorities": {
+        "/api/user/setUserAuthorities": {
             "post": {
                 "security": [
                     {
@@ -2079,7 +2041,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/setUserAuthority": {
+        "/api/user/setUserAuthority": {
             "post": {
                 "security": [
                     {
@@ -2117,7 +2079,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/setUserInfo": {
+        "/api/user/setUserInfo": {
             "put": {
                 "security": [
                     {
@@ -2148,6 +2110,44 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"设置成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/apiuser/getUserList": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SysUser"
+                ],
+                "summary": "分页获取用户列表",
+                "parameters": [
+                    {
+                        "description": "页码, 每页大小",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PageInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
                         "schema": {
                             "type": "string"
                         }
