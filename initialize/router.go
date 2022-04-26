@@ -17,7 +17,7 @@ import (
 func Routers() *gin.Engine {
 	var Router = gin.New()
 	Router.Use(middleware.GinLogger(), middleware.GinRecovery(true))
-	Router.StaticFS("/api"+global.GSD_CONFIG.Local.Path, http.Dir(global.GSD_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
+	Router.StaticFS("/api/"+global.GSD_CONFIG.Local.Path, http.Dir(global.GSD_CONFIG.Local.Path)) // 为用户头像和文件提供静态地址
 	global.GSD_LOG.Info("use middleware logger")
 	// 跨域
 	Router.Use(middleware.Cors()) // 如需跨域可以打开
