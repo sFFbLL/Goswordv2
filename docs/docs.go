@@ -3867,11 +3867,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{},
-<<<<<<< HEAD
 	Title:            "GoSword API",
-=======
-	Title:            "Work-Flow API",
->>>>>>> develop
 	Description:      "This is a sample Server pets",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
