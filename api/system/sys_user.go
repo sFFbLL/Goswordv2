@@ -519,7 +519,7 @@ func (b *BaseApi) ExportExcel(c *gin.Context) {
 // @Produce  application/octet-stream
 // @Param data body system.ExcelInfo true "下载模板信息"
 // @Success 200
-// @Router /api/user/downloadTemplate [post]
+// @Router /api/user/downloadTemplate [get]
 func (b *BaseApi) DownloadTemplate(c *gin.Context) {
 	name := c.Query("fileName")
 	filePath := global.GSD_CONFIG.Excel.Dir + name

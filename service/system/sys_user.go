@@ -10,6 +10,7 @@ import (
 	"project/model/system"
 	"project/utils"
 	"strconv"
+	"strings"
 
 	uuid "github.com/satori/go.uuid"
 	"github.com/xuri/excelize/v2"
@@ -255,7 +256,7 @@ func (userService *UserService) FindUserInfoByAuthority(authorityId uint) (err e
 //@return: user []system.SysUser, err error
 func (userService *UserService) ParseExcelToDataList() ([]system.SysUser, error) {
 	skipHeader := true
-	fixedHeader := []string{"ID", "用户名", "昵称", "电话号", "邮箱", "部门名称"}
+	fixedHeader := []string{"ID", "用户名", "昵称", "手机号", "邮箱", "角色名称", "部门名称"}
 	file, err := excelize.OpenFile(global.GSD_CONFIG.Excel.Dir + "ExcelImport.xlsx")
 	if err != nil {
 		return nil, err
@@ -282,17 +283,40 @@ func (userService *UserService) ParseExcelToDataList() ([]system.SysUser, error)
 			continue
 		}
 		id, _ := strconv.Atoi(row[0])
-		user := system.SysUser{
-			GSD_MODEL: global.GSD_MODEL{
-				ID: uint(id),
-			},
-			Username: row[1],
-			NickName: row[2],
-			Phone:    row[3],
-			Email:    row[4],
-			Dept:     system.SysDept{DeptName: row[5]},
+		contains := strings.Contains(row[5], "、")
+		if contains {
+			split := strings.Split(row[5], "、")
+			var authorities []system.SysAuthority
+			for i := 0; i < len(split); i++ {
+				authorities = append(authorities, system.SysAuthority{AuthorityName: split[i]})
+			}
+			user := system.SysUser{
+				GSD_MODEL: global.GSD_MODEL{
+					ID: uint(id),
+				},
+				Username:    row[1],
+				NickName:    row[2],
+				Phone:       row[3],
+				Email:       row[4],
+				Authorities: authorities,
+				Dept:        system.SysDept{DeptName: row[6]},
+			}
+			users = append(users, user)
+		} else {
+			user := system.SysUser{
+				GSD_MODEL: global.GSD_MODEL{
+					ID: uint(id),
+				},
+				Username:  row[1],
+				NickName:  row[2],
+				Phone:     row[3],
+				Email:     row[4],
+				Authority: system.SysAuthority{AuthorityName: row[5]},
+				Dept:      system.SysDept{DeptName: row[6]},
+			}
+			users = append(users, user)
 		}
-		users = append(users, user)
+
 	}
 	return users, nil
 }
@@ -304,7 +328,7 @@ func (userService *UserService) ParseExcelToDataList() ([]system.SysUser, error)
 //@return: err error
 func (userService *UserService) ParseDataListToExcel(info []system.SysUser, path string) error {
 	excel := excelize.NewFile()
-	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "电话号", "邮箱", "部门名称"})
+	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "手机号", "邮箱", "角色名称", "部门名称"})
 	for i, user := range info {
 		axis := fmt.Sprintf("A%d", i+2)
 		excel.SetSheetRow("Sheet1", axis, &[]interface{}{
@@ -313,6 +337,7 @@ func (userService *UserService) ParseDataListToExcel(info []system.SysUser, path
 			user.NickName,
 			user.Phone,
 			user.Email,
+			user.Authority.AuthorityName,
 			user.Dept.DeptName,
 		})
 	}
@@ -327,7 +352,7 @@ func (userService *UserService) ParseDataListToExcel(info []system.SysUser, path
 //@return: err error
 func (userService *UserService) Template(path string) error {
 	excel := excelize.NewFile()
-	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "电话号", "邮箱", "部门名称"})
+	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "手机号", "邮箱", "角色名称", "部门名称"})
 	axis := fmt.Sprintf("A%d", 2)
 	excel.SetSheetRow("Sheet1", axis, &[]interface{}{
 		"1",
@@ -335,9 +360,19 @@ func (userService *UserService) Template(path string) error {
 		"测试用户",
 		"156***",
 		"xxx@xx.com",
+		"超级管理员",
 		"顶级部门",
 	})
-
+	axisT := fmt.Sprintf("A%d", 3)
+	excel.SetSheetRow("Sheet1", axisT, &[]interface{}{
+		"1",
+		"test",
+		"测试用户",
+		"156***",
+		"xxx@xx.com",
+		"超级管理员、测试管理员",
+		"顶级部门",
+	})
 	err := excel.SaveAs(path)
 	return err
 }

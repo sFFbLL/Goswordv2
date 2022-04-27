@@ -68,17 +68,13 @@ func (departService *DeptService) UpdateDepartment(dept system.SysDept) (err err
 //@description: 查询部门列表
 //@param: info request.PageInfo
 //@return: error
-func (departService *DeptService) GetDeptList(info request.PageInfo, deptId []uint, isAll bool) (err error, list interface{}, total int64) {
+func (departService *DeptService) GetDeptList(info request.PageInfo) (err error, list interface{}, total int64) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	db := global.GSD_DB.Model(&system.SysDept{})
 	var dept []system.SysDept
 	err = db.Where("parent_id = ?", 0).Count(&total).Error
-	if isAll {
-		err = db.Limit(limit).Offset(offset).Find(&dept).Order("dept_sort").Error
-	} else {
-		err = db.Where("id in (?)", deptId).Limit(limit).Offset(offset).Find(&dept).Order("dept_sort").Error
-	}
+	err = db.Limit(limit).Offset(offset).Find(&dept).Order("dept_sort").Error
 	if len(dept) > 0 {
 		for i := range dept {
 			err = departService.findChildrenDepartment(&dept[i])
