@@ -10,7 +10,11 @@ import (
 //go:generate go mod tidy -go=1.16
 //go:generate go mod download
 
+<<<<<<< HEAD
 // @title                       GoSword API
+=======
+// @title                       Work-Flow API
+>>>>>>> develop
 // @version                     0.0.1
 // @description                 This is a sample Server pets
 // @securityDefinitions.apikey  ApiKeyAuth
