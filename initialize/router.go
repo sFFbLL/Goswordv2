@@ -28,10 +28,6 @@ func Routers() *gin.Engine {
 
 	//获取路由组实例
 	systemRouter := router.RouterGroupApp.System
-<<<<<<< HEAD
-=======
-	workFlowRouter := router.RouterGroupApp.WorkFlow
->>>>>>> develop
 	PublicGroup := Router.Group("api")
 	{
 		systemRouter.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
@@ -48,17 +44,10 @@ func Routers() *gin.Engine {
 		systemRouter.InitCasbinRouter(PrivateGroup)             // 权限相关路由
 		systemRouter.InitAuthorityRouter(PrivateGroup)          // 注册角色路由
 		systemRouter.InitSysOperationRecordRouter(PrivateGroup) // 操作记录
-<<<<<<< HEAD
 		systemRouter.InitFileRouter(PrivateGroup)               //文件操作
-=======
 		//systemRouter.InitSysDictionaryDetailRouter(PrivateGroup)    // 字典详情管理
 		systemRouter.InitFileRouter(PrivateGroup) //文件操作
 
-		//work_flow 路由
-		workFlowRouter.InitTaskRouter(PrivateGroup)   //任务路由
-		workFlowRouter.InitAppRouter(PrivateGroup)    //应用路由
-		workFlowRouter.InitRecordRouter(PrivateGroup) //记录路由
->>>>>>> develop
 	}
 	global.GSD_LOG.Info("router register success")
 	return Router
