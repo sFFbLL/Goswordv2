@@ -8,6 +8,7 @@ import (
 	systemReq "project/model/system/request"
 	systemRes "project/model/system/response"
 	"project/utils"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -51,7 +52,12 @@ func (a *AuthorityApi) CreateAuthority(c *gin.Context) {
 		global.GSD_LOG.Error("创建失败!", zap.Any("err", err), utils.GetRequestID(c))
 		response.FailWithMessage("创建失败"+err.Error(), c)
 	} else {
-		response.OkWithDetailed(systemRes.SysAuthorityResponse{Authority: authBack}, "创建成功", c)
+		err := casbinService.UpdateCasbin(strconv.Itoa(int(authBack.AuthorityId)), systemReq.DefaultCasbin())
+		if err != nil {
+			response.FailWithMessage("默认权限分配失败，请先自行分配默认权限", c)
+			return
+		}
+		response.OkWithDetailed(systemRes.SysAuthorityResponse{Authority: authBack}, "创建成功,角色默认权限配置成功", c)
 	}
 }
 
