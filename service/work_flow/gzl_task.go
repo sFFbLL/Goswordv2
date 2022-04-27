@@ -59,7 +59,7 @@ func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.Sc
 		Where("node_type = ? AND Inspector = ?", 3, userId).
 		Find(&recordIds)
 	for i := 0; i < len(recordIds); i++ {
-		var task modelWF.GzlTask
+		var task []modelWF.GzlTask
 		err = global.GSD_DB.
 			Where("record_id = ? AND updated_at is NULL", recordIds[i]).
 			Preload("Record.App").
@@ -67,15 +67,23 @@ func (t TaskService) GetScheduleList(userId uint) (scheduleData []WorkFlowRes.Sc
 		if err != nil {
 			return
 		}
-		schedule := WorkFlowRes.ScheduleList{
-			CreatedAt:   task.CreatedAt,
-			RecordId:    task.RecordId,
-			Applicant:   t.GetUserNickName(task.Record.CreateBy),
-			CurrentNode: t.GetNodeName(task.Record.App.Flow, task.Record.CurrentNode),
-			AppName:     task.Record.App.Name,
-			CheckState:  task.CheckState,
+		if len(task) > 0 {
+			schedule := WorkFlowRes.ScheduleList{
+				CreatedAt:   task[0].CreatedAt,
+				RecordId:    task[0].RecordId,
+				Applicant:   t.GetUserNickName(task[0].Record.CreateBy),
+				CurrentNode: t.GetNodeName(task[0].Record.App.Flow, task[0].Record.CurrentNode),
+				AppName:     task[0].Record.App.Name,
+				CheckState:  task[0].CheckState,
+			}
+			for j := 0; j < len(task); j++ {
+				Inspector := t.GetUserNickName(task[j].Inspector)
+				if Inspector != "" {
+					schedule.Inspectors = append(schedule.Inspectors, Inspector)
+				}
+			}
+			scheduleData = append(scheduleData, schedule)
 		}
-		scheduleData = append(scheduleData, schedule)
 	}
 	return
 }

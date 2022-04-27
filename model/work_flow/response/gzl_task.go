@@ -31,6 +31,7 @@ type ScheduleList struct {
 	RecordId     uint      `json:"recordId"`     // 记录id
 	CreatedAt   time.Time `json:"createdAt"`   // 创建时间
 	Applicant   string    `json:"applicant"`   // 申请人
+	Inspectors   []string  `json:"inspector"`    // 审批人
 	AppName     string    `json:"name"`        //应用名称
 	CurrentNode string    `json:"currentNode"` //当前节点
 	CheckState  uint8     `json:"checkState"`  //审批状态
