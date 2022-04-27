@@ -96,9 +96,7 @@ func (d *DeptApi) GetDeptList(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	user := utils.GetUser(c)
-	scope, all := dataScope.GetDataScope(user)
-	if err, deptList, total := DeptService.GetDeptList(pageInfo, scope, all); err != nil {
+	if err, deptList, total := DeptService.GetDeptList(pageInfo); err != nil {
 		global.GSD_LOG.Error("获取失败!", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("获取失败", c)
 	} else {
