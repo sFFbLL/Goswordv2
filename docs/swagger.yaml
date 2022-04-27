@@ -237,19 +237,6 @@ definitions:
         description: 栈名
         type: string
     type: object
-  request.AddApp:
-    properties:
-      icon:
-        type: string
-      name:
-        type: string
-    type: object
-  request.AddFlow:
-    properties:
-      appId:
-        type: integer
-      flow: {}
-    type: object
   request.AddMenuAuthorityInfo:
     properties:
       authorityId:
@@ -258,23 +245,6 @@ definitions:
       menus:
         items:
           $ref: '#/definitions/system.SysBaseMenu'
-        type: array
-    type: object
-  request.AuthorityApp:
-    properties:
-      appId:
-        type: integer
-      authoritys:
-        items:
-          type: integer
-        type: array
-      depts:
-        items:
-          type: integer
-        type: array
-      users:
-        items:
-          type: integer
         type: array
     type: object
   request.CasbinInReceive:
@@ -309,13 +279,6 @@ definitions:
         type: string
     type: object
   request.Empty:
-    type: object
-  request.EnableApp:
-    properties:
-      appId:
-        type: integer
-      isEnable:
-        type: integer
     type: object
   request.GetAuthorityId:
     properties:
@@ -832,11 +795,7 @@ definitions:
 info:
   contact: {}
   description: This is a sample Server pets
-<<<<<<< HEAD
   title: GoSword API
-=======
-  title: Work-Flow API
->>>>>>> develop
   version: 0.0.1
 paths:
   /api/api/createApi:
@@ -993,155 +952,6 @@ paths:
       summary: 创建基础api
       tags:
       - SysApi
-<<<<<<< HEAD
-=======
-  /api/app/:
-    post:
-      parameters:
-      - description: 应用名称，应用图标
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.AddApp'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"创建应用成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 创建应用
-      tags:
-      - App
-  /api/app/authority:
-    post:
-      parameters:
-      - description: 应用id,部门s，角色s，用户s
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.AuthorityApp'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"应用权限分配成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 应用权限分配
-      tags:
-      - App
-  /api/app/create:
-    post:
-      parameters:
-      - description: 创建人
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"创建表单成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 创建表单
-      tags:
-      - App
-  /api/app/empty:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - in: query
-        name: appId
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"null"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 返回空表单
-      tags:
-      - App
-  /api/app/enable:
-    post:
-      parameters:
-      - description: 应用id,是否启用(1不启用默认，2启用)
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.EnableApp'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"应用启用成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 启用应用
-      tags:
-      - App
-  /api/app/flow:
-    post:
-      parameters:
-      - description: 应用id,流程
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.AddFlow'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"流程提交成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 添加应用流程
-      tags:
-      - App
-  /api/app/form:
-    post:
-      parameters:
-      - description: 应用id，表单
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.AddFlow'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"表单提交成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 添加应用表单
-      tags:
-      - App
->>>>>>> develop
   /api/authority/createAuthority:
     post:
       consumes:
@@ -1759,73 +1569,6 @@ paths:
       summary: 菜单管理-更新菜单
       tags:
       - Menu
-<<<<<<< HEAD
-=======
-  /api/record/data:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - in: query
-        name: recordId
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"null"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 返回之前填写过的表单数据
-      tags:
-      - Record
-  /api/record/initiated:
-    get:
-      parameters:
-      - description: 创建人
-        in: body
-        name: data
-        required: true
-        schema:
-          type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"操作成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 我发起的
-      tags:
-      - Record
-  /api/record/submit:
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: string
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.RecordSubmit'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"null"}'
-          schema:
-            type: ""
-      security:
-      - ApiKeyAuth: []
-      summary: 提交表单
-      tags:
-      - Record
->>>>>>> develop
   /api/sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
@@ -2004,102 +1747,6 @@ paths:
       summary: 设置配置文件内容
       tags:
       - System
-<<<<<<< HEAD
-=======
-  /api/task/dynamic:
-    get:
-      consumes:
-      - application/json
-      parameters:
-      - description: 记录id
-        in: query
-        name: recordId
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"ok"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 流程动态信息
-      tags:
-      - Task
-  /api/task/handle:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"查询我处理的任务成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 我处理的
-      tags:
-      - Task
-  /api/task/inspect:
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: 任务id，状态
-        in: body
-        name: data
-        required: true
-        schema:
-          $ref: '#/definitions/request.Inspect'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"审批成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 审批（通过||拒绝）
-      tags:
-      - Task
-  /api/task/receive:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"查询我收到的任务成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 我收到的
-      tags:
-      - Task
-  /api/task/schedule:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"success":true,"data":{},"msg":"查询待办任务成功"}'
-          schema:
-            type: string
-      security:
-      - ApiKeyAuth: []
-      summary: 我的待办
-      tags:
-      - Task
->>>>>>> develop
   /api/user/changePassword:
     put:
       parameters:
@@ -2145,7 +1792,7 @@ paths:
       tags:
       - SysUser
   /api/user/downloadTemplate:
-    post:
+    get:
       consumes:
       - application/json
       parameters:
