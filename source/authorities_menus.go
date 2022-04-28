@@ -27,6 +27,7 @@ var authorityMenus = []AuthorityMenus{
 	{1, 8},
 	{1, 9},
 	{1, 10},
+	{1, 11},
 }
 
 // Init @author: [chenguanglan](https://github.com/sFFbLL)
