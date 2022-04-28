@@ -145,7 +145,7 @@ func (b *BaseApi) Register(c *gin.Context) {
 		}
 	}
 	curUser := utils.GetUser(c)
-	user := &system.SysUser{GSD_MODEL: global.GSD_MODEL{CreateBy: curUser.ID, UpdateBy: curUser.ID}, Username: r.Username, NickName: r.NickName, Password: r.Password, Authorities: authorities, DeptId: r.DeptId}
+	user := &system.SysUser{GSD_MODEL: global.GSD_MODEL{CreateBy: curUser.ID, UpdateBy: curUser.ID}, Username: r.Username, NickName: r.NickName, Password: r.Password, Phone: r.Phone, Email: r.Email, Authorities: authorities, DeptId: r.DeptId}
 	//数据权限校验
 	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{user})
 	if !canDo {
