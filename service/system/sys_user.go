@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go.uber.org/zap"
+	"os"
 	"project/global"
 	"project/model/common/request"
 	"project/model/system"
@@ -343,15 +345,27 @@ func (userService *UserService) ParseDataListToExcel(info []system.SysUser, path
 	excel.SetSheetRow("Sheet1", "A1", &[]string{"ID", "用户名", "昵称", "手机号", "邮箱", "角色名称", "部门名称"})
 	for i, user := range info {
 		axis := fmt.Sprintf("A%d", i+2)
+		userAuthority := ""
+		for index, authority := range user.Authorities {
+			if index != len(user.Authorities)-1 {
+				userAuthority += authority.AuthorityName + ", "
+			}
+			userAuthority += authority.AuthorityName
+		}
 		excel.SetSheetRow("Sheet1", axis, &[]interface{}{
 			user.ID,
 			user.Username,
 			user.NickName,
 			user.Phone,
 			user.Email,
-			user.Authority.AuthorityName,
+			userAuthority,
 			user.Dept.DeptName,
 		})
+	}
+	mkdirErr := os.MkdirAll(global.GSD_CONFIG.Excel.Dir, os.ModePerm)
+	if mkdirErr != nil {
+		global.GSD_LOG.Error("function os.MkdirAll() Filed", zap.Any("err", mkdirErr.Error()))
+		return errors.New("function os.MkdirAll() Filed, err:" + mkdirErr.Error())
 	}
 	err := excel.SaveAs(path)
 	return err
