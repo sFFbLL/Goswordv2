@@ -68,7 +68,9 @@ func OperationRecord() gin.HandlerFunc {
 		record.Status = c.Writer.Status()
 		record.Latency = latency
 		record.Resp = writer.body.String()
-
+		if len(record.Resp) > 100 {
+			record.Resp = "too long 不记录"
+		}
 		if err := operationRecordService.CreateSysOperationRecord(record); err != nil {
 			global.GSD_LOG.Error("create operation record error:", zap.Any("err", err), utils.GetRequestID(c))
 		}
