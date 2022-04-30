@@ -180,7 +180,7 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 	}
 	//更新authorities
 	authorityIds := make([]uint, 0)
-	for _, authority := range user.Authorities {
+	for _, authority := range reqUser.Authorities {
 		authorityIds = append(authorityIds, authority.AuthorityId)
 	}
 	authorityIdJson, _ := json.Marshal(authorityIds)
