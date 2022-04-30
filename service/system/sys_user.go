@@ -160,17 +160,34 @@ func (userService *UserService) DeleteUser(id uint) (err error) {
 //@param: reqUser model.SysUser
 //@return: err error, user model.SysUser
 func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, user system.SysUser) {
+	err, u := userService.FindUserById(reqUser.ID)
+	if err != nil {
+		return errors.New("修改用户不存在"), system.SysUser{}
+	}
 	tx := global.GSD_DB.Begin()
 	err = tx.Updates(&reqUser).Error
 	if err != nil {
 		tx.Rollback()
+		return
 	}
 	userInfo := reqUser
 	//更新deptId
 	userInfo.DeptId = reqUser.DeptId
-	err = global.GSD_REDIS.HSet(context.Background(), reqUser.UUID.String(), "deptId", reqUser.DeptId).Err()
+	err = global.GSD_REDIS.HSet(context.Background(), u.UUID.String(), "deptId", reqUser.DeptId).Err()
 	if err != nil {
 		tx.Rollback()
+		return
+	}
+	//更新authorities
+	authorityIds := make([]uint, 0)
+	for _, authority := range reqUser.Authorities {
+		authorityIds = append(authorityIds, authority.AuthorityId)
+	}
+	authorityIdJson, _ := json.Marshal(authorityIds)
+	err = global.GSD_REDIS.HSet(context.Background(), u.UUID.String(), "authorityId", authorityIdJson).Err()
+	if err != nil {
+		tx.Rollback()
+		return
 	}
 	tx.Commit()
 	return err, reqUser
