@@ -405,16 +405,18 @@ func (b *BaseApi) GetUserInfo(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
 // @Router /api/user/setUserInfo [put]
 func (b *BaseApi) SetUserInfo(c *gin.Context) {
-	var user system.SysUser
-	_ = c.ShouldBindJSON(&user)
-	if err := utils.Verify(user, utils.IdVerify); err != nil {
+	var reqUser systemReq.SetUserInfo
+	_ = c.ShouldBindJSON(&reqUser)
+	if err := utils.Verify(reqUser, utils.IdVerify); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	user.Username = ""
-	user.Password = ""
+	authorities := make([]system.SysAuthority, 0)
+	for _, authorityId := range reqUser.AuthorityIds {
+		authorities = append(authorities, system.SysAuthority{AuthorityId: authorityId})
+	}
 	curUser := utils.GetUser(c)
-	user.CreateBy = curUser.ID
+	user := system.SysUser{GSD_MODEL: global.GSD_MODEL{ID: reqUser.ID, UpdateBy: curUser.ID}, DeptId: reqUser.DeptId, Phone: reqUser.Phone, Email: reqUser.Email, NickName: reqUser.NickName, HeaderImg: reqUser.HeadImg, UUID: reqUser.UUID}
 	if err, sysUser := userService.SetUserInfo(user); err != nil {
 		global.GSD_LOG.Error("设置失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("设置失败", c)
