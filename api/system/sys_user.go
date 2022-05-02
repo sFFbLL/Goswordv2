@@ -426,6 +426,31 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 }
 
 // @Tags SysUser
+// @Summary 设置用户部门
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body systemReq.SetUserDept true "ID, UUID, 部门id"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"设置成功"}"
+// @Router /api/user/setUserDept [put]
+func (b *BaseApi) SetUserDept(c *gin.Context) {
+	var reqUser systemReq.SetUserDept
+	_ = c.ShouldBindJSON(&reqUser)
+	if err := utils.Verify(reqUser, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	curUser := utils.GetUser(c)
+	user := system.SysUser{GSD_MODEL: global.GSD_MODEL{ID: reqUser.ID, UpdateBy: curUser.ID}, DeptId: reqUser.DeptId, UUID: reqUser.UUID}
+	if err, sysUser := userService.SetUserDept(user); err != nil {
+		global.GSD_LOG.Error("设置失败", zap.Error(err), utils.GetRequestID(c))
+		response.FailWithMessage("设置失败", c)
+	} else {
+		response.OkWithDetailed(gin.H{"userinfo": sysUser}, "设置成功", c)
+	}
+}
+
+// @Tags SysUser
 // @Summary 设置当前用户信息
 // @Security ApiKeyAuth
 // @accept application/json

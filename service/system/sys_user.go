@@ -191,6 +191,30 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 }
 
 //@author: [chenguanglan](https://github.com/sFFbLL)
+//@function: SetUserDept
+//@description: 修改用户部门
+//@param: reqUser model.SysUser
+//@return: err error, user model.SysUser
+func (userService *UserService) SetUserDept(reqUser system.SysUser) (err error, user system.SysUser) {
+	tx := global.GSD_DB.Begin()
+	err = tx.Updates(&reqUser).Error
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	userInfo := reqUser
+	//更新deptId
+	userInfo.DeptId = reqUser.DeptId
+	err = global.GSD_REDIS.HSet(context.Background(), reqUser.UUID.String(), "deptId", reqUser.DeptId).Err()
+	if err != nil {
+		tx.Rollback()
+		return
+	}
+	tx.Commit()
+	return err, reqUser
+}
+
+//@author: [chenguanglan](https://github.com/sFFbLL)
 //@function: SetSelfInfo
 //@description: 修改用户信息
 //@param: reqUser model.SysUser
