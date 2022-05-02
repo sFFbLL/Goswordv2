@@ -50,3 +50,10 @@ type SetUserInfo struct {
 	UUID         uuid.UUID `json:"uuid"`         //uuid
 	AuthorityIds []uint    `json:"authorityIds"` //角色ID
 }
+
+// Modify  user's Info structure
+type SetUserDept struct {
+	ID     uint      `json:"ID"`     //用户id
+	DeptId uint      `json:"deptId"` //部门id
+	UUID   uuid.UUID `json:"uuid"`   //uuid
+}
