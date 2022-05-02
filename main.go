@@ -7,7 +7,7 @@ import (
 	"project/initialize"
 )
 
-//go:generate go mod tidy -go=1.16
+//go:generate go mod tidy -go=1.17
 //go:generate go mod download
 
 // @title                       GoSword API
