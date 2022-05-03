@@ -43,7 +43,7 @@ type SetUserAuthorities struct {
 type SetUserInfo struct {
 	ID           uint      `json:"ID"`           //用户id
 	DeptId       uint      `json:"deptId"`       //部门id
-	HeadImg      string    `json:"headImg"`      //头像
+	HeadImg      string    `json:"headerImg"`    //头像
 	NickName     string    `json:"nickName"`     //昵称
 	Phone        string    `json:"phone"`        //手机号
 	Email        string    `json:"email"`        //邮箱
