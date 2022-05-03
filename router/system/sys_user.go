@@ -19,7 +19,7 @@ func (s *UserRouter) InitUserRouter(Router *gin.RouterGroup) {
 		userRouter.POST("getUserByAuthority", baseApi.GetUserByAuthority) //用户分页列表
 		userRouter.PUT("changePassword", baseApi.UpdatePassword)          //用户本人修改密码
 		userRouter.GET("getUserInfo", baseApi.GetUserInfo)                //获取用户信息
-		userRouter.GET("setUserInfo", baseApi.SetUserInfo)                //获取用户信息
+		userRouter.PUT("setUserInfo", baseApi.SetUserInfo)                //获取用户信息
 		userRouter.PUT("setUserDept", baseApi.SetUserDept)                //修改用户信息
 		userRouter.PUT("setSelfInfo", baseApi.SetSelfInfo)                //修改当前用户信息
 		userRouter.DELETE("deleteUser", baseApi.DeleteUser)               //用户删除
