@@ -85,7 +85,19 @@ func (userService *UserService) GetUserInfoList(info request.PageInfo, deptId []
 func (userService *UserService) UpdatePassword(u *system.SysUser, newPassword string) (err error, sysUser *system.SysUser) {
 	var user *system.SysUser
 	u.Password = utils.MD5V([]byte(u.Password))
-	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Username).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
+	err = global.GSD_DB.Where("username = ? AND password = ?", u.Username, u.Password).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
+	return err, u
+}
+
+//@author: [chenguanglan](https://github.com/sFFbLL)
+//@function: ResetPassword
+//@description: 重置密码
+//@param: user *system.SysUser, newPassword string
+//@return: err error, sysUser *system.SysUser
+
+func (userService *UserService) ResetPassword(u *system.SysUser, newPassword string) (err error, sysUser *system.SysUser) {
+	var user *system.SysUser
+	err = global.GSD_DB.Where("id", u.ID).First(&user).Update("password", utils.MD5V([]byte(newPassword))).Error
 	return err, u
 }
 
@@ -171,17 +183,6 @@ func (userService *UserService) SetUserInfo(reqUser system.SysUser) (err error, 
 	//更新deptId
 	userInfo.DeptId = reqUser.DeptId
 	err = global.GSD_REDIS.HSet(context.Background(), reqUser.UUID.String(), "deptId", reqUser.DeptId).Err()
-	if err != nil {
-		tx.Rollback()
-		return
-	}
-	//更新authorities
-	authorityIds := make([]uint, 0)
-	for _, authority := range reqUser.Authorities {
-		authorityIds = append(authorityIds, authority.AuthorityId)
-	}
-	authorityIdJson, _ := json.Marshal(authorityIds)
-	err = global.GSD_REDIS.HSet(context.Background(), reqUser.UUID.String(), "authorityId", authorityIdJson).Err()
 	if err != nil {
 		tx.Rollback()
 		return

@@ -379,6 +379,31 @@ func (b *BaseApi) UpdatePassword(c *gin.Context) {
 }
 
 // @Tags SysUser
+// @Summary 重置用户密码
+// @Security ApiKeyAuth
+// @Produce  application/json
+// @Param data body systemReq.ChangePasswordStruct true "用户id"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
+// @Router /api/user/changePassword [put]
+func (b *BaseApi) ResetPassword(c *gin.Context) {
+	var reqId request.GetById
+	_ = c.ShouldBindJSON(&reqId)
+	if err := utils.Verify(reqId, utils.IdVerify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	u := &system.SysUser{
+		GSD_MODEL: global.GSD_MODEL{ID: reqId.ID},
+	}
+	if err, _ := userService.ResetPassword(u, "123456"); err != nil {
+		global.GSD_LOG.Error("修改失败", zap.Error(err), utils.GetRequestID(c))
+		response.FailWithMessage("重置失败， 用户不存在", c)
+	} else {
+		response.OkWithMessage("修改成功", c)
+	}
+}
+
+// @Tags SysUser
 // @Summary 获取用户信息
 // @Security ApiKeyAuth
 // @accept application/json
@@ -416,7 +441,41 @@ func (b *BaseApi) SetUserInfo(c *gin.Context) {
 		authorities = append(authorities, system.SysAuthority{AuthorityId: authorityId})
 	}
 	curUser := utils.GetUser(c)
-	user := system.SysUser{GSD_MODEL: global.GSD_MODEL{ID: reqUser.ID, UpdateBy: curUser.ID}, DeptId: reqUser.DeptId, Phone: reqUser.Phone, Email: reqUser.Email, NickName: reqUser.NickName, HeaderImg: reqUser.HeadImg, UUID: reqUser.UUID, Authorities: authorities}
+	//校验数据权限
+	err, updateUser := userService.FindUserById(reqUser.ID)
+	if err != nil {
+		global.GSD_LOG.Error("修改失败!", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("操作用户不存在", c)
+		return
+	}
+	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{updateUser})
+	if !canDo {
+		global.GSD_LOG.Error("修改失败, 无权修改该用户!", utils.GetRequestID(c))
+		response.FailWithMessage("操作失败, 无权操作该用户!", c)
+		return
+	}
+	var updateAuthorities []system.SysAuthority
+	for _, authorityId := range reqUser.AuthorityIds {
+		if err, authority := authorityService.GetAuthorityBasicInfo(system.SysAuthority{AuthorityId: authorityId}); err != nil {
+			global.GSD_LOG.Error("设置角色不存在!", utils.GetRequestID(c))
+			response.FailWithMessage("设置角色不存在!", c)
+			return
+		} else {
+			updateAuthorities = append(updateAuthorities, authority)
+		}
+	}
+	//校验目标level是否垂直越权
+	if dataScope.GetMaxLevel(updateAuthorities) < dataScope.GetMaxLevel(curUser.Authority) {
+		global.GSD_LOG.Error("设置角色级别高于当前用户级别!", utils.GetRequestID(c))
+		response.FailWithMessage("设置角色级别高于当前用户级别!", c)
+		return
+	}
+	if err := userService.SetUserAuthorities(*updateUser, reqUser.AuthorityIds); err != nil {
+		global.GSD_LOG.Error("用户角色修改失败!", zap.Any("err", err), utils.GetRequestID(c))
+		response.FailWithMessage("用户角色修改失败", c)
+		return
+	}
+	user := system.SysUser{GSD_MODEL: global.GSD_MODEL{ID: reqUser.ID, UpdateBy: curUser.ID}, DeptId: reqUser.DeptId, Phone: reqUser.Phone, Email: reqUser.Email, NickName: reqUser.NickName, HeaderImg: reqUser.HeadImg, UUID: reqUser.UUID}
 	if err, sysUser := userService.SetUserInfo(user); err != nil {
 		global.GSD_LOG.Error("设置失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("设置失败", c)
