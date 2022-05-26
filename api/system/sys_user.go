@@ -382,7 +382,7 @@ func (b *BaseApi) UpdatePassword(c *gin.Context) {
 // @Summary 重置用户密码
 // @Security ApiKeyAuth
 // @Produce  application/json
-// @Param data body systemReq.ChangePasswordStruct true "用户id"
+// @Param data body reqId request.GetById true "用户id"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"修改成功"}"
 // @Router /api/user/changePassword [put]
 func (b *BaseApi) ResetPassword(c *gin.Context) {
@@ -501,6 +501,12 @@ func (b *BaseApi) SetUserDept(c *gin.Context) {
 	}
 	curUser := utils.GetUser(c)
 	user := system.SysUser{GSD_MODEL: global.GSD_MODEL{ID: reqUser.ID, UpdateBy: curUser.ID}, DeptId: reqUser.DeptId, UUID: reqUser.UUID}
+	canDo := dataScope.CanDoToTargetUser(curUser, []*system.SysUser{&user})
+	if !canDo {
+		global.GSD_LOG.Error("无权修改该用户或修改目标部门不在可控范围!", utils.GetRequestID(c))
+		response.FailWithMessage("操作失败, 无权操作该用户!", c)
+		return
+	}
 	if err, sysUser := userService.SetUserDept(user); err != nil {
 		global.GSD_LOG.Error("设置失败", zap.Error(err), utils.GetRequestID(c))
 		response.FailWithMessage("设置失败", c)
